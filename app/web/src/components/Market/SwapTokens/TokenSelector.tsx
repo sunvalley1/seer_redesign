@@ -1,0 +1,123 @@
+import { getOutcomeImages } from "@/lib/marketImages";
+import { paths } from "@/lib/paths";
+import { isTwoStringsEqual, isUndefined } from "@/lib/utils";
+import { FUTARCHY_LP_PAIRS_MAPPING, Market } from "@seer-pm/sdk";
+import type { Token } from "@seer-pm/sdk";
+import { MarketCollateralDropdown } from "../CollateralDropdown";
+import { OutcomeImage } from "../OutcomeImage";
+
+interface TokenSelectorProps {
+  type: "buy" | "sell";
+  sellToken: Token;
+  buyToken: Token;
+  selectedCollateral: Token;
+  market: Market;
+  fixedCollateral: Token | undefined;
+  setPreferredCollateral: (collateral: Token, chainId: number) => void;
+  parentMarket: Market | undefined;
+  outcomeIndex: number;
+  outcomeImage?: string;
+  isInvalidOutcome: boolean;
+  outcomeText: string;
+}
+
+export const TokenSelector = ({
+  type,
+  sellToken,
+  buyToken,
+  selectedCollateral,
+  market,
+  fixedCollateral,
+  setPreferredCollateral,
+  parentMarket,
+  outcomeIndex,
+  outcomeImage,
+  isInvalidOutcome,
+  outcomeText,
+}: TokenSelectorProps) => {
+  const isTokenCollateral = isTwoStringsEqual(
+    type === "sell" ? sellToken.address : buyToken.address,
+    selectedCollateral.address,
+  );
+  if (isTokenCollateral && isUndefined(fixedCollateral)) {
+    return (
+      <MarketCollateralDropdown
+        market={market}
+        type={type}
+        selectedCollateral={selectedCollateral}
+        setSelectedCollateral={(selectedCollateral) => setPreferredCollateral(selectedCollateral, market.chainId)}
+      />
+    );
+  }
+  const imageElement = (() => {
+    if (isTokenCollateral) {
+      if (isUndefined(fixedCollateral)) {
+        return (
+          <img
+            className="w-full h-full"
+            alt={selectedCollateral.symbol}
+            src={paths.tokenImage(selectedCollateral.address, market.chainId)}
+          />
+        );
+      }
+      if (market.type === "Futarchy") {
+        return (
+          <OutcomeImage
+            className="w-full h-full"
+            image={market.images?.outcomes?.[FUTARCHY_LP_PAIRS_MAPPING[outcomeIndex]]}
+            isInvalidOutcome={false}
+            title={market.outcomes[FUTARCHY_LP_PAIRS_MAPPING[outcomeIndex]]}
+          />
+        );
+      }
+      if (!parentMarket) {
+        return <div className="w-full h-full bg-purple-primary"></div>;
+      }
+      return (
+        <OutcomeImage
+          className="w-full h-full"
+          image={getOutcomeImages(parentMarket)?.[Number(market.parentOutcome)]}
+          isInvalidOutcome={
+            parentMarket.type === "Generic" && Number(market.parentOutcome) === parentMarket.wrappedTokens.length - 1
+          }
+          title={parentMarket.outcomes[Number(market.parentOutcome)]}
+        />
+      );
+    }
+    return (
+      <OutcomeImage
+        className="w-full h-full"
+        image={outcomeImage}
+        isInvalidOutcome={isInvalidOutcome}
+        title={outcomeText}
+      />
+    );
+  })();
+
+  // Determine if current token is from parent market
+  const currentToken = type === "sell" ? sellToken : buyToken;
+  const hasSameSymbol = sellToken.symbol === buyToken.symbol;
+  const isParentToken =
+    isTokenCollateral && parentMarket && !isUndefined(fixedCollateral) && market.type !== "Futarchy" && hasSameSymbol;
+
+  return (
+    <div className="io-token">
+      <div className="token-img rounded-full w-4 h-4 overflow-hidden flex-shrink-0">{imageElement}</div>
+      <p>
+        {currentToken.symbol}
+        {isParentToken && <span className="text-[12px] italic text-base-content/70 font-normal ml-1">(parent)</span>}
+      </p>
+    </div>
+  );
+};
+
+export function TokenImage({ token }: { token: Token }) {
+  return (
+    <div className="io-token">
+      <div className="token-img rounded-full w-4 h-4 overflow-hidden flex-shrink-0">
+        <img className="w-full h-full" alt={token.symbol} src={paths.tokenImage(token.address, token.chainId)} />
+      </div>
+      <p>{token.symbol}</p>
+    </div>
+  );
+}

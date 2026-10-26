@@ -1,0 +1,59 @@
+import { CloseIcon } from "@/lib/icons";
+import clsx from "clsx";
+import React from "react";
+import { UseFormReturn, get } from "react-hook-form";
+import FormError from "./FormError";
+
+type InputProps = {
+  // biome-ignore lint/suspicious/noExplicitAny:
+  useFormReturn?: UseFormReturn<any>;
+  helpText?: string;
+  icon?: React.ReactNode;
+  isClearable?: boolean;
+  onClear?: () => void;
+  errorClassName?: string;
+} & React.InputHTMLAttributes<HTMLInputElement>;
+
+const Input = React.forwardRef<HTMLInputElement | null, InputProps>((props, ref) => {
+  const { className, helpText, icon, useFormReturn, isClearable, onClear, errorClassName, ...restProps } = props;
+  const {
+    formState: { errors, dirtyFields },
+  } = useFormReturn || { formState: { errors: undefined, dirtyFields: undefined } };
+
+  const hasError = !!get(dirtyFields, restProps.name) && !!get(errors, restProps.name);
+  const isValid = !!get(dirtyFields, restProps.name) && !hasError;
+  return (
+    <>
+      <div className="relative">
+        {icon && <div className="absolute left-[16px] top-0 bottom-0 flex items-center">{icon}</div>}
+        <input
+          {...restProps}
+          className={clsx(
+            "input input-bordered bg-base-100 focus:outline-none focus:border-blue focus:shadow-[0_0_0_3px_rgba(45,107,247,0.15)] dark:focus:shadow-[0_0_0_3px_rgba(123,43,255,0.25)]",
+            className,
+            icon && "pl-[40px]",
+            hasError && "border-error-primary",
+            isValid && "border-success-primary",
+          )}
+          ref={ref}
+        />
+        {!!restProps.value && isClearable && (
+          <button type="button" className="absolute right-[16px] top-0 bottom-0" onClick={() => onClear?.()}>
+            <CloseIcon fill="" />
+          </button>
+        )}
+      </div>
+      {helpText && (
+        <p className="text-base-content text-[12px] mt-2" dangerouslySetInnerHTML={{ __html: helpText }}></p>
+      )}
+
+      {hasError && (
+        <div className={errorClassName}>
+          <FormError errors={errors} name={props.name} />
+        </div>
+      )}
+    </>
+  );
+});
+
+export default Input;

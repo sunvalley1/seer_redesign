@@ -1,0 +1,103 @@
+import { Address, erc20Abi, parseUnits, type Abi } from "viem";
+import { gnosis } from "viem/chains";
+
+import { CondtionalRouterAbi } from "@/abi/ConditionalRouter";
+import { CowSwapAbi } from "@/abi/CowSwap";
+import { CreditsManagerAbi } from "@/abi/CreditsManager";
+import { RouterAbi } from "@/abi/Router";
+import { sDAIAbi } from "@/abi/sDAI";
+import { sDAIAdapterAbi } from "@/abi/sDAIAdapter";
+import { wrappedXDAIAbi } from "@/abi/wrappedXDAI";
+
+export const reownProjectId = process.env.NEXT_PUBLIC_REOWN_PROJECTID;
+
+export const GNOSIS_RPC = process.env.NEXT_PUBLIC_GNOSIS_RPC;
+
+interface IContract {
+  address: `0x${string}`;
+  abi: Abi;
+  name: string;
+}
+
+const contracts = {
+  gnosisRouter: {
+    address: "0xeC9048b59b3467415b1a38F63416407eA0c70fB8",
+    abi: RouterAbi,
+    name: "GnosisRouter",
+  },
+  sDAIAdapter: {
+    address: "0xD499b51fcFc66bd31248ef4b28d656d67E591A94",
+    abi: sDAIAdapterAbi,
+    name: "sDAIAdapter",
+  },
+  sDAI: {
+    address: "0xaf204776c7245bF4147c2612BF6e5972Ee483701",
+    abi: sDAIAbi,
+    name: "sDAI",
+  },
+  cowSwap: {
+    address: "0xC92E8bdf79f0507f65a392b0ab4667716BFE0110",
+    abi: CowSwapAbi,
+    name: "cowSwap",
+  },
+  conditionalRouter: {
+    address: "0x774284d5cdfec3a0a0ebc7283ad4d5b33013c29c",
+    abi: CondtionalRouterAbi,
+    name: "conditionalRouter",
+  },
+  foresightCreditsManager: {
+    address: "0x17592eFE59a318A6B0AFE32145ee04eAFeeA8A61",
+    abi: CreditsManagerAbi,
+    name: "CreditsManager",
+  },
+  foresightCredits: {
+    address: "0x09E7014D2c15Eb8C5ee25853FE6842FF5E2c94f9",
+    abi: erc20Abi,
+    name: "ForesightCredits",
+  },
+  wrappedXDai: {
+    address: "0xe91D153E0b41518A2Ce8Dd3D7944Fa863463a97d",
+    abi: wrappedXDAIAbi,
+    name: "WXDAI",
+  },
+} satisfies Record<string, IContract>;
+
+export const getContractInfo = (
+  contractName: keyof typeof contracts,
+): IContract => contracts[contractName];
+
+export const cowSwapAppCode = "futarchy-test";
+
+export const DEFAULT_CHAIN = gnosis;
+
+export const SWAPR_CONTRACT = "0xffb643e73f280b97809a8b41f7232ab401a04ee1";
+
+// trade wallet specific
+export const GNOSIS_CREATE_CALL = "0xBE202e30F21083619F9e8e62440CDe71903b94C4";
+export const SALT_KEY = "TradeExecutorV1";
+export const collateral = {
+  // sDAI
+  address: "0xaf204776c7245bF4147c2612BF6e5972Ee483701" as Address,
+  decimals: 18,
+};
+export const DECIMALS = 18;
+export const VOLUME_MIN = 0.001;
+/** VOLUME_MIN in wei, so volume thresholds can be compared without leaving bigint */
+export const VOLUME_MIN_WEI = parseUnits(String(VOLUME_MIN), DECIMALS);
+/** Buffer applied to collateral allocation for batch predictions to account
+ *  for swap slippage chain effects (0.98 = 2% safety margin) */
+export const PREDICTION_SLIPPAGE_BUFFER = 0.98;
+/** Merging 35 outcome tokens back costs ~4.6M gas, so complete sets smaller
+ *  than this are left in the wallet rather than merged for their collateral */
+export const MERGE_MIN_WEI = parseUnits("0.01", DECIMALS);
+/** An outcome the user did not move only trades when the coupling between
+ *  outcomes shifts its price by more than this fraction (0.005 = 0.5%) */
+export const COUPLING_MIN_MOVE = 0.005;
+export const MIN_SEER_CREDITS_USAGE = 0.01;
+export const MAX_MARKETS_PER_BATCH = Number(
+  process.env.NEXT_PUBLIC_MAX_MARKETS_PER_BATCH ?? 10,
+);
+
+// prefilled swap links
+export const COWSWAP_ETH_TO_XDAI_SWAP_LINK =
+  "https://swap.cow.fi/#/1/swap/ETH/0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE?targetChainId=100";

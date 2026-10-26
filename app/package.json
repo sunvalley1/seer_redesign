@@ -1,0 +1,21 @@
+{
+  "name": "@seer-pm/monorepo",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "contracts",
+    "web",
+    "packages/*"
+  ],
+  "devDependencies": {
+    "husky": "^9.0.11"
+  },
+  "resolutions": {
+    "@uniswap/v4-sdk/ethers": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "yarn@4.13.0"
+}

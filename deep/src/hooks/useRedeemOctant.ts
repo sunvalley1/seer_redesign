@@ -1,0 +1,102 @@
+import { queryClient } from "@/config/queryClient";
+import { withdrawFundSessionKey } from "@/lib/on-chain/sessionKey";
+import { toastifyBatchTxSessionKey } from "@/lib/toastify";
+import { CallBatchesInput, TxStateChange } from "@/types";
+import { CHAIN_ID, COLLATERAL_TOKENS, OCTANT_MARKET_ID, ROUTER_ADDRESSES } from "@/utils/constants";
+import { useMutation } from "@tanstack/react-query";
+import { useTxProgress } from "./useTxProgress";
+import { Address } from "viem";
+import { chunkRedeemFromRouter } from "./useExecuteL2Strategy";
+import { fetchTokensBalances } from "./useTokensBalances";
+import { REDEEMABLE_SCAN_KEY } from "./useRedeemableScan";
+
+interface RedeemOctantProps {
+  tradeExecutor: Address;
+  /** The Octant market's outcome tokens, in outcome order */
+  wrappedTokens: Address[];
+}
+
+// redeemPositions does one unwrap per outcome + one CTF redeem, so outcome count
+// dominates gas. Keep each batch under this many outcomes to stay well inside
+// Optimism's 2^24 (16,777,216) per-transaction gas cap used by toastifyBatchTxSessionKey.
+const MAX_OUTCOMES_PER_BATCH = 30;
+
+async function redeemOctant({
+  tradeExecutor,
+  wrappedTokens,
+  onStateChange,
+}: RedeemOctantProps & { onStateChange: TxStateChange }) {
+  const router = ROUTER_ADDRESSES[CHAIN_ID];
+  const collateral = COLLATERAL_TOKENS[CHAIN_ID].primary;
+
+  // Octant is a single flat market — outcome tokens redeem straight to sUSDS,
+  // with none of the parent-market phase the nested contests need.
+  //
+  // No progress event for this read: it runs before the session key is
+  // authorised, and reporting it as the redeem phase made the ledger tick
+  // "Redeem settled positions" off while "Authorise the run" was still going.
+  const balances = await fetchTokensBalances(tradeExecutor, wrappedTokens);
+
+  const tokens: Address[] = [];
+  const outcomeIndexes: bigint[] = [];
+  const amounts: bigint[] = [];
+
+  for (let i = 0; i < wrappedTokens.length; i++) {
+    const balance = balances[i] ?? 0n;
+    if (balance > 0n) {
+      tokens.push(wrappedTokens[i]);
+      outcomeIndexes.push(BigInt(i));
+      amounts.push(balance);
+    }
+  }
+
+  if (tokens.length > 0) {
+    const batches = chunkRedeemFromRouter(
+      router,
+      collateral.address,
+      OCTANT_MARKET_ID,
+      tokens,
+      outcomeIndexes,
+      amounts,
+      MAX_OUTCOMES_PER_BATCH,
+    );
+    const input: CallBatchesInput = batches.map((calls, i) => ({
+      calls,
+      message:
+        batches.length > 1
+          ? `Redeeming Octant market batch ${i + 1}/${batches.length}`
+          : "Redeeming Octant market",
+      skipFailCalls: false,
+    }));
+    const result = await toastifyBatchTxSessionKey(tradeExecutor, input, onStateChange);
+    if (!result.status) {
+      await withdrawFundSessionKey();
+      throw result.error;
+    }
+  }
+
+  onStateChange({ phase: "settle", label: "Returning unused gas" });
+  await withdrawFundSessionKey();
+}
+
+export const useRedeemOctant = (onSuccess?: () => unknown) => {
+  const progress = useTxProgress();
+  const mutation = useMutation({
+    mutationFn: (props: RedeemOctantProps) => redeemOctant({ ...props, onStateChange: progress.onStateChange }),
+    onSuccess() {
+      onSuccess?.();
+      queryClient.refetchQueries({ queryKey: ["useTokenBalance"] });
+      // Refetch, not invalidate: the redeem CTA now hides itself on a zero balance, and a
+      // lazily-invalidated cache would leave it on screen until the next mount.
+      queryClient.refetchQueries({ queryKey: ["useTokensBalances"] });
+      queryClient.refetchQueries({ queryKey: ["useOctantMarketsData"] });
+      // The wallet board advertises this claim from a cached scan; without this it keeps
+      // advertising one the user has just made.
+      queryClient.refetchQueries({ queryKey: [REDEEMABLE_SCAN_KEY] });
+    },
+  });
+  return {
+    ...mutation,
+    progress,
+  };
+};

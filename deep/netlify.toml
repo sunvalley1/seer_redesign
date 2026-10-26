@@ -1,0 +1,20 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  VITE_DEEP_API_URL = "https://deep-pm.netlify.app"
+  VITE_SEER_APP_URL = "https://seer-redesign-app.netlify.app"
+
+# Showcase: data comes from the live Deep API, so no functions are deployed
+[functions]
+  node_bundler = "esbuild"
+  directory = "netlify/showcase-no-functions"
+
+# Client-side routing: the header nav pushes real paths (`/leaderboard`), which exist only in
+# the bundle. Without this, a direct hit or a refresh on one 404s. Netlify matches
+# `/.netlify/functions/*` before redirects, so the API is unaffected.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

@@ -1,0 +1,70 @@
+import { MarketTypes } from "@seer-pm/sdk";
+import { FieldValues, UseFormReturn } from "react-hook-form";
+import { Address } from "viem";
+
+interface GetImagesReturn {
+  url: {
+    market: string;
+    outcomes: string[];
+  };
+  file: {
+    market: File;
+    outcomes: File[];
+  };
+}
+
+export function getImagesForVerification(outcomesValues: OutcomesFormValues): GetImagesReturn | false {
+  if (!outcomesValues.image) {
+    return false;
+  }
+
+  let outcomesFiles: File[] = [];
+
+  const allOutcomesWithImages = outcomesValues.outcomes.every((o) => o.image instanceof File);
+
+  if (!allOutcomesWithImages) {
+    return false;
+  }
+
+  outcomesFiles = outcomesValues.outcomes.map((i) => i.image as File);
+
+  return {
+    url: {
+      market: URL.createObjectURL(outcomesValues.image),
+      outcomes: outcomesFiles.map((f) => URL.createObjectURL(f)),
+    },
+    file: {
+      market: outcomesValues.image,
+      outcomes: outcomesFiles,
+    },
+  };
+}
+
+export interface FormStepProps<T extends FieldValues> {
+  useFormReturn: UseFormReturn<T>;
+}
+
+export interface FormWithPrevStep {
+  goToPrevStep: () => void;
+}
+
+export interface FormWithNextStep {
+  goToNextStep: () => void;
+}
+
+export type MarketTypeFormValues = {
+  marketType: MarketTypes;
+  marketCategories: string[];
+};
+
+export type OutcomesFormValues = {
+  market: string;
+  image: File | "";
+  outcomes: { value: string; token: string; image: File | "" }[]; // for categorical and multi scalar markets
+  collateralToken1: Address | ""; // for futarchy markets
+  collateralToken2: Address | ""; // for futarchy markets
+  lowerBound: { value: number; token: string }; // for scalar markets
+  upperBound: { value: number; token: string }; // for scalar markets
+  unit: string; // for scalar markets
+  isArbitraryQuestion?: boolean; // for futarchy markets
+};

@@ -1,0 +1,62 @@
+import { Market, MarketStatus } from "@seer-pm/sdk";
+import { INVALID_RESULT_OUTCOME_TEXT } from "@seer-pm/sdk";
+import { useQuery } from "@tanstack/react-query";
+import { useWinningOutcomes } from "./useWinningOutcomes";
+
+type OutcomeWithOdds = {
+  odd: number;
+  i: number;
+  isWinning?: boolean;
+};
+
+function sortOdds(
+  a: {
+    odd: number | null;
+    i: number;
+  },
+  b: {
+    odd: number | null;
+    i: number;
+  },
+) {
+  if (Number.isNaN(a.odd) && Number.isNaN(b.odd)) return 0;
+  if (Number.isNaN(a.odd)) return 1;
+  if (Number.isNaN(b.odd)) return -1;
+  return Number(b.odd) - Number(a.odd);
+}
+
+export function useSortedOutcomes(odds: (number | null)[], market: Market, marketStatus?: MarketStatus) {
+  const { data: winningOutcomes } = useWinningOutcomes(market, marketStatus);
+  return useQuery({
+    queryKey: ["sortedOutcomes", odds, winningOutcomes, market.outcomes, marketStatus],
+    enabled: odds.length > 0 && market.type === "Generic",
+    queryFn: () => {
+      const invalidIndex = market.outcomes.findIndex((outcome) => outcome === INVALID_RESULT_OUTCOME_TEXT);
+
+      if (!winningOutcomes && marketStatus === MarketStatus.CLOSED) {
+        const otherIndexes = odds
+          .map((odd, i) => ({ odd, i }))
+          .filter(({ i }) => i !== invalidIndex)
+          .sort(sortOdds)
+          .map((obj) => obj.i);
+
+        return [invalidIndex, ...otherIndexes];
+      }
+
+      const winningIndexes: OutcomeWithOdds[] = [];
+      const nonWinningIndexes: OutcomeWithOdds[] = [];
+
+      odds.forEach((odd, i) => {
+        if (winningOutcomes?.[i] === true) {
+          winningIndexes.push({ odd: Number(odd), i });
+        } else {
+          nonWinningIndexes.push({ odd: Number(odd), i });
+        }
+      });
+
+      const sortedWinning = winningIndexes.sort(sortOdds).map((obj) => obj.i);
+      const sortedNonWinning = nonWinningIndexes.sort(sortOdds).map((obj) => obj.i);
+      return [...sortedWinning, ...sortedNonWinning];
+    },
+  });
+}

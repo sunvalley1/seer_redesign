@@ -1,0 +1,72 @@
+import type { CodegenConfig } from "@graphql-codegen/cli";
+import { gnosis, mainnet } from "viem/chains";
+import { SUBGRAPHS } from "./src/subgraph/subgraph-endpoints";
+
+const schemasAndDocuments = [
+  {
+    type: "seer",
+    schema: SUBGRAPHS.seer,
+    documents: "./queries/markets.graphql",
+  },
+  {
+    type: "curate",
+    schema: SUBGRAPHS.curate[gnosis.id],
+    documents: "./queries/curate.graphql",
+  },
+  {
+    type: "swapr",
+    schema: [SUBGRAPHS.algebra[gnosis.id], SUBGRAPHS.algebrafarming[gnosis.id]],
+    documents: "./queries/swapr.graphql",
+  },
+  {
+    type: "uniswap",
+    schema: SUBGRAPHS.uniswap[mainnet.id],
+    documents: "./queries/uniswap.graphql",
+  },
+  {
+    type: "reality",
+    schema: SUBGRAPHS.reality[gnosis.id],
+    documents: "./queries/reality.graphql",
+  },
+];
+
+const generates = schemasAndDocuments.reduce(
+  (acum, curr) => {
+    acum[`generated/subgraph/${curr.type}.ts`] = {
+      schema: curr.schema,
+      documents: curr.documents,
+      plugins: ["typescript", "typescript-operations", "typescript-graphql-request"],
+      config: {
+        strictScalars: true,
+        scalars: {
+          BigDecimal: "string",
+          BigInt: "string",
+          bigint: "string",
+          Int8: "string",
+          Bytes: "`0x${string}`",
+          Timestamp: "string",
+          jsonb: "unknown",
+          numeric: "string",
+          markettype: "string",
+          ordereventtype: "string",
+          ruling: "string",
+          status: "string",
+          timestamptz: "string",
+          transferkind: "string",
+          userorderstatus: "string",
+        },
+      },
+    };
+
+    return acum;
+  },
+  {} as CodegenConfig["generates"],
+);
+
+const config: CodegenConfig = {
+  overwrite: true,
+  generates,
+  ignoreNoDocuments: true,
+};
+
+export default config;

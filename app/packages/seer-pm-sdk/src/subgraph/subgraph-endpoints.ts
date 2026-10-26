@@ -1,0 +1,75 @@
+export type SubgraphTypes =
+  | "seer"
+  | "curate"
+  | "uniswap"
+  | "algebra"
+  | "algebrafarming"
+  | "poh"
+  | "reality"
+  | "bunniMainnet"
+  | "bunniLpPositionMainnet";
+
+export const CHAIN_IDS = {
+  gnosis: 100,
+  mainnet: 1,
+  optimism: 10,
+  base: 8453,
+  sepolia: 11155111,
+} as const;
+
+const api = "8b2690ffdd390bad59638b894ee8d9f6";
+
+export const SEER_MARKETS_SUBGRAPH = "https://indexer.hyperindex.xyz/798eb82/v1/graphql";
+
+export const SUBGRAPHS = {
+  seer: SEER_MARKETS_SUBGRAPH,
+  curate: {
+    [CHAIN_IDS.gnosis]: "https://indexer.hyperindex.xyz/1a2f51c/v1/graphql",
+    [CHAIN_IDS.mainnet]: "https://indexer.hyperindex.xyz/1a2f51c/v1/graphql",
+    [CHAIN_IDS.sepolia]: `https://gateway-arbitrum.network.thegraph.com/api/${api}/subgraphs/id/EzUnTuz6RNJ5xD2LJXJb4VNpUZKLVRsF5bY8G4XazrE4`,
+  },
+  algebra: {
+    [CHAIN_IDS.gnosis]:
+      "https://api.goldsky.com/api/public/project_cmair7jgkzena01x58241cqow/subgraphs/swapr-algebra/3.0.0/gn",
+  },
+  algebrafarming: {
+    [CHAIN_IDS.gnosis]:
+      "https://api.goldsky.com/api/public/project_cmair7jgkzena01x58241cqow/subgraphs/swapr-algebra-farming/2.0.0/gn",
+  },
+  uniswap: {
+    [CHAIN_IDS.mainnet]: `https://gateway.thegraph.com/api/${api}/subgraphs/id/5zvR82QoaXYFyDEKLZ9t6v9adgnptxYpKpSbxtgVENFV`,
+    [CHAIN_IDS.optimism]: `https://gateway.thegraph.com/api/${api}/subgraphs/id/49LkWjoVKd3bM9ZrMdFgYkjaCuVj4ExZttQi6XfbcPpG`,
+    [CHAIN_IDS.base]: `https://gateway.thegraph.com/api/${api}/subgraphs/id/96eJ9Go8gFjySRGnndG7EYxThaiwVDV8BYPp1TMDcoYh`,
+  },
+  poh: {
+    [CHAIN_IDS.gnosis]:
+      "https://gateway.thegraph.com/api/d5c7982a40f63da9504805d11919004d/subgraphs/id/FFx16fGNSpdq2TpQer3KqpadP8UaLELS4Jocd1LtwAmG",
+    [CHAIN_IDS.mainnet]:
+      "https://gateway.thegraph.com/api/d5c7982a40f63da9504805d11919004d/subgraphs/id/8oHw9qNXdeCT2Dt4QPZK9qHZNAhPWNVrCKnFDarYEJF5",
+  },
+  reality: {
+    [CHAIN_IDS.gnosis]: `https://gateway.thegraph.com/api/${api}/subgraphs/id/E7ymrCnNcQdAAgLbdFWzGE5mvr5Mb5T9VfT43FqA7bNh`,
+  },
+
+  bunniMainnet: {
+    [CHAIN_IDS.mainnet]: `https://gateway.thegraph.com/api/${api}/subgraphs/id/HH4HFj4rFnm5qnkb8MbEdP2V5eD9rZnLJE921YQAs7AV`,
+  },
+  bunniLpPositionMainnet: {
+    [CHAIN_IDS.mainnet]: `https://gateway.thegraph.com/api/${api}/subgraphs/id/C8QxbHvGr3VC6KFvnnZYc55kzkDo7FiBAHFw45QmGR4B`,
+  },
+} as const;
+
+/**
+ * Returns the subgraph URL for a given subgraph name and chain ID.
+ * Returns undefined if the combination is not configured.
+ */
+export function getSubgraphUrl(name: SubgraphTypes, chainId: number): string | undefined {
+  const subgraph = SUBGRAPHS[name];
+  if (!subgraph) return undefined;
+
+  if (name === "seer") {
+    return subgraph as (typeof SUBGRAPHS)["seer"];
+  }
+
+  return (subgraph as Record<number, string>)[chainId];
+}

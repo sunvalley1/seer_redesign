@@ -1,0 +1,141 @@
+// Relative, not `@/utils/constants`, and it has to stay that way. Netlify's esbuild bundler
+// applies the `@/*` path mapping from `netlify/tsconfig.json` only to files under
+// `netlify/functions/`. A `src/` file it pulls in transitively keeps its own aliases unresolved:
+// they survive into the bundle as bare `@/utils/...` specifiers and the function dies at runtime
+// with "Cannot find package '@/utils'". No other `src/` file reached from a function imports a
+// *runtime* value this way (`@/types` in `common.ts` is type-only, so it is erased), which is why
+// this only surfaced here.
+import {
+  AI_PREDICTION_MARKET_ID,
+  L1_MARKET_ID,
+  L2_PARENT_MARKET_ID,
+  OCTANT_MARKET_ID,
+  ORIGINALITY_PARENT_MARKET_ID,
+  ORIGINALITY_R3_MARKET_IDS,
+  ORIGINALITY_R3_PARENT_MARKET_ID,
+  ORIGINALITY_R3_V3_MARKET_IDS,
+  ZCASH_MARKET_IDS,
+  ZCASH_NU7_MARKET_IDS,
+} from "./constants";
+
+/**
+ * The deep markets, in one place.
+ *
+ * The id, the label and the finished flag used to live in `TABS` (Tab.tsx) while the market
+ * id lived in `constants.ts`, so adding a contest meant editing both — and the netlify
+ * leaderboard function needs the same list a third time. Everything that enumerates contests
+ * reads this array; registering a new deep market is one entry here.
+ *
+ * The ids double as Seer's leaderboard sub-ids: `id` is what
+ * `netlify/functions/utils/seerLeaderboard.ts` prefixes with `deepfund:`. Seer only builds a board
+ * for a contest in `SEER_APPS.deepfund.markets`, and that list is generated from this array:
+ * after adding or editing a contest, run `npm run sync:seer` to open the Seer PR
+ * (`scripts/syncSeerApps.ts`). Until that PR is deployed the contest's board simply reads empty.
+ *
+ * `marketId` is the PARENT market. Trading happens on its children, so anything touching
+ * on-chain activity has to expand parent → children first.
+ */
+export interface Contest {
+  id: string;
+  label: string;
+  /**
+   * The PARENT market. Absent for a contest that has none — Zcash is 37 independent top-level
+   * markets, so it carries `marketIds` instead.
+   */
+  marketId?: string;
+  /** Every market in the contest, for contests with no single parent to expand. */
+  marketIds?: readonly string[];
+  /** The contest has ended: trading is closed, only redeeming remains. */
+  finished: boolean;
+  /**
+   * Temporarily hide the contest from the tab bar without unregistering it. Everything else —
+   * market ids, the component wiring in `Tab.tsx`, the netlify functions — stays intact, so
+   * bringing the contest back is deleting the flag.
+   */
+  hidden?: boolean;
+  /**
+   * The market set was built wrongly and replaced by another contest. It takes no new trades and
+   * is not shown anywhere in the app's own navigation — see `TAB_CONTESTS`. The people holding
+   * positions in it reach it by a link of its own (`ROUND3_WITHDRAW_PATH` in `./views`) to sell
+   * back and withdraw. It has no leaderboard — see `LEADERBOARD_CONTESTS`.
+   */
+  incorrect?: boolean;
+}
+
+export const DEEP_CONTESTS = [
+  {
+    id: "round3",
+    label: "Round 3 · Originality",
+    // No `marketId`, on purpose. Seer's leaderboard expands a parent to its DIRECT children only
+    // (`expandMarketIdsWithChildren`), and here those are the three middle markets, which nobody
+    // trades; the repo markets sit one level further down. Registered with the parent, the board
+    // would stay empty. So the 98 repo markets are listed as the contest's own roots. The parent
+    // is `ORIGINALITY_R3_V3_PARENT_MARKET_ID` — see `originalityR3V3Markets.ts`.
+    marketIds: ORIGINALITY_R3_V3_MARKET_IDS,
+    finished: false,
+  },
+  {
+    // The first round-3 set, created 2026-09-22 without its middle level and replaced by the
+    // contest above. Not in the tab bar: it has a page of its own, reached only by its link.
+    id: "round3-incorrect",
+    label: "Round 3 · Incorrect market",
+    marketId: ORIGINALITY_R3_PARENT_MARKET_ID,
+    marketIds: ORIGINALITY_R3_MARKET_IDS,
+    finished: false,
+    incorrect: true,
+  },
+  {
+    id: "zcash-nu7",
+    label: "Zcash · NU7",
+    marketIds: ZCASH_NU7_MARKET_IDS,
+    finished: true,
+  },
+  {
+    // Relabelled from plain "Zcash" when NU7 landed: two live Zcash contests in the bar, and the
+    // grants set is the one people already had open.
+    id: "zcash",
+    label: "Zcash · Grants",
+    marketIds: ZCASH_MARKET_IDS,
+    finished: true,
+  },
+  { id: "octant", label: "Octant", marketId: OCTANT_MARKET_ID, finished: true },
+  { id: "round2-l2", label: "Round 2 · L2", marketId: L2_PARENT_MARKET_ID, finished: true },
+  { id: "round2-l1", label: "Round 2 · L1", marketId: L1_MARKET_ID, finished: true },
+  {
+    id: "round2",
+    label: "Round 2 · Originality",
+    marketId: ORIGINALITY_PARENT_MARKET_ID,
+    finished: true,
+  },
+  { id: "round1", label: "Round 1", marketId: AI_PREDICTION_MARKET_ID, finished: true },
+] as const satisfies readonly Contest[];
+
+export type ContestId = (typeof DEEP_CONTESTS)[number]["id"];
+
+/**
+ * The contests the app itself offers: the tab bar, and the unclaimed-payouts board that opens a
+ * tab. A `hidden` contest is out of it for now; an `incorrect` one is out of it for good, and is
+ * never named in the main UI.
+ */
+export const TAB_CONTESTS = DEEP_CONTESTS.filter(
+  (contest) => !(contest as Contest).hidden && !(contest as Contest).incorrect,
+);
+
+/**
+ * The contests that are ranked. An incorrect market set is left out: trades in it were made
+ * against a structure that does not settle as intended, so it gets no board of its own, is not
+ * offered as a leaderboard scope, and is not registered with Seer — which also keeps it out of the
+ * summed "all deep markets" board.
+ */
+export const LEADERBOARD_CONTESTS: readonly Contest[] = (DEEP_CONTESTS as readonly Contest[]).filter(
+  (contest) => !contest.incorrect,
+);
+
+export function getContest(id: string): Contest | undefined {
+  return DEEP_CONTESTS.find((contest) => contest.id === id);
+}
+
+export function isContestId(id: string): id is ContestId {
+  return DEEP_CONTESTS.some((contest) => contest.id === id);
+}
+

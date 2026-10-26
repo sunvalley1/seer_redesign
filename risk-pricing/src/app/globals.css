@@ -1,0 +1,768 @@
+@import "tailwindcss";
+@import "../../node_modules/@kleros/ui-components-library/dist/assets/theme.css";
+@source "../../node_modules/@kleros/ui-components-library";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* next/font exposes Inter, Fraunces and Geist Mono as --font-* on <html> (see layout.tsx);
+     these bind them to Tailwind's font utilities and to Preflight's default. */
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-display: var(--font-fraunces), Georgia, serif;
+
+  --shadow-input: 0 0 0 3px var(--sb-halo);
+
+  --color-sb-bg: var(--sb-bg);
+  --color-sb-bg-2: var(--sb-bg-2);
+  --color-sb-bg-3: var(--sb-bg-3);
+  --color-sb-surface: var(--sb-surface);
+  --color-sb-ink: var(--sb-ink);
+  --color-sb-ink-2: var(--sb-ink-2);
+  --color-sb-ink-3: var(--sb-ink-3);
+  --color-sb-ink-4: var(--sb-ink-4);
+  --color-sb-ink-5: var(--sb-ink-5);
+  --color-sb-border: var(--sb-border);
+  --color-sb-border-strong: var(--sb-border-strong);
+  --color-sb-blue: var(--sb-blue);
+  --color-sb-blue-soft: var(--sb-blue-soft);
+  --color-sb-pos: var(--sb-pos);
+  --color-sb-neg: var(--sb-neg);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-red-2: var(--red-2);
+  --color-green-2: var(--green-2);
+  --color-footer-background: #1d6aaa;
+  --color-whiteLowOpacityStrong: #ffffff26;
+
+  @keyframes slideInLeft {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  --animate-slide-in-left: slideInLeft 0.5s ease-out;
+
+  @keyframes slideOutLeft {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  --animate-slide-out-left: slideOutLeft 0.5s ease-out;
+
+  @keyframes slideInRight {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  --animate-slide-in-right: slideInRight 0.5s ease-out;
+
+  /* Used by the mobile navbar, which previously referenced an undefined class
+     and so opened with no animation at all. */
+  @keyframes slideInTop {
+    0% {
+      transform: translateY(-100%);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  --animate-slide-in-top: slideInTop 0.5s ease-out;
+
+  @keyframes spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  --animate-spinner: spinner 2s ease-in-out infinite normal;
+}
+
+/*
+  The default border color has changed to `currentcolor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--sb-border, currentcolor);
+  }
+  :root {
+    --background: var(--sb-bg);
+    --foreground: var(--sb-ink);
+    --red-2: #f75c7b;
+    --green-2: #3fec65;
+  }
+
+  :root.dark {
+    --background: var(--sb-bg);
+    --foreground: var(--sb-ink);
+    --red-2: #ffd2db;
+    --green-2: #d2ffdc;
+  }
+
+  body {
+    color: var(--foreground);
+    background: var(--background);
+    font-family: var(--font-sans);
+
+    /* ================================
+   Custom scrollbar styles
+   ================================ */
+
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--background);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--sb-border-strong);
+      border-radius: 999px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: var(--sb-ink-5);
+    }
+
+    /* Firefox */
+    * {
+      scrollbar-width: thin;
+      scrollbar-color: var(--sb-border-strong) var(--background);
+    }
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@layer utilities {
+  .border-gradient-purple-blue {
+    position: relative;
+    border-radius: 12px;
+    z-index: 1;
+  }
+
+  .border-gradient-purple-blue::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: var(--sb-border);
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    z-index: -1;
+  }
+
+  .loader {
+    width: 85px;
+    height: 50px;
+    /* The gap colour has to be the page background, not white - this loader is
+       the first thing a dark-mode user sees. */
+    --g1: conic-gradient(
+      from 90deg at left 3px top 3px,
+      var(--sb-blue) 90deg,
+      var(--background) 0
+    );
+    --g2: conic-gradient(
+      from -90deg at bottom 3px right 3px,
+      var(--sb-blue) 90deg,
+      var(--background) 0
+    );
+    background:
+      var(--g1), var(--g1), var(--g1), var(--g2), var(--g2), var(--g2);
+    background-position: left, center, right;
+    background-repeat: no-repeat;
+    animation: l9 1.5s infinite;
+  }
+  @keyframes l9 {
+    0% {
+      background-size:
+        25px 50%,
+        25px 50%,
+        25px 50%;
+    }
+    25% {
+      background-size:
+        25px 100%,
+        25px 50%,
+        25px 50%;
+    }
+    50% {
+      background-size:
+        25px 50%,
+        25px 100%,
+        25px 50%;
+    }
+    75% {
+      background-size:
+        25px 50%,
+        25px 50%,
+        25px 100%;
+    }
+    100% {
+      background-size:
+        25px 50%,
+        25px 50%,
+        25px 50%;
+    }
+  }
+
+  .hover-short-transition {
+    transition: 0.1s;
+  }
+}
+
+/* Seer theme tokens */
+:root {
+  --sb-bg: #fbfaf7;
+  --sb-bg-2: #f3f2ec;
+  --sb-bg-3: #eceae2;
+  --sb-surface: #ffffff;
+  --sb-surface-2: #faf9f5;
+  --sb-ink: #0f1115;
+  --sb-ink-2: #1f2937;
+  --sb-ink-3: #4b5563;
+  --sb-ink-4: #6b7280;
+  --sb-ink-5: #9ca3af;
+  --sb-border: #ece8dc;
+  --sb-border-strong: #d8d2c0;
+  --sb-blue: #2d6bf7;
+  --sb-blue-hover: #1d4ed8;
+  --sb-blue-soft: #e8f0ff;
+  --sb-accent: #2d6bf7;
+  --sb-accent-hover: #1d4ed8;
+  --sb-accent-text: #2d6bf7;
+  --sb-pos: #00b955;
+  --sb-pos-soft: #e6f8ee;
+  --sb-neg: #e5484d;
+  --sb-neg-soft: #fdeced;
+  --sb-warn: #f59e0b;
+  --sb-warn-soft: #fef5e4;
+  --sb-halo: rgba(45, 107, 247, 0.15);
+  --sb-hover-shadow: rgba(15, 17, 21, 0.06);
+  --sb-cta-shadow: 0 1px 2px rgba(15, 17, 21, 0.025);
+  --sb-cta-glow: 0 6px 16px -4px rgba(45, 107, 247, 0.35);
+  --sb-grad: linear-gradient(135deg, #4d00b4 0%, #7b2bff 100%);
+  --sb-grad-hover: linear-gradient(135deg, #5a0bd0 0%, #8e44ff 100%);
+}
+
+:root.dark {
+  --sb-bg: #0a0612;
+  --sb-bg-2: #20183c;
+  --sb-bg-3: #2b2150;
+  --sb-surface: #130c24;
+  --sb-surface-2: #1a1230;
+  --sb-ink: #f4f1ff;
+  --sb-ink-2: #ded7f2;
+  --sb-ink-3: #b2a8d0;
+  --sb-ink-4: #897fa8;
+  --sb-ink-5: #685e86;
+  --sb-border: #261c46;
+  --sb-border-strong: #3d2f68;
+  --sb-blue: #7b2bff;
+  --sb-blue-hover: #9457ff;
+  --sb-blue-soft: rgba(123, 43, 255, 0.16);
+  --sb-accent: #9457ff;
+  --sb-accent-hover: #7b2bff;
+  --sb-accent-text: #c7abff;
+  --sb-pos: #22c55e;
+  --sb-pos-soft: rgba(34, 197, 94, 0.14);
+  --sb-neg: #f43f5e;
+  --sb-neg-soft: rgba(244, 63, 94, 0.14);
+  --sb-warn: #fbbf24;
+  --sb-warn-soft: rgba(251, 191, 36, 0.14);
+  --sb-halo: rgba(123, 43, 255, 0.25);
+  --sb-hover-shadow: rgba(0, 0, 0, 0.4);
+  --sb-cta-shadow: 0 6px 18px -8px rgba(123, 43, 255, 0.6);
+  --sb-cta-glow: 0 10px 26px -8px rgba(123, 43, 255, 0.7);
+}
+
+/* Kleros UI library mapped onto the Seer tokens */
+:root {
+  --klerosUIComponentsPrimaryPurple: var(--sb-accent-hover);
+  --klerosUIComponentsSecondaryPurple: var(--sb-accent-text);
+  --klerosUIComponentsMediumPurple: var(--sb-blue-soft);
+  --klerosUIComponentsLightPurple: var(--sb-surface-2);
+  --klerosUIComponentsPrimaryBlue: var(--sb-accent);
+  --klerosUIComponentsSecondaryBlue: var(--sb-accent-hover);
+  --klerosUIComponentsMediumBlue: var(--sb-blue-soft);
+  --klerosUIComponentsLightBlue: var(--sb-surface-2);
+  --klerosUIComponentsPrimaryText: var(--sb-ink);
+  --klerosUIComponentsSecondaryText: var(--sb-ink-4);
+  --klerosUIComponentsStroke: var(--sb-border);
+  --klerosUIComponentsLightGrey: var(--sb-bg-2);
+  --klerosUIComponentsWhiteBackground: var(--sb-surface);
+  --klerosUIComponentsLightBackground: var(--sb-bg);
+  --klerosUIComponentsDefaultShadow: transparent;
+  --klerosUIComponentsHoveredShadow: var(--sb-hover-shadow);
+  --klerosUIComponentsSuccess: var(--sb-pos);
+  --klerosUIComponentsSuccessLight: var(--sb-pos-soft);
+  --klerosUIComponentsWarning: var(--sb-warn);
+  --klerosUIComponentsWarningLight: var(--sb-warn-soft);
+  --klerosUIComponentsError: var(--sb-neg);
+  --klerosUIComponentsErrorLight: var(--sb-neg-soft);
+  --klerosUIComponentsTint: var(--sb-accent);
+  --klerosUIComponentsTintMedium: var(--sb-blue-soft);
+  --klerosUIComponentsTintPurple: var(--sb-bg-2);
+  --klerosUIComponentsBaseRadius: 8px;
+}
+
+/* Buttons */
+button[data-rac][class~="pressed:scale-95"] {
+  border-radius: 999px;
+}
+
+button[data-rac][class~="bg-klerosUIComponentsPrimaryBlue"] {
+  box-shadow: var(--sb-cta-shadow);
+  transition:
+    background-color 140ms ease,
+    transform 180ms ease,
+    scale 150ms ease,
+    box-shadow 200ms ease;
+}
+
+button[data-rac][class~="bg-klerosUIComponentsPrimaryBlue"][data-hovered] {
+  transform: translateY(-1px);
+  box-shadow: var(--sb-cta-glow);
+}
+
+button[data-rac][class~="bg-klerosUIComponentsPrimaryBlue"] .button-text {
+  color: #fff;
+}
+
+button[data-rac][class~="bg-klerosUIComponentsPrimaryBlue"] .button-svg {
+  fill: #fff;
+}
+
+:root.dark button[data-rac][class~="bg-klerosUIComponentsPrimaryBlue"] {
+  background-image: var(--sb-grad);
+}
+
+:root.dark
+  button[data-rac][class~="bg-klerosUIComponentsPrimaryBlue"][data-hovered] {
+  background-image: var(--sb-grad-hover);
+}
+
+button[data-rac][class~="bg-klerosUIComponentsPrimaryBlue"],
+button[data-rac][class~="border-klerosUIComponentsPrimaryBlue"] {
+  padding: 9px 18px;
+}
+
+button[data-rac][class~="bg-klerosUIComponentsPrimaryBlue"] .button-text,
+button[data-rac][class~="border-klerosUIComponentsPrimaryBlue"] .button-text {
+  font-size: 14px;
+  line-height: 20px;
+}
+
+button[data-rac][class~="border-klerosUIComponentsPrimaryBlue"] {
+  border-color: var(--sb-border);
+  transition:
+    background-color 140ms ease,
+    border-color 140ms ease;
+}
+
+button[data-rac][class~="border-klerosUIComponentsPrimaryBlue"][data-hovered] {
+  background-color: var(--sb-bg-2);
+  border-color: var(--sb-ink-5);
+}
+
+button[data-rac][class~="border-klerosUIComponentsPrimaryBlue"] .button-text {
+  color: var(--sb-ink-2);
+}
+
+button[data-rac][class~="border-klerosUIComponentsPrimaryBlue"] .button-svg {
+  fill: var(--sb-ink-3);
+}
+
+button[data-rac][class~="pressed:scale-95"][data-disabled] .button-text {
+  color: var(--sb-ink-5);
+}
+
+/* Purchase panel */
+.font-display {
+  font-variation-settings: "SOFT" 30;
+}
+
+.io-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--sb-ink-4);
+}
+
+.io-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--sb-border);
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: var(--sb-surface);
+  transition:
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+}
+
+.io-row:focus-within {
+  border-color: var(--sb-blue);
+  box-shadow: 0 0 0 3px var(--sb-halo);
+}
+
+.io-row.is-error {
+  border-color: var(--sb-neg);
+}
+
+.io-row > .io-field {
+  flex: 1;
+  min-width: 0;
+  width: auto;
+}
+
+.io-row .input-wrapper {
+  height: auto;
+}
+
+.io-row .input-wrapper > div {
+  display: none !important;
+}
+
+.io-row input {
+  height: auto;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  outline: 0;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-variation-settings:
+    "opsz" 96,
+    "SOFT" 30;
+  font-size: 22px;
+  font-weight: 500;
+  line-height: 30px;
+  letter-spacing: -0.025em;
+  font-variant-numeric: tabular-nums;
+  color: var(--sb-ink);
+}
+
+.io-row input:hover,
+.io-row input:focus {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.io-row input::placeholder {
+  color: var(--sb-ink-5);
+  opacity: 1;
+}
+
+.io-token {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  border: 1px solid var(--sb-border);
+  border-radius: 9999px;
+  background: var(--sb-surface);
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--sb-ink-2);
+  white-space: nowrap;
+}
+
+.io-token-select {
+  flex-shrink: 0;
+}
+
+.io-token-select > button {
+  width: auto;
+  height: auto;
+  gap: 6px;
+  padding: 5px 9px 5px 10px;
+  border: 1px solid var(--sb-border);
+  border-radius: 9999px;
+  background: var(--sb-surface);
+  box-shadow: none;
+}
+
+.io-token-select > button:hover {
+  border-color: var(--sb-border-strong);
+  background: var(--sb-bg-2);
+}
+
+.io-token-select > button > span > div {
+  gap: 6px;
+  padding: 0;
+}
+
+.io-token-select > button > span svg {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+}
+
+.io-token-select > button p {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 16px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--sb-ink-2);
+}
+
+.io-token-select > button > svg {
+  width: 9px;
+  height: 9px;
+  margin-left: 0;
+  fill: var(--sb-ink-4);
+}
+
+.io-balance {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  min-height: 20px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--sb-ink-4);
+}
+
+.io-balance .is-error {
+  color: var(--sb-neg);
+}
+
+.io-quick-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.quick-group {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.quick-btn {
+  padding: 2px 7px;
+  border-radius: 4px;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: opacity 140ms ease;
+}
+
+.quick-btn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.quick-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.quick-btn--dollar {
+  color: #b45309;
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.quick-btn--pct {
+  color: #0f766e;
+  background: rgba(13, 148, 136, 0.12);
+}
+
+.quick-btn--full {
+  color: var(--sb-blue);
+  background: var(--sb-blue-soft);
+}
+
+:root.dark .quick-btn--dollar {
+  color: #fbbf24;
+  background: rgba(245, 158, 11, 0.18);
+}
+
+:root.dark .quick-btn--pct {
+  color: #2dd4bf;
+  background: rgba(45, 212, 191, 0.18);
+}
+
+:root.dark .quick-btn--full {
+  color: var(--sb-accent-text);
+}
+
+.trade-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+  border-radius: 8px;
+  background: var(--sb-bg-2);
+}
+
+.trade-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 13px;
+}
+
+.trade-summary-row > span:first-child {
+  font-weight: 500;
+  color: var(--sb-ink-4);
+}
+
+.trade-summary-row > span:last-child {
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  color: var(--sb-ink);
+}
+
+.return-note {
+  margin: 8px 2px 0;
+  font-size: 10.5px;
+  line-height: 1.4;
+  color: var(--sb-ink-4);
+}
+
+.trade-cta,
+.trade-ghost {
+  display: inline-flex;
+  min-height: 44px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color 150ms ease,
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.trade-cta {
+  border: 1px solid transparent;
+  background: #ea1d21;
+  color: #fff;
+}
+
+.trade-cta:hover:not(:disabled) {
+  background: #d11a1e;
+  box-shadow: 0 4px 12px -4px rgba(234, 29, 33, 0.35);
+}
+
+.trade-ghost {
+  border: 1px solid var(--sb-border);
+  background: var(--sb-surface);
+  color: var(--sb-ink-2);
+  font-weight: 500;
+}
+
+.trade-ghost:hover:not(:disabled) {
+  border-color: var(--sb-ink-5);
+  background: var(--sb-bg-2);
+}
+
+.trade-cta:disabled,
+.trade-ghost:disabled {
+  cursor: not-allowed;
+}
+
+.trade-ghost:disabled {
+  opacity: 0.5;
+}
+
+.trade-cta-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: trade-cta-spin 700ms linear infinite;
+}
+
+@keyframes trade-cta-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.panel-title {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 32px;
+  color: var(--sb-ink);
+  text-align: center;
+}
+
+.panel-sub {
+  font-size: 13px;
+  line-height: 18px;
+  color: var(--sb-ink-4);
+  text-align: center;
+}

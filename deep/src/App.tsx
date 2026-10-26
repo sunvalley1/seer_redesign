@@ -1,0 +1,285 @@
+import { PersistQueryClientProvider } from "@tanstack/react-query-persist-client";
+import React, { useCallback, useEffect, useState } from "react";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { useAccount, WagmiProvider } from "wagmi";
+import ErrorBoundary from "./components/ErrorBoundary";
+import Footer from "./components/Footer";
+import { LeaderboardPanel } from "./components/leaderboard/LeaderboardPanel";
+import { ProfileDialog } from "./components/profile/ProfileDialog";
+import { ReadinessRail } from "./components/ReadinessRail";
+import { Round3Withdraw } from "./components/Round3Withdraw";
+import { Tab } from "./components/Tab";
+import { UnclaimedPayouts } from "./components/trade/UnclaimedPayouts";
+import { TradeWalletMenu } from "./components/trade/TradeWalletMenu";
+import { Button, Card, EmptyState, TooltipProvider } from "./components/ui";
+import { SeerLogo } from "./components/ui/SeerLogo";
+import { ThemeToggle } from "./components/ui/ThemeToggle";
+import { WalletConnect } from "./components/WalletConnect";
+import {
+  queryPersister,
+  PERSIST_BUSTER,
+  queryClient,
+  shouldDehydrateQuery,
+} from "./config/queryClient";
+import { config } from "./config/wagmi";
+import { SessionKeyManager, withdrawFundSessionKey } from "./lib/on-chain/sessionKey";
+import { useContestTabStore } from "./stores/contestTabStore";
+import { cn } from "./utils/cn";
+import { ORIGINALITY_ROUND_3_INCORRECT } from "./utils/originalityRounds";
+import { PATHS, viewFromPath, type View } from "./utils/views";
+
+const CONTAINER = "mx-auto w-full max-w-[86rem] px-4 sm:px-6 lg:px-8";
+
+const AppContent: React.FC = () => {
+  const { address, isConnected } = useAccount();
+  const [profileOpen, setProfileOpen] = useState(false);
+  const requestTab = useContestTabStore((state) => state.requestTab);
+
+  const [view, setView] = useState<View>(() => viewFromPath(window.location.pathname));
+  /**
+   * Which views have ever been shown. A view is mounted only once it has been *visible*, then
+   * kept alive hidden.
+   *
+   * Mounting a hidden view is not harmless here: `MarketChart` measures `container.clientWidth`
+   * on mount, and inside a `display: none` subtree that is 0, so every chart and table would
+   * come up empty and never recover. Landing directly on `/leaderboard` used to do exactly that
+   * to the whole markets page.
+   */
+  const [mounted, setMounted] = useState<Set<View>>(
+    () => new Set([viewFromPath(window.location.pathname)]),
+  );
+
+  const show = useCallback((next: View) => {
+    setView(next);
+    setMounted((prev) => (prev.has(next) ? prev : new Set([...prev, next])));
+  }, []);
+
+  /**
+   * Buttons, not `<a href>`s. An anchor navigates for real whenever the click is not
+   * intercepted, which turns an in-app view switch into a full page load; `pushState` keeps the
+   * URL linkable without ever handing the click back to the browser.
+   */
+  const goTo = (next: View) => {
+    if (window.location.pathname !== PATHS[next]) {
+      window.history.pushState(null, "", PATHS[next]);
+    }
+    show(next);
+  };
+
+  // Back/forward buttons.
+  useEffect(() => {
+    const onPopState = () => show(viewFromPath(window.location.pathname));
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
+  }, [show]);
+
+  return (
+    // The app scrolls here rather than on the document — see the note in
+    // index.css. `mt-auto` on the footer still pins it when content is short.
+    <div className="flex h-dvh flex-col overflow-y-auto bg-paper">
+      {/* Opaque, not frosted — a persistent backdrop-filter re-composites the
+          page beneath it on every scroll and reflow. */}
+      <header className="sticky top-0 z-30 border-b border-rule bg-surface">
+        <div className={`${CONTAINER} relative flex h-16 items-center justify-between gap-2`}>
+          <div className="flex min-w-0 items-center gap-3">
+            {/* The title doubles as the way home, so the markets need no nav item of their own. */}
+            <h1 className="min-w-0 truncate text-body font-medium">
+              <button
+                onClick={() => goTo("markets")}
+                aria-current={view === "markets" ? "page" : undefined}
+                className="group flex min-w-0 cursor-pointer items-center gap-3 text-ink"
+              >
+                <SeerLogo className="h-5 w-auto shrink-0 transition-colors group-hover:text-primary" />
+                <span aria-hidden className="h-4 w-px shrink-0 bg-rule-strong" />
+                <span className="hidden truncate text-body font-medium text-ink-2 sm:inline">
+                  AI Prediction Markets
+                </span>
+              </button>
+            </h1>
+            <span
+              title="Optimism Network"
+              className="hidden shrink-0 items-center gap-[7px] rounded-full py-1 pr-1.5 pl-1.5 font-mono text-[10.5px] font-semibold tracking-wider whitespace-nowrap uppercase lg:inline-flex xl:pr-3"
+              style={{ color: "#FF0420", backgroundColor: "rgba(255, 4, 32, 0.10)" }}
+            >
+              <img
+                src="/optimism.webp"
+                alt=""
+                width={14}
+                height={14}
+                className="shrink-0 rounded-full"
+                style={{ boxShadow: "0 0 0 1px color-mix(in srgb, #FF0420 30%, transparent)" }}
+              />
+              <span className="hidden xl:inline">Optimism Network</span>
+            </span>
+          </div>
+
+          <nav className="flex shrink-0 items-center gap-1 text-body font-medium md:absolute md:left-1/2 md:-translate-x-1/2">
+            {/* Ahead of the external Guide link so internal and outbound navigation do not read
+                as the same kind of thing. */}
+            <button
+              onClick={() => goTo("leaderboard")}
+              aria-current={view === "leaderboard" ? "page" : undefined}
+              className={cn(
+                "relative cursor-pointer rounded-md px-3.5 py-2 whitespace-nowrap transition-colors hover:bg-track",
+                view === "leaderboard"
+                  ? "text-ink after:absolute after:inset-x-3.5 after:-bottom-px after:h-0.5 after:rounded-t-[2px] after:bg-primary"
+                  : "text-sb-ink-3 hover:text-ink",
+              )}
+            >
+              Leaderboard
+            </button>
+
+            {/* Only once there is an account to attach a profile to. It opens a dialog rather
+                than navigating, so it never takes the `aria-current` treatment above. */}
+            {isConnected && address && (
+              <button
+                onClick={() => setProfileOpen(true)}
+                className="cursor-pointer rounded-md px-3.5 py-2 whitespace-nowrap text-sb-ink-3 transition-colors hover:bg-track hover:text-ink"
+              >
+                Profile
+              </button>
+            )}
+
+            <a
+              className="hidden items-center gap-1.5 rounded-md px-3.5 py-2 whitespace-nowrap text-sb-ink-3 transition-colors hover:bg-track hover:text-ink sm:inline-flex"
+              href="https://deep-pm.gitbook.io/seer-docs"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Guide
+              <span aria-hidden className="text-[11px] text-ink-4">↗</span>
+            </a>
+          </nav>
+
+          <div className="flex shrink-0 items-center gap-2">
+            {isConnected ? <TradeWalletMenu /> : <WalletConnect />}
+            <ThemeToggle />
+          </div>
+        </div>
+      </header>
+
+      <main className={`${CONTAINER} flex-1 py-8`}>
+        <div className="space-y-6 pb-16">
+          {/* Settled payouts nobody has claimed. Renders nothing unless there are some, so it
+              costs no space on the common path — but nothing else in the app looks across
+              contests, so without it an archived contest's payout is never surfaced at all. */}
+          <UnclaimedPayouts onOpenMarkets={() => goTo("markets")} />
+
+          {/* Once shown, a view stays mounted and toggles with `display`, like the contest panels
+              inside Tab: unmounting would drop each contest's lazy-mount and local state, so a
+              trip to the leaderboard would silently reset an in-progress trade. */}
+          {mounted.has("markets") && (
+            <div style={{ display: view === "markets" ? "block" : "none" }} className="space-y-6">
+              <ReadinessRail />
+              {/* The Seer pointer used to live here, under every contest. It now renders inside
+                  each live contest panel (Tab.tsx), since it invites trading and a finished
+                  contest has none left to do. */}
+              <Tab />
+            </div>
+          )}
+
+          {/* The first Round 3 market set. No link in the app leads here — see `@/utils/views`. */}
+          {mounted.has("round3-withdraw") && (
+            <div style={{ display: view === "round3-withdraw" ? "block" : "none" }}>
+              <Round3Withdraw
+                onOpenRound3={() => {
+                  requestTab(ORIGINALITY_ROUND_3_INCORRECT.incorrect!.replacedBy);
+                  goTo("markets");
+                }}
+              />
+            </div>
+          )}
+
+          {mounted.has("leaderboard") && (
+            <div style={{ display: view === "leaderboard" ? "block" : "none" }}>
+              <ErrorBoundary
+                fallback={(error) => (
+                  <Card>
+                    <EmptyState
+                      title="The leaderboard could not be displayed"
+                      description={error.message}
+                      actions={
+                        <Button onClick={() => window.location.reload()}>Reload the page</Button>
+                      }
+                    />
+                  </Card>
+                )}
+              >
+                <LeaderboardPanel />
+              </ErrorBoundary>
+            </div>
+          )}
+        </div>
+      </main>
+
+      <Footer />
+
+      {address && (
+        <ProfileDialog open={profileOpen} onOpenChange={setProfileOpen} account={address} />
+      )}
+    </div>
+  );
+};
+
+function App() {
+  useEffect(() => {
+    const init = async () => {
+      // 1️⃣ Try refund before registering this tab
+      const session = SessionKeyManager.getData();
+      if (session) {
+        if (session.stale && session.activeTabs.length === 0) {
+          try {
+            console.log("Attempting refund...");
+            await withdrawFundSessionKey();
+            SessionKeyManager.clear();
+            console.log("Refund successful");
+          } catch (e) {
+            console.log("Refund failed, will retry later", e);
+          }
+        } else {
+          console.log("Session active or other tabs still active");
+        }
+      }
+
+      // 2️⃣ Now register this tab
+      const tabId = crypto.randomUUID();
+      SessionKeyManager.addActiveTab(tabId);
+
+      // 3️⃣ Setup unload listener
+      const handleBeforeUnload = () => {
+        SessionKeyManager.removeActiveTab(tabId);
+      };
+      window.addEventListener("beforeunload", handleBeforeUnload);
+
+      // 4️⃣ Cleanup on unmount
+      return () => {
+        window.removeEventListener("beforeunload", handleBeforeUnload);
+        SessionKeyManager.removeActiveTab(tabId);
+      };
+    };
+
+    // call the async init
+    init();
+  }, []);
+
+  return (
+    <WagmiProvider config={config}>
+      <PersistQueryClientProvider
+        client={queryClient}
+        persistOptions={{
+          persister: queryPersister,
+          buster: PERSIST_BUSTER,
+          dehydrateOptions: { shouldDehydrateQuery },
+        }}
+      >
+        <TooltipProvider>
+          <ToastContainer />
+          <AppContent />
+        </TooltipProvider>
+      </PersistQueryClientProvider>
+    </WagmiProvider>
+  );
+}
+
+export default App;

@@ -1,0 +1,99 @@
+[build]
+  command = "npm install --legacy-peer-deps && npm run build"
+  publish = "out"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
+  # Host serving /registry/graphql and /candles/graphql. Every subgraph URL in
+  # src/config/subgraphEndpoints.js derives from it, and usePoolData falls back
+  # to it, so this is the single knob for the backend. Deploy-preview and
+  # branch-deploy contexts inherit this block unless they override it.
+  NEXT_PUBLIC_FUTARCHY_API_URL = "https://api.futarchy.seer.pm"
+
+  # NEXT_PUBLIC_POOL_API_URL is deliberately unset: usePoolData falls back to
+  # the host above, so setting it here would silently pin that one caller to a
+  # different backend — which is exactly what happened while it still read the
+  # upstream project's API host.
+
+  # Legacy TickSpread REST (/v3/conditional, /v3/single_proposal). Those routes
+  # exist on no current backend, so this value serves no live caller — it points
+  # at our own host rather than leaving an upstream URL in a shipped bundle.
+  NEXT_PUBLIC_API_URL = "https://api.futarchy.seer.pm"
+  NEXT_PUBLIC_API_VERSION = "v1"
+  NEXT_PUBLIC_GNOSIS_RPC_URL = "https://rpc.gnosischain.com"
+  NEXT_PUBLIC_DEBUG_MODE = "false"
+  NEXT_PUBLIC_USE_DEFAULT_MOCK_METADATA = "true"
+  NEXT_PUBLIC_USE_MOCK_SNAPSHOT = "false"
+
+# Deploy previews on PRs
+[context.deploy-preview]
+  command = "npm install --legacy-peer-deps && npm run build"
+
+# Branch deploys
+[context.branch-deploy]
+  command = "npm install --legacy-peer-deps && npm run build"
+
+# The first GIP-153 deployment had empty pools at a stale opening price and was
+# archived. Keep old bookmarks from landing on a dead market after its static
+# page is removed from src/config/markets.js.
+[[redirects]]
+  from = "/markets/0x1d1f3b43f3c61b815041e9092b1ba7ca37c63262"
+  to = "/markets/0x4120de9931fd29c8a6effea4df57a7c8760c1677"
+  status = 301
+  force = true
+
+# Retired routes. /gnosis/milestones was a Gnosis-only proposal list (its
+# pages are gone) and bare /markets has no market to show; send both to the
+# company list. Bare /market can't be matched here (rules ignore whether a
+# query is present), so src/pages/market.js redirects it client-side.
+[[redirects]]
+  from = "/gnosis/milestones"
+  to = "/companies"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/gnosis/milestones/*"
+  to = "/companies"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/markets"
+  to = "/companies"
+  status = 301
+  force = true
+
+# Security headers. Framing is limited with CSP frame-ancestors rather than
+# X-Frame-Options, which can't name another origin: the app must load inside
+# the Safe{Wallet} Safe Apps iframe.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Content-Security-Policy = "frame-ancestors 'self' https://app.safe.global"
+    X-Content-Type-Options = "nosniff"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(), microphone=(), geolocation=()"
+
+# Safe{Wallet} fetches <app url>/manifest.json cross-origin to list the app.
+[[headers]]
+  for = "/manifest.json"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "X-Requested-With, Content-Type, Authorization"
+
+[[headers]]
+  for = "/safe-app-manifest.json"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, OPTIONS"
+    Access-Control-Allow-Headers = "X-Requested-With, Content-Type, Authorization"
+
+# Cache static assets
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

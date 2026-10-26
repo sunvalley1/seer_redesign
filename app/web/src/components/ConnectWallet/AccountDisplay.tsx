@@ -1,0 +1,74 @@
+import { displayBalance, isUndefined, shortenAddress } from "@/lib/utils";
+import { useTokenBalance } from "@seer-pm/react";
+import type { SupportedChain } from "@seer-pm/sdk";
+import { getActiveCollateralProfile } from "@seer-pm/sdk";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
+import clsx from "clsx";
+import React from "react";
+import { Address, isAddress } from "viem";
+import { useAccount, useEnsName } from "wagmi";
+
+interface IAddressOrName {
+  address?: `0x${string}`;
+}
+
+export const AddressOrName: React.FC<IAddressOrName> = ({ address: propAddress }) => {
+  const { address: defaultAddress } = useAccount();
+  const address = propAddress || defaultAddress;
+
+  const { data } = useEnsName({
+    address,
+    chainId: 1,
+  });
+
+  if (!address) {
+    return null;
+  }
+
+  return <div>{data ?? (isAddress(address) ? shortenAddress(address) : address)}</div>;
+};
+
+export const CollateralBalance: React.FC<{ chainId: SupportedChain; address?: Address }> = ({
+  chainId,
+  address: propAddress,
+}) => {
+  const { address: defaultAddress } = useAccount();
+  const address = propAddress || defaultAddress;
+  const { data: balance } = useTokenBalance(address, getActiveCollateralProfile(chainId).primary.address, chainId);
+
+  if (isUndefined(balance)) {
+    return null;
+  }
+
+  return (
+    <div>
+      {displayBalance(balance, getActiveCollateralProfile(chainId).primary.decimals)}{" "}
+      {getActiveCollateralProfile(chainId).primary.symbol}
+    </div>
+  );
+};
+
+const AccountDisplay: React.FC<{ isMobile: boolean }> = ({ isMobile }) => {
+  const { open } = useWeb3Modal();
+  const { chain } = useAccount();
+  return (
+    <div
+      className={clsx(
+        "inline-flex items-center gap-2 text-[14px] font-medium rounded-[300px] px-[14px] h-[36px] cursor-pointer transition-colors",
+        isMobile
+          ? "bg-blue-medium text-purple-primary"
+          : "bg-bg-2 text-ink-2 border border-[var(--border)] hover:bg-bg-3",
+      )}
+      onClick={() => open({ view: "Account" })}
+    >
+      <div className={clsx("gap-2 items-center", isMobile ? "flex" : "hidden xl:flex")}>
+        <div className={clsx("w-[8px] h-[8px] rounded-full", chain ? "bg-success-primary" : "bg-error-primary")}></div>
+      </div>
+      <div className={clsx("flex space-x-2 items-center", isMobile ? "text-purple-primary" : "text-ink-2")}>
+        <AddressOrName />
+      </div>
+    </div>
+  );
+};
+
+export default AccountDisplay;

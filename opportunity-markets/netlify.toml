@@ -1,0 +1,12 @@
+[build]
+  command = "yarn build"
+  publish = "dist"
+
+[build.environment]
+  VITE_GNOSIS_RPC_URL = "https://rpc.gnosischain.com"
+  VITE_SEER_LINK_URL = "https://seer-redesign-app.netlify.app"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

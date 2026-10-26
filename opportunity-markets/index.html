@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=2" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Seer · Opportunity Markets</title>
+    <script>
+      (function () {
+        var t = 'dark';
+        try {
+          var m=document.cookie.match(/(?:^|; )seer-theme=(dark|light)/);
+          if (m) t = m[1];
+        } catch (e) {}
+        document.documentElement.setAttribute('data-theme', t);
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght,SOFT@0,9..144,400..700,30..100;1,9..144,400..700,30..100&family=Geist+Mono:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <!--
+      THESIS: Opportunity Markets as a Seer product, wearing the seerbeta shell shared with app.seer.pm.
+      OWN-WORLD: seerbeta tokens (warm-cream light default, Kleros-purple night via data-theme="dark"), Inter / Fraunces / Geist Mono.
+      STORY: Visitor recognizes Seer immediately, scans Opportunity Markets lots, opens one to trade.
+      FIRST VIEWPORT: Seer lockup + Opportunity Markets label; product proof; stacked market plaques.
+    -->
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

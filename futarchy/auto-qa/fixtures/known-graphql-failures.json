@@ -1,0 +1,5 @@
+{
+  "knownFailureCount": 0,
+  "notes": "Queries from src/ that fail validation against the API the app uses (auto-qa/tools/api-base.mjs), as reported by auto-qa/tools/probe-graphql.mjs. Empty since 2026-10-05: every extracted query validates. If one starts failing, fix the query; list it here only when the fix has to wait. Inspect with: npm run auto-qa:probe-graphql -- --summary",
+  "failures": []
+}

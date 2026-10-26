@@ -1,0 +1,8 @@
+[build]
+  command = "yarn next build --no-lint"
+  publish = ".next"
+
+[build.environment]
+  NEXT_PUBLIC_GNOSIS_RPC = "https://rpc.gnosischain.com"
+  NEXT_PUBLIC_MAX_MARKETS_PER_BATCH = "10"
+  NEXT_PUBLIC_SEER_APP_URL = "https://seer-redesign-app.netlify.app"

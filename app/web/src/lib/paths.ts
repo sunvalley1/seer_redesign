@@ -1,0 +1,119 @@
+import { TOKENS_BY_CHAIN } from "@seer-pm/sdk";
+import { isSeerCredits } from "@seer-pm/sdk";
+import { Market } from "@seer-pm/sdk";
+import type { SupportedChain } from "@seer-pm/sdk";
+import { lightGeneralizedTcrAddress } from "@seer-pm/sdk/contracts/curate";
+import { Address, getAddress as ViemGetAddress, zeroAddress } from "viem";
+import { base, optimism } from "./chains";
+import SEER_ENV from "./env";
+
+function marketPath(market: Market): string;
+function marketPath(id: Address | string, chainId: number): string;
+function marketPath(marketOrIdOrUrl: Market | Address | string, chainId?: number): string {
+  if (typeof marketOrIdOrUrl === "string") {
+    return `/markets/${chainId}/${marketOrIdOrUrl}`;
+  }
+
+  return `/markets/${marketOrIdOrUrl.chainId}/${marketOrIdOrUrl.url || marketOrIdOrUrl.id}`;
+}
+
+function getAddress(address: Address) {
+  try {
+    return ViemGetAddress(address);
+  } catch {
+    return address;
+  }
+}
+
+export const paths = {
+  market: marketPath,
+  verifyMarket: (id: Address | string, chainId: number) => `/markets/${chainId}/${id.toString()}/verify`,
+  profile: () => "/profile/",
+  collection: (collectionId: string) => `/collections/${collectionId}`,
+  tradeCollateral: () => "/trade-collateral",
+  klerosDispute: (disputeId: bigint, chainId: SupportedChain) =>
+    `https://resolve.kleros.io/cases/${disputeId.toString()}?requiredChainId=${chainId}`,
+  farmingProgram: () => "https://seer-pm.medium.com/announcing-the-seer-initial-airdrop-distribution-58d38e1ec8f9",
+  curateVerifiedList: (chainId: SupportedChain, itemId?: string) => {
+    if (chainId in lightGeneralizedTcrAddress) {
+      // @ts-ignore
+      const baseUrl = `https://curate.kleros.io/tcr/${chainId}/${lightGeneralizedTcrAddress[chainId]}`;
+
+      return itemId ? `${baseUrl}/${itemId}` : baseUrl;
+    }
+
+    return "#";
+  },
+  faq: () => "#",
+  dappGuide: () => "https://seer-3.gitbook.io/seer-documentation",
+  bugReport: () => "https://github.com/seer-pm/demo/issues",
+  getHelp: () => "https://discord.com/invite/rBEB4MYQwV",
+  beginnerGuide: () => "https://ethereum.org/en/wallets/",
+  etherscan: () => "#",
+  github: () => "https://github.com/seer-pm",
+  snapshot: () => "#",
+  discord: () => "https://discord.com/invite/rBEB4MYQwV",
+  telegram: () => "https://t.me/Seerpredictionmarket",
+  twitter: () => "https://x.com/seer_pm",
+  verificationCheck: (id: Address | string, chainId: number) => `/verification-check/${chainId}/${id.toString()}/`,
+  depositGuideEth: () =>
+    "https://seer-3.gitbook.io/seer-documentation/getting-started/deposit-tokens/on-ethereum/deposit-dai",
+  depositGuideGnosis: () =>
+    "https://seer-3.gitbook.io/seer-documentation/getting-started/deposit-tokens/on-gnosis/deposit-xdai",
+  swapETHToDai: () =>
+    "https://app.uniswap.org/swap?inputCurrency=ETH&outputCurrency=0x6B175474E89094C44Da98b954EedeAC495271d0F",
+  xDAIBridge: (toChain = 100, toToken: Address = zeroAddress) =>
+    `https://jumper.exchange/?fromChain=1&fromToken=0x6B175474E89094C44Da98b954EedeAC495271d0F&toChain=${toChain}&toToken=${toToken}`,
+  tokenImage: (address: Address, chainId: number) => {
+    // TODO: use kleros list, add sUSDS on optimism and sDAI on mainnet
+    if (chainId === base.id || chainId === optimism.id) {
+      if (address.toLowerCase() === TOKENS_BY_CHAIN[chainId].sUSDS) {
+        return "https://assets.coingecko.com/coins/images/52721/standard/sUSDS_Coin.png";
+      }
+
+      if (address.toLowerCase() === TOKENS_BY_CHAIN[chainId].USDS) {
+        return "https://assets.coingecko.com/coins/images/39926/standard/usds.webp";
+      }
+
+      if (address.toLowerCase() === TOKENS_BY_CHAIN[chainId].USDC) {
+        return "https://assets.coingecko.com/coins/images/6319/standard/usdc.png";
+      }
+    }
+
+    if (isSeerCredits(chainId as SupportedChain, address as Address)) {
+      return "/assets/android-icon-192x192.png";
+    }
+
+    if (chainId === 42161) {
+      // arbitrum
+      return `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/arbitrum/assets/${getAddress(
+        address,
+      )}/logo.png`;
+    }
+
+    return `https://raw.githubusercontent.com/cowprotocol/token-lists/main/src/public/images/${chainId}/${address}/logo.png`;
+  },
+  futarchy: () => SEER_ENV.VITE_FUTARCHY_URL || "https://app.futarchy.fi/",
+  deepfund: () => SEER_ENV.VITE_DEEPFUND_URL || "https://deep.seer.pm/",
+  foresight: () => SEER_ENV.VITE_FORESIGHT_URL || "https://foresight.kleros.io/",
+  chainImage: (chainId: number) => {
+    const chainImages: Record<number, string> = {
+      100: "https://assets.coingecko.com/asset_platforms/images/11062/small/Aatar_green_white.png", // Gnosis
+      10: "https://assets.coingecko.com/asset_platforms/images/41/standard/optimism.png", // Optimism
+      42161: "https://assets.coingecko.com/asset_platforms/images/33/standard/AO_logomark.png", // Arbitrum
+      8453: "https://assets.coingecko.com/asset_platforms/images/131/standard/base.png", // Base
+      1: "https://assets.coingecko.com/asset_platforms/images/279/standard/ethereum.png", // Ethereum
+    };
+
+    return chainImages[chainId] || "";
+  },
+  logoImage: (site: string) => {
+    return (
+      {
+        futarchy: "https://cdn.kleros.link/ipfs/QmdUY8h6JPphoCERMzrS4zFymkNnmGLrFV2YNb531s95v7",
+        deepfund: "https://cdn.kleros.link/ipfs/QmXJKtDUHARincj3LaDT2f58wzs2Jp5bKNMQSLcVNHV4Hw",
+        foresight: "https://cdn.kleros.link/ipfs/QmVRkKuqo1vSMzcDJc9Mdyv9FimaYYZqwETQ9fJ7F8834D",
+      }[site] ?? ""
+    );
+  },
+};

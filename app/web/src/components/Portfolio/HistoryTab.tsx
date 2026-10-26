@@ -1,0 +1,98 @@
+import { useHistoryTransactions } from "@/hooks/portfolio/historyTab/useHistoryTransactions";
+import { SearchIcon } from "@/lib/icons";
+import { isUndefined } from "@/lib/utils";
+import type { SupportedChain } from "@seer-pm/sdk";
+import { endOfDay, format, startOfDay, subMonths } from "date-fns";
+import { useState } from "react";
+import { Address } from "viem";
+import { Alert } from "../Alert";
+import Button from "../Form/Button";
+import Input from "../Form/Input";
+import DateRangePicker from "./DateRangePicker";
+import HistoryTable from "./HistoryTable";
+
+function HistoryTab({ account, chainId }: { account: Address | undefined; chainId: SupportedChain }) {
+  const currentDate = startOfDay(new Date());
+  const [startDate, setStartDate] = useState<Date | undefined>(subMonths(currentDate, 1));
+  const [endDate, setEndDate] = useState<Date | undefined>(currentDate);
+  const { data: historyTransactions, error } = useHistoryTransactions(
+    account as Address,
+    chainId,
+    startDate && Math.floor(startOfDay(startDate).getTime() / 1000),
+    endDate && Math.floor(endOfDay(endDate).getTime() / 1000),
+  );
+
+  const [isShowDateRangePicker, setShowDateRangePicker] = useState(false);
+  const onChangeDate = (dates: (Date | null)[]) => {
+    const [start, end] = dates;
+    setStartDate(start ?? undefined);
+    setEndDate(end ?? undefined);
+  };
+  const [filterMarketName, setFilterMarketName] = useState("");
+  const marketNameCallback = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    setFilterMarketName((event.target as HTMLInputElement).value);
+  };
+  const filteredTransactions =
+    historyTransactions?.filter((tx) => {
+      const nameFilter = tx.marketName.toLowerCase().includes(filterMarketName.toLowerCase());
+      if (!tx.timestamp) return nameFilter;
+      const startDateFilter = startDate ? tx.timestamp >= Math.floor(startOfDay(startDate).getTime() / 1000) : true;
+      const endDateFilter = endDate ? tx.timestamp <= Math.floor(endOfDay(endDate).getTime() / 1000) : true;
+      return nameFilter && startDateFilter && endDateFilter;
+    }) ?? [];
+  const renderTable = () => {
+    if (isUndefined(historyTransactions)) {
+      return <div className="shimmer-container w-full h-[200px]" />;
+    }
+    return !filteredTransactions.length ? (
+      <Alert type="warning">No transactions found.</Alert>
+    ) : (
+      <HistoryTable chainId={chainId} data={filteredTransactions} />
+    );
+  };
+  if (error) {
+    return <Alert type="error">{error.message}</Alert>;
+  }
+
+  return (
+    <div>
+      <div className="flex items-center gap-2 mb-6">
+        <div className="grow">
+          <Input
+            placeholder="Search by Market Name"
+            className="w-full"
+            icon={<SearchIcon />}
+            onKeyUp={marketNameCallback}
+          />
+        </div>
+        <div className="relative">
+          <Button
+            type="button"
+            variant="secondary"
+            text={
+              !startDate && !endDate
+                ? "Filter By Date"
+                : `${startDate ? format(startDate, "MMM d, yyyy") : "_"} - ${
+                    endDate ? format(endDate, "MMM d, yyyy") : "_"
+                  }`
+            }
+            onClick={() => setShowDateRangePicker((state) => !state)}
+          />
+          {isShowDateRangePicker && (
+            <div className="absolute right-0 top-[60px] z-10">
+              <DateRangePicker
+                startDate={startDate}
+                endDate={endDate}
+                onChange={onChangeDate}
+                onClose={() => setShowDateRangePicker(false)}
+              />
+            </div>
+          )}
+        </div>
+      </div>
+      {renderTable()}
+    </div>
+  );
+}
+
+export default HistoryTab;

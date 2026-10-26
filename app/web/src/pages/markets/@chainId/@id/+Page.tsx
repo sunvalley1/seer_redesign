@@ -1,0 +1,380 @@
+import { Alert } from "@/components/Alert";
+import Breadcrumb from "@/components/Breadcrumb";
+import { Drawer } from "@/components/Drawer";
+import { ConditionalMarketAlert } from "@/components/Market/ConditionalMarketAlert";
+import { ConditionalTokenActions, type TokenAction } from "@/components/Market/ConditionalTokenActions";
+import { MarketHeader } from "@/components/Market/Header/MarketHeader";
+import MajorEvents from "@/components/Market/MajorEvents";
+import MarketChart from "@/components/Market/MarketChart/MarketChart";
+import MarketTabs from "@/components/Market/MarketTabs/MarketTabs";
+import { MobileMarketActions } from "@/components/Market/MobileMarketActions";
+import { Outcomes } from "@/components/Market/Outcomes";
+import { SwapTokens } from "@/components/Market/SwapTokens/SwapTokens";
+import { useIsSmallScreen } from "@/hooks/useIsSmallScreen";
+import { SUPPORTED_CHAINS } from "@/lib/chains";
+import { getOutcomeImages } from "@/lib/marketImages";
+import { queryClient } from "@/lib/query-client";
+import { config } from "@/wagmi";
+import {
+  getUseGraphMarketKey,
+  useMarket,
+  useMarketHasLiquidity,
+  useMarketQuestions,
+  useTokenInfo,
+  useTokensInfo,
+} from "@seer-pm/react";
+import type { SupportedChain } from "@seer-pm/sdk";
+import {
+  Market,
+  MarketStatus,
+  type Token,
+  WRAPPED_OUTCOME_TOKEN_DECIMALS,
+  getLiquidityPairForToken,
+  getMarketStatus,
+  isMarketReliable,
+  isOfficialMarketFactory,
+} from "@seer-pm/sdk";
+import { switchChain } from "@wagmi/core";
+import clsx from "clsx";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Address, zeroAddress } from "viem";
+import { usePageContext } from "vike-react/usePageContext";
+import { useAccount, useSwitchChain } from "wagmi";
+
+function SwapWidget({
+  market,
+  outcomeIndex,
+  images,
+  onOutcomeChange,
+  account,
+  requestedSwapType,
+  requestedSwapTypeNonce,
+}: {
+  market: Market;
+  outcomeIndex: number;
+  images?: string[];
+  onOutcomeChange: (i: number, openDrawer: boolean, swapType?: "buy" | "sell") => void;
+  account?: Address;
+  requestedSwapType?: "buy" | "sell";
+  requestedSwapTypeNonce?: number;
+}) {
+  const [activeAction, setActiveAction] = useState<TokenAction | null>(null);
+  const toggleAction = (a: TokenAction) => setActiveAction((current) => (current === a ? null : a));
+  const actionsRow = (
+    <div className="actions-row" role="tablist">
+      {(["mint", "merge", "redeem"] as const).map((a) => (
+        <button
+          key={a}
+          type="button"
+          role="tab"
+          aria-pressed={activeAction === a}
+          className={clsx(activeAction === a && "active")}
+          onClick={() => toggleAction(a)}
+        >
+          {a.charAt(0).toUpperCase() + a.slice(1)}
+        </button>
+      ))}
+    </div>
+  );
+  // Preload all outcome tokens to populate cache and avoid flicker while loading
+  useTokensInfo(market.wrappedTokens, market.chainId);
+  const { data: outcomeToken } = useTokenInfo(market.wrappedTokens[outcomeIndex], market.chainId);
+
+  const hasLiquidity = useMarketHasLiquidity(market, outcomeIndex);
+
+  // on Futarchy markets we want to buy/sell using the associated outcome token,
+  // on child markets we want to buy/sell using parent outcomes.
+  const { data: fixedCollateral } = useTokenInfo(
+    market.type === "Futarchy"
+      ? getLiquidityPairForToken(market, outcomeIndex)
+      : market.parentMarket.id !== zeroAddress
+        ? market.collateralToken
+        : undefined,
+    market.chainId,
+  );
+  const marketStatus = getMarketStatus(market);
+
+  if (marketStatus === MarketStatus.CLOSED) {
+    return (
+      <Alert type="info">
+        The trade widget is hidden for closed markets. But you can still interact with your ERC20 outcome tokens onchain
+        as well as mint, merge, redeem.
+      </Alert>
+    );
+  }
+
+  const fallbackOutcomeToken: Token | undefined =
+    market.wrappedTokens[outcomeIndex] != null
+      ? {
+          address: market.wrappedTokens[outcomeIndex],
+          chainId: market.chainId,
+          symbol: market.outcomes?.[outcomeIndex] ?? `Outcome ${outcomeIndex + 1}`,
+          decimals: WRAPPED_OUTCOME_TOKEN_DECIMALS,
+        }
+      : undefined;
+  const effectiveOutcomeToken: Token | undefined = outcomeToken ?? fallbackOutcomeToken;
+  if (!outcomeToken && effectiveOutcomeToken && typeof window !== "undefined") {
+    // eslint-disable-next-line no-console
+    console.warn(
+      `[SwapWidget]·outcomeToken·multicall·missed·for·market=${market.id}·chainId=${market.chainId}·outcomeIndex=${outcomeIndex}·wrappedTokens[${outcomeIndex}]=${market.wrappedTokens[outcomeIndex]}·—·using·subgraph-derived·fallback·token·so·the·panel·still·mounts.`,
+    );
+  }
+  if (!effectiveOutcomeToken) {
+    // Only happens when even the subgraph data is missing the wrapped
+    // token address — true "no data" state, not a Base flake.
+    return null;
+  }
+
+  const actionFormPanel = (
+    <ConditionalTokenActions
+      market={market}
+      account={account}
+      outcomeIndex={outcomeIndex}
+      activeAction={activeAction}
+    />
+  );
+
+  return (
+    <SwapTokens
+      market={market}
+      outcomeIndex={outcomeIndex}
+      outcomeToken={effectiveOutcomeToken}
+      fixedCollateral={fixedCollateral}
+      outcomeImage={images?.[outcomeIndex]}
+      hasEnoughLiquidity={hasLiquidity}
+      onOutcomeChange={onOutcomeChange}
+      requestedSwapType={requestedSwapType}
+      requestedSwapTypeNonce={requestedSwapTypeNonce}
+      actionsRow={actionsRow}
+      actionFormPanel={actionFormPanel}
+    />
+  );
+}
+
+function MarketPage() {
+  const { routeParams } = usePageContext();
+  const { address: account, chainId: connectedChainId } = useAccount();
+  const { isPending: isSwitchPending } = useSwitchChain();
+  // Guard: only one auto-switch attempt per market (per chainId). Never reset when on correct chain
+  // so that if the wallet flips back to the wrong chain we don't re-enter a loop.
+  const lastAutoSwitchChainIdRef = useRef<number | null>(null);
+  const [outcomeIndex, setOutcomeIndex] = useState(0);
+  const [requestedSwapType, setRequestedSwapType] = useState<"buy" | "sell" | undefined>();
+  const [requestedSwapTypeNonce, setRequestedSwapTypeNonce] = useState(0);
+  const idOrSlug = routeParams.id as Address;
+  const chainId = Number(routeParams.chainId) as SupportedChain;
+  const isMobile = useIsSmallScreen(1200);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerTabs, setDrawerTabs] = useState<React.ReactNode>(null);
+
+  // Auto-switch to the market's chain when the wallet is connected but on a different chain.
+  // Only once per market view: if we already requested switch to this chainId, do not request again.
+  useEffect(() => {
+    if (connectedChainId == null || !SUPPORTED_CHAINS?.[chainId]) return;
+    if (chainId === connectedChainId) return;
+    if (lastAutoSwitchChainIdRef.current === chainId) return;
+    lastAutoSwitchChainIdRef.current = chainId;
+    switchChain(config, { chainId });
+  }, [chainId, connectedChainId]);
+
+  let {
+    data: market,
+    isError: isMarketError,
+    isLoading: isMarketLoading,
+    isPlaceholderData,
+  } = useMarket(idOrSlug, chainId);
+
+  market = useMarketQuestions(market, chainId);
+
+  useEffect(() => {
+    //update latest data since onBeforeRender cached
+    queryClient.invalidateQueries({ queryKey: getUseGraphMarketKey(idOrSlug, chainId) });
+  }, []);
+
+  // Effect for closing drawer when switching to desktop
+  useEffect(() => {
+    if (!isMobile && drawerOpen) {
+      setDrawerOpen(false);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMobile]);
+
+  const onOutcomeChange = useCallback(
+    (i: number, openDrawer: boolean, swapType?: "buy" | "sell") => {
+      setOutcomeIndex(i);
+      if (swapType) {
+        setRequestedSwapType(swapType);
+        setRequestedSwapTypeNonce((n) => n + 1);
+      }
+      if (openDrawer && isMobile) {
+        setDrawerOpen(true);
+      }
+    },
+    [isMobile],
+  );
+
+  if (isMarketError) {
+    return (
+      <div className="container-fluid py-10">
+        <Alert type="error" className="mb-5">
+          Market not found
+        </Alert>
+      </div>
+    );
+  }
+
+  if ((isMarketLoading && !isPlaceholderData) || !market) {
+    return (
+      <div className="container-fluid pt-4 pb-10 space-y-5">
+        <Breadcrumb links={[{ title: "Market" }]} />
+        <div className="shimmer-container w-full h-[200px]"></div>
+        <div className="grid grid-cols-1 [@media(min-width:1200px)]:grid-cols-12 gap-10">
+          <div className="col-span-1 [@media(min-width:1200px)]:col-span-8">
+            <div className="font-[16px] font-semibold mb-[24px]">Outcomes</div>
+            <div className="shimmer-container h-[390px]"></div>
+          </div>
+
+          <div className="col-span-1 [@media(min-width:1200px)]:col-span-4 space-y-5">
+            <div className="shimmer-container w-full h-[330px]"></div>
+            <div className="shimmer-container w-full h-[390px]"></div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const marketStatus = getMarketStatus(market);
+  const reliableMarket = isMarketReliable(market);
+
+  return (
+    <div className="container-fluid pt-4 pb-10">
+      <div className="mb-3">
+        <Breadcrumb links={[{ title: market.marketName }]} />
+      </div>
+      <div className="space-y-5">
+        {marketStatus !== MarketStatus.CLOSED && !isOfficialMarketFactory(market.factory, market.chainId) && (
+          <Alert type="warning" title="This market was not created through an official Seer factory.">
+            It could be malicious or contain misleading information. Proceed with extreme caution.
+          </Alert>
+        )}
+        {chainId && connectedChainId && chainId !== connectedChainId && (
+          <Alert type="warning">
+            {isSwitchPending ? (
+              <>Switching to {SUPPORTED_CHAINS?.[chainId]?.name}…</>
+            ) : (
+              <>
+                This market does not exist on the selected network. Switch to{" "}
+                <span
+                  className="font-semibold cursor-pointer text-purple-primary"
+                  onClick={() => switchChain(config, { chainId })}
+                >
+                  {SUPPORTED_CHAINS?.[chainId]?.name}
+                </span>
+                .
+              </>
+            )}
+          </Alert>
+        )}
+        {market.verification?.status === "not_verified" && (
+          <Alert
+            type="warning"
+            title="This market is unverified (it didn't go through the curation process)"
+            className="[&_.alert-title]:!text-[14px] [&_.alert-title+div]:!text-[12px]"
+          >
+            It may be invalid, tricky and have misleading token names. Exercise caution while interacting with it.
+          </Alert>
+        )}
+
+        <ConditionalMarketAlert
+          parentMarket={market.parentMarket.id}
+          parentOutcome={market.parentOutcome}
+          chainId={chainId}
+        />
+
+        <MarketHeader market={market} images={market.images} />
+        {!reliableMarket && (
+          <Alert
+            type="error"
+            title="There is a discrepancy between the market information and the Reality.eth questions"
+          >
+            It could lead to the market being resolved to an invalid or unexpected outcome. Proceed with caution.
+          </Alert>
+        )}
+        <div className="grid grid-cols-1 [@media(min-width:1200px)]:grid-cols-[minmax(0,1fr)_360px] [@media(min-width:1200px)]:grid-rows-[auto_1fr] gap-x-4 gap-y-5">
+          <div className="h-fit space-y-5 min-w-0">
+            <MarketChart market={market} />
+            <Outcomes
+              market={market}
+              images={market && getOutcomeImages(market)}
+              activeOutcome={outcomeIndex}
+              onOutcomeChange={onOutcomeChange}
+            />
+          </div>
+          <div className="[@media(min-width:1200px)]:block space-y-5 [@media(min-width:1200px)]:row-span-2 h-fit [@media(min-width:1200px)]:sticky [@media(min-width:1200px)]:top-2">
+            <MajorEvents market={market} />
+            {/* Desktop: Show sidebar, Mobile: Hidden (shown in drawer) */}
+            {!isMobile && (
+              <SwapWidget
+                market={market}
+                outcomeIndex={outcomeIndex}
+                images={market && getOutcomeImages(market)}
+                onOutcomeChange={onOutcomeChange}
+                account={account}
+                requestedSwapType={requestedSwapType}
+                requestedSwapTypeNonce={requestedSwapTypeNonce}
+              />
+            )}
+          </div>
+          <div className="space-y-16 min-w-0">
+            <MarketTabs market={market} />
+          </div>
+        </div>
+        {/* Mobile Drawer */}
+        {isMobile && (
+          <>
+            <Drawer open={drawerOpen} onClose={() => setDrawerOpen(false)} tabs={drawerTabs}>
+              <MobileMarketActions
+                account={account}
+                market={market}
+                swapWidget={
+                  <SwapWidget
+                    market={market}
+                    outcomeIndex={outcomeIndex}
+                    images={market && getOutcomeImages(market)}
+                    onOutcomeChange={onOutcomeChange}
+                    account={account}
+                    requestedSwapType={requestedSwapType}
+                    requestedSwapTypeNonce={requestedSwapTypeNonce}
+                  />
+                }
+                onTabsChange={setDrawerTabs}
+                drawerOpen={drawerOpen}
+              />
+            </Drawer>
+            {/* Floating Action Button to open drawer - only show when drawer is closed */}
+            {!drawerOpen && (
+              <button
+                type="button"
+                onClick={() => setDrawerOpen(true)}
+                className="fixed bottom-6 right-6 z-[99] bg-purple-primary text-white rounded-full p-4 shadow-lg hover:bg-purple-secondary transition-colors flex items-center justify-center w-14 h-14"
+                aria-label="Open trade drawer"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  height="24px"
+                  viewBox="0 -960 960 960"
+                  width="24px"
+                  fill="currentColor"
+                >
+                  <path d="M280-160 80-360l200-200 56 57-103 103h287v80H233l103 103-56 57Zm400-240-56-57 103-103H440v-80h287L624-743l56-57 200 200-200 200Z" />
+                </svg>
+              </button>
+            )}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default MarketPage;

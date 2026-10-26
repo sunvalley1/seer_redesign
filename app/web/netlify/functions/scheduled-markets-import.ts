@@ -1,0 +1,316 @@
+import type { Config } from "@netlify/functions";
+import type { SupportedChain } from "@seer-pm/sdk";
+import { WEATHER_CATEGORY } from "@seer-pm/sdk/create-market";
+import { getMarketStatus } from "@seer-pm/sdk/market";
+import { graphQLClient } from "@seer-pm/sdk/subgraph";
+import { Market_Select_Column, Order_By, getSdk as getSeerSdk } from "@seer-pm/sdk/subgraph/seer";
+import { createClient } from "@supabase/supabase-js";
+import { type Address, privateKeyToAccount } from "viem/accounts";
+import { sepolia } from "viem/chains";
+import { chainIds } from "./utils/config.ts";
+import {
+  type CurateItem,
+  fetchAndStoreMetadata,
+  getVerification,
+  getVerificationStatusList,
+  updateVerificationForRecentlyChangedItems,
+} from "./utils/curate.ts";
+import { type EnvioMarket, envioMarketToLegacySubgraphMarket, mapGraphMarketFromDbResult } from "./utils/markets.ts";
+import type { Database } from "./utils/supabase.ts";
+
+const supabase = createClient<Database>(process.env.SUPABASE_PROJECT_URL!, process.env.SUPABASE_API_KEY!);
+
+async function updateImages() {
+  // 1. First search markets where images is null and verification->itemID is not empty
+  const { data: marketsWithoutImages, error: marketsError } = await supabase
+    .from("markets")
+    .select("id, chain_id, verification")
+    .is("images", null)
+    .not("verification->itemID", "is", null)
+    .not("chain_id", "is", null)
+    .limit(10);
+
+  if (marketsError) {
+    console.error("Error fetching markets without images:", marketsError);
+    return;
+  }
+
+  if (!marketsWithoutImages || marketsWithoutImages.length === 0) {
+    console.log("No markets without images found");
+    return;
+  }
+
+  console.log(`Found ${marketsWithoutImages.length} markets without images`);
+
+  // 2. Extract itemIDs from verification and fetch corresponding curate items
+  const itemIDs = marketsWithoutImages
+    .map(
+      (market) =>
+        // biome-ignore lint/suspicious/noExplicitAny:
+        (market.verification as any)?.itemID,
+    )
+    .filter(Boolean);
+
+  const { data: curateItems, error: curateError } = await supabase
+    .from("curate")
+    .select("item_id, metadata")
+    .in("item_id", itemIDs);
+
+  if (curateError) {
+    console.error("Error fetching curate items:", curateError);
+    return;
+  }
+
+  // Create a map for quick lookup of curate items by itemID
+  const curateItemsMap = new Map(curateItems?.map((item) => [item.item_id, item]) || []);
+
+  // 3. Process each market and update its images field
+  const results = await Promise.all(
+    marketsWithoutImages.map(async (market) => {
+      // biome-ignore lint/suspicious/noExplicitAny:
+      const itemID = (market.verification as any)?.itemID;
+      if (!itemID) {
+        return { success: false, id: market.id, reason: "No itemID in verification" };
+      }
+
+      const curateItem = curateItemsMap.get(itemID);
+      if (!curateItem) {
+        return { success: false, id: market.id, reason: "Curate item not found" };
+      }
+
+      // Extract images path from curate item metadata
+      let images = null;
+      if (typeof curateItem.metadata === "object" && curateItem.metadata !== null) {
+        // biome-ignore lint/suspicious/noExplicitAny:
+        const metadata = curateItem.metadata as any;
+        if (metadata.values?.Images) {
+          // Images is a path to a JSON file
+          const imagePath = metadata.values.Images;
+          try {
+            const imageUrl = `https://cdn.kleros.link${imagePath}`;
+            const response = await fetch(imageUrl);
+            if (response.ok) {
+              images = await response.json();
+            } else {
+              console.error(`Failed to fetch image data from ${imageUrl}: ${response.status}`);
+              return { success: false, id: market.id, reason: "Failed to fetch image data" };
+            }
+          } catch (error) {
+            console.error(`Error fetching image data for market ${market.id}:`, error);
+            return { success: false, id: market.id, reason: "Error fetching image data" };
+          }
+        }
+      }
+
+      // Update the market with the fetched image data
+      const { error: updateError } = await supabase
+        .from("markets")
+        .update({ images })
+        .eq("id", market.id)
+        .eq("chain_id", market.chain_id!);
+
+      if (updateError) {
+        console.error(`Error updating images for market ${market.id}:`, updateError);
+        return { success: false, id: market.id, reason: "Database update error" };
+      }
+
+      return { success: true, id: market.id };
+    }),
+  );
+
+  const successCount = results.filter((result) => result.success).length;
+  console.log(`Successfully updated images for ${successCount} out of ${results.length} markets`);
+}
+
+function getLiquidityAccount() {
+  const privateKey = process.env.LIQUIDITY_ACCOUNT_PRIVATE_KEY!;
+  return privateKeyToAccount((privateKey.startsWith("0x") ? privateKey : `0x${privateKey}`) as Address);
+}
+
+const MARKETS_PAGE_SIZE = 1000;
+const MARKETS_IMPORT_LOOKBACK_SECONDS = 60 * 60 * 5; // Search for markets with changes in the last 5 hours
+
+async function fetchAllSubgraphMarkets(chainId: SupportedChain): Promise<EnvioMarket[]> {
+  const client = graphQLClient(chainId);
+  const allMarkets: EnvioMarket[] = [];
+  let offset = 0;
+
+  while (true) {
+    const { Market: markets } = await getSeerSdk(client).GetMarkets({
+      limit: MARKETS_PAGE_SIZE,
+      offset,
+      orderBy: { [Market_Select_Column.BlockNumber]: Order_By.Desc },
+      where: {
+        chainId: { _eq: String(chainId) },
+        updatedAt: {
+          _gt: Math.floor((Date.now() - MARKETS_IMPORT_LOOKBACK_SECONDS * 1000) / 1000).toString(),
+        },
+      },
+    });
+
+    if (markets.length === 0) {
+      break;
+    }
+
+    allMarkets.push(...markets);
+    if (markets.length < MARKETS_PAGE_SIZE) {
+      break;
+    }
+    offset += MARKETS_PAGE_SIZE;
+  }
+
+  return allMarkets;
+}
+
+async function processChain(chainId: SupportedChain, maxAgeSeconds: number): Promise<boolean> {
+  const markets = await fetchAllSubgraphMarkets(chainId);
+
+  if (markets.length === 0) {
+    console.log(`No markets found for chain ${chainId}`);
+    return false;
+  }
+
+  console.log(`Chain ${chainId}: fetched ${markets.length} markets`);
+
+  await fetchAndStoreMetadata(supabase, chainId);
+
+  const { data: curateItems } = await supabase
+    .from("curate")
+    .select("chain_id, item_id, metadata_path, metadata")
+    .eq("chain_id", chainId)
+    .not("metadata", "is", null);
+
+  const verificationItems = await getVerification(chainId, (curateItems as CurateItem[]) || []);
+  const verificationStatusList = getVerificationStatusList(verificationItems);
+  const { data: weatherMarkets } = await supabase.from("weather_markets").select("tx_hash");
+  const weatherTxHashSet = new Set((weatherMarkets ?? []).map((weatherMarket) => weatherMarket.tx_hash));
+  const liquidityAccount = getLiquidityAccount();
+  await supabase.from("markets").upsert(
+    markets.map((market) => {
+      const legacySubgraphMarket = envioMarketToLegacySubgraphMarket(market);
+      return {
+        id: market.address,
+        chain_id: chainId,
+        status: getMarketStatus(
+          mapGraphMarketFromDbResult(legacySubgraphMarket, {
+            id: market.address,
+            chain_id: chainId,
+            open_interest_usd: 0,
+          }),
+        ),
+        subgraph_data: legacySubgraphMarket,
+        verification: verificationStatusList[market.address as `0x${string}`] ?? {
+          status: "not_verified",
+        },
+        // check if it's a weather market
+        ...(weatherTxHashSet.has(market.transactionHash) && {
+          creator: liquidityAccount.address.toLowerCase(),
+          categories: [WEATHER_CATEGORY],
+        }),
+      };
+    }),
+  );
+
+  const sinceSeconds = Math.floor(Date.now() / 1000) - MARKETS_IMPORT_LOOKBACK_SECONDS;
+  await updateVerificationForRecentlyChangedItems(supabase, chainId, sinceSeconds);
+
+  // Check if the most recent market was created within the maxAgeSeconds window
+  const now = Math.floor(Date.now() / 1000);
+  const timestamp = Number(markets[0].blockTimestamp);
+  return now - timestamp < maxAgeSeconds;
+}
+
+export default async () => {
+  const maxAgeSeconds = 60 * 5; // 5 minutes
+
+  // update markets & verification status
+  const chainResults = await Promise.allSettled(
+    chainIds
+      .filter((chainId) => chainId !== sepolia.id)
+      .map(async (chainId) => {
+        try {
+          const hasNewMarkets = await processChain(chainId, maxAgeSeconds);
+          return { chainId, hasNewMarkets, success: true };
+        } catch (e) {
+          console.error(`Chain id ${chainId} error`, e);
+          return { chainId, hasNewMarkets: false, success: false, error: e };
+        }
+      }),
+  );
+
+  // Check if any chain had new markets
+  const shouldRebuild = chainResults.some((result) => result.status === "fulfilled" && result.value.hasNewMarkets);
+
+  // Log results summary
+  const successfulChains = chainResults.filter((r) => r.status === "fulfilled" && r.value.success).length;
+  const failedChains = chainResults.filter(
+    (r) => r.status === "rejected" || (r.status === "fulfilled" && !r.value.success),
+  ).length;
+  console.log(`Chain processing completed: ${successfulChains} successful, ${failedChains} failed`);
+
+  // update images
+  await updateImages();
+
+  // Trigger rebuild if new markets were found
+  await triggerRebuildIfNeeded(shouldRebuild);
+
+  try {
+    await Promise.all([
+      // Ping a 404 page to bypass CDN cache and keep the function warm
+      // The 404 page is never cached, so it always executes the function
+      fetch("https://app.seer.pm/ping"),
+      // ping charts
+      fetch(
+        "https://app.seer.pm/.netlify/functions/market-chart?marketId=0xa4b71ac2d0e17e1242e2d825e621acd18f0054ea&chainId=100",
+      ),
+      // ping get-market
+      fetch("https://app.seer.pm/.netlify/functions/get-market", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chainId: 100,
+          url: "will-jesus-christ-return-in-2025",
+        }),
+      }),
+      // ping markets-search
+      fetch("https://app.seer.pm/.netlify/functions/markets-search", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ chainsList: [100], limit: 1 }),
+      }),
+    ]);
+    console.log("Pinged endpoints to help prevent cold starts");
+  } catch (error) {
+    console.error("Error pinging app.seer.pm:", error);
+  }
+};
+
+async function triggerRebuildIfNeeded(shouldRebuild: boolean) {
+  if (shouldRebuild) {
+    if (!process.env.NETLIFY_BUILD_HOOK_ID) {
+      console.error("NETLIFY_BUILD_HOOK_ID environment variable not set");
+      return;
+    }
+
+    try {
+      await fetch(`https://api.netlify.com/build_hooks/${process.env.NETLIFY_BUILD_HOOK_ID}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+      console.log("Triggered rebuild due to new markets");
+    } catch (error) {
+      console.error("Error triggering rebuild:", error);
+    }
+  }
+}
+
+export const config: Config = {
+  schedule: "*/5 * * * *",
+};

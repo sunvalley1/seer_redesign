@@ -1,0 +1,51 @@
+import { base, gnosis, mainnet, optimism, sepolia } from "@/lib/chains";
+import type { SupportedChain } from "@seer-pm/sdk";
+import { graphQLClient } from "@seer-pm/sdk";
+import {
+  realitioForeignArbitrationProxyWithAppealsAddress,
+  realitioForeignProxyBaseAddress,
+  realitioForeignProxyOptimismAddress,
+  realitioV2_1ArbitratorWithAppealsAddress,
+} from "@seer-pm/sdk/contracts/arbitrators";
+import { getSdk as getSeerSdk } from "@seer-pm/sdk/subgraph/seer";
+import { useQuery } from "@tanstack/react-query";
+import { zeroAddress } from "viem";
+
+export const useMarketRulesPolicy = (chainId: SupportedChain | undefined) => {
+  return useQuery<string, Error>({
+    enabled: !!chainId,
+    queryKey: ["useMarketRulesPolicy", chainId],
+    queryFn: async () => {
+      const mainnetId = mainnet.id;
+      const client = graphQLClient(mainnetId);
+
+      if (!client) {
+        throw new Error("Subgraph not available");
+      }
+
+      const arbitratorAddress =
+        chainId === mainnet.id || chainId === sepolia.id
+          ? realitioV2_1ArbitratorWithAppealsAddress[chainId]
+          : chainId === gnosis.id
+            ? realitioForeignArbitrationProxyWithAppealsAddress[mainnetId]
+            : chainId === optimism.id
+              ? realitioForeignProxyOptimismAddress[mainnetId]
+              : chainId === base.id
+                ? realitioForeignProxyBaseAddress[mainnetId]
+                : zeroAddress;
+
+      const { arbitratorMetadata } = await getSeerSdk(client).GetArbitratorMetadata({
+        id: `${mainnetId}:${arbitratorAddress.toLowerCase()}`,
+      });
+
+      if (!arbitratorMetadata?.registrationMetaEvidenceURI) {
+        throw new Error("Missing arbitrator metadata");
+      }
+
+      const metadataResult = await fetch(`https://cdn.kleros.link${arbitratorMetadata.registrationMetaEvidenceURI}`);
+      const fileURI = (await metadataResult.json())?.fileURI;
+
+      return fileURI ? `https://cdn.kleros.link${fileURI}` : "#";
+    },
+  });
+};

@@ -1,0 +1,195 @@
+import * as DropdownMenu from "@radix-ui/react-dropdown-menu";
+import { Badge, Button, Card, EmptyState, StatusDot } from "@/components/ui";
+import { CheckIcon, ChevronDownIcon } from "@/components/ui/icons";
+import { ContestProvider } from "./contest/ContestContext";
+import ErrorBoundary from "./ErrorBoundary";
+import { useLocalStorage } from "@/hooks/useLocalStorage";
+import { useContestTabStore } from "@/stores/contestTabStore";
+import { cn } from "@/utils/cn";
+import { TAB_CONTESTS } from "@/utils/contests";
+import { startTransition, useCallback, useEffect, useState, type ComponentType } from "react";
+import { AiMarkets } from "./tabs/AiMarkets";
+import { L1Markets } from "./tabs/L1Markets";
+import { L2Markets } from "./tabs/L2Markets";
+import { OctantMarkets } from "./tabs/OctantMarkets";
+import { OriginalityMarkets, OriginalityR3Markets } from "./tabs/OriginalityMarkets";
+import { ZcashMarkets } from "./tabs/ZcashMarkets";
+import { ZcashNu7Markets } from "./tabs/ZcashNu7Markets";
+import { SeerPromo } from "./SeerPromo";
+
+/**
+ * Which component renders each contest. The id / label / finished flag come from the shared
+ * registry (`@/utils/contests`) so the leaderboard job and this tab bar cannot disagree about
+ * what the contests are.
+ */
+const CONTEST_COMPONENTS: Record<string, ComponentType> = {
+  round3: OriginalityR3Markets,
+  "zcash-nu7": ZcashNu7Markets,
+  zcash: ZcashMarkets,
+  octant: OctantMarkets,
+  "round2-l2": L2Markets,
+  "round2-l1": L1Markets,
+  round2: OriginalityMarkets,
+  round1: AiMarkets,
+};
+
+const TABS = TAB_CONTESTS.map((contest) => ({
+  ...contest,
+  Component: CONTEST_COMPONENTS[contest.id],
+}));
+
+const LIVE_TABS = TABS.filter((tab) => !tab.finished);
+const ARCHIVED_TABS = TABS.filter((tab) => tab.finished);
+
+// The live contest. Keep it in step with the `finished` flags in `@/utils/contests` — landing a
+// first-time visitor in the archive would be odd. It also has to be a tab that survives the
+// `hidden` filter, or the fallback lands on nothing.
+const DEFAULT_TAB: string = "round3";
+
+/**
+ * Four of five contests have ended, so they sit in an archive menu rather than
+ * competing with the live one for the same row — the labels used to carry a
+ * "(Finished)" suffix each, which read as five equal choices.
+ */
+export const Tab = () => {
+  const [storedTab, setStoredTab] = useLocalStorage<string>("active-contest", DEFAULT_TAB);
+  const initial = TABS.some((tab) => tab.id === storedTab) ? storedTab : DEFAULT_TAB;
+
+  const [activeTab, setActiveTab] = useState<string>(initial);
+  // Lazy-mount: only render a tab once it's been visited.
+  // Once mounted, keep it alive (hidden) so useLocalStorage / useMemo state is preserved.
+  const [visited, setVisited] = useState<Set<string>>(() => new Set([initial]));
+
+  const handleTabClick = useCallback(
+    (tabId: string) => {
+      startTransition(() => setActiveTab(tabId));
+      setStoredTab(tabId);
+      if (!visited.has(tabId)) {
+        setVisited((prev) => new Set([...prev, tabId]));
+      }
+    },
+    [setStoredTab, visited],
+  );
+
+  /**
+   * Somewhere else asked for a contest — today the wallet board, pointing at an unclaimed payout.
+   * Routed through the same handler as a click so lazy-mounting and the stored tab cannot drift,
+   * and consumed immediately so it fires once rather than on every render.
+   */
+  const requestedTab = useContestTabStore((state) => state.requestedTab);
+  const clearRequest = useContestTabStore((state) => state.clearRequest);
+  useEffect(() => {
+    if (!requestedTab) return;
+    clearRequest();
+    // A contest hidden from the bar has no panel to show, so honouring it would blank the page.
+    if (TABS.some((tab) => tab.id === requestedTab)) handleTabClick(requestedTab);
+  }, [requestedTab, clearRequest, handleTabClick]);
+
+  const activeArchived = ARCHIVED_TABS.find((tab) => tab.id === activeTab);
+
+  return (
+    <div className="w-full">
+      {/* Three live tabs and the archive no longer fit a phone: scroll the bar there rather than
+          squeeze the labels. Desktop keeps the overlapping underline, which clipping would shave. */}
+      <div className="flex items-center gap-1 border-b border-rule-strong max-sm:overflow-x-auto max-sm:overflow-y-hidden">
+        {LIVE_TABS.map((tab) => {
+          const active = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => handleTabClick(tab.id)}
+              className={cn(
+                "-mb-px inline-flex shrink-0 cursor-pointer items-center gap-2 border-b-2 px-4 py-3 text-lede font-semibold whitespace-nowrap transition-colors",
+                active ? "border-primary text-primary" : "border-transparent text-ink-3 hover:text-ink",
+              )}
+            >
+              <StatusDot tone="long" pulse />
+              {tab.label}
+              <span className="font-mono text-[10.5px] leading-4 font-semibold tracking-wider uppercase text-long">Live</span>
+            </button>
+          );
+        })}
+
+        {/* Radix locks body scroll in modal mode; that shift is what flashed. */}
+        <DropdownMenu.Root modal={false}>
+          <DropdownMenu.Trigger
+            className={cn(
+              "-mb-px inline-flex shrink-0 cursor-pointer items-center gap-1.5 border-b-2 px-4 py-3 text-lede font-semibold whitespace-nowrap transition-colors",
+              activeArchived
+                ? "border-primary text-primary"
+                : "border-transparent text-ink-3 hover:text-ink",
+            )}
+          >
+            {activeArchived ? activeArchived.label : "Archive"}
+            {activeArchived && <Badge tone="neutral">Ended</Badge>}
+            <ChevronDownIcon className="text-ink-4" />
+          </DropdownMenu.Trigger>
+
+          <DropdownMenu.Portal>
+            <DropdownMenu.Content
+              align="start"
+              sideOffset={4}
+              className="z-50 min-w-56 overflow-hidden rounded-md border border-rule bg-surface py-1 shadow-pop"
+            >
+              <p className="px-3 py-1.5 text-label font-medium text-ink-4 uppercase">
+                Ended contests
+              </p>
+              {ARCHIVED_TABS.map((tab) => {
+                const active = activeTab === tab.id;
+                return (
+                  <DropdownMenu.Item
+                    key={tab.id}
+                    onSelect={() => handleTabClick(tab.id)}
+                    className={cn(
+                      "flex cursor-pointer items-center gap-2 px-3 py-2 text-body outline-none transition-colors data-[highlighted]:bg-primary-bg",
+                      active ? "text-ink" : "text-ink-2",
+                    )}
+                  >
+                    <span className="w-4 shrink-0 text-primary">{active && <CheckIcon />}</span>
+                    {tab.label}
+                  </DropdownMenu.Item>
+                );
+              })}
+            </DropdownMenu.Content>
+          </DropdownMenu.Portal>
+        </DropdownMenu.Root>
+      </div>
+
+      {/* Tab content — lazy-mount on first visit, then keep alive hidden */}
+      <div>
+        {TABS.map(({ id, Component, finished }) =>
+          visited.has(id) ? (
+            <div
+              key={id}
+              style={{ display: id === activeTab ? "block" : "none" }}
+              className="space-y-6 pt-6"
+            >
+              {/* One contest crashing shouldn't take the whole app with it. */}
+              <ErrorBoundary
+                fallback={(error) => (
+                  <Card>
+                    <EmptyState
+                      title="This contest could not be displayed"
+                      description={error.message}
+                      actions={
+                        <Button onClick={() => window.location.reload()}>Reload the page</Button>
+                      }
+                    />
+                  </Card>
+                )}
+              >
+                <ContestProvider finished={finished}>
+                  <Component />
+                </ContestProvider>
+              </ErrorBoundary>
+
+              {/* Outside the boundary, so a crashing contest still leaves the way out to Seer.
+                  A finished contest has no trading left to send anyone to. */}
+              {!finished && <SeerPromo />}
+            </div>
+          ) : null,
+        )}
+      </div>
+    </div>
+  );
+};

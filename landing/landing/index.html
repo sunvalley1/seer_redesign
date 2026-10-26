@@ -1,0 +1,1880 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Seer | A Next Generation Prediction Marketplace</title>
+<meta name="description" content="Seer turns questions about the future into markets — priced by traders, resolved on-chain. Live on Ethereum, Base, Optimism, and Gnosis." />
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg?v=2" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,100;9..40,200;9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&family=DM+Mono:wght@300;400;500&family=Kumbh+Sans:wght@100;200;300;400;500;600;700;800;900&family=Sora:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  /* ========================================
+     PALETTE — Charcoal + aqua
+     ======================================== */
+  :root{
+    /* Aqua scale */
+    --aqua-25:#d2fbff;
+    --aqua-50:#a8f7ff;
+    --aqua-100:#81f4ff;
+    --aqua-200:#5bf1ff;
+    --aqua-300:#34eeff;
+    --aqua-400:#0eebff;
+    --aqua-500:#00d4e5;
+    --aqua-600:#00b1c0;
+    --aqua-700:#008a99;
+    --aqua-800:#006473;
+    --aqua-900:#00414c;
+    --aqua-950:#001f26;
+
+    /* Charcoal scale */
+    --charcoal-25:#eeeff5;
+    --charcoal-50:#dcdde4;
+    --charcoal-100:#c4c6d1;
+    --charcoal-200:#adafbe;
+    --charcoal-300:#9598ac;
+    --charcoal-400:#7e8198;
+    --charcoal-500:#696c83;
+    --charcoal-600:#56596b;
+    --charcoal-700:#464854;
+    --charcoal-800:#38373e;
+    --charcoal-900:#252528;
+    --charcoal-950:#131314;
+
+    /* Deep bg gradient stops */
+    --deep-1:#022D37;
+    --deep-2:#051E23;
+    --deep-3:#04232A;
+    --footer-bg:#011318;
+
+    /* Warm gold accent */
+    --sundrift:#ad9356;
+    --verdanite:#59968f;
+
+    /* Kleros purple, kept for arbitration accent */
+    --kleros:#7b2bff;
+    --kleros-2:#4d00b4;
+
+    /* Typography */
+    --font-heading:"Kumbh Sans","DM Sans",sans-serif;
+    --font-body:"DM Sans","Kumbh Sans",system-ui,-apple-system,sans-serif;
+    --font-mono:"DM Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+
+    /* Radii */
+    --r-sm:4px;--r:6px;--r-md:10px;--r-lg:14px;--r-xl:20px;--r-pill:999px;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--deep-1);
+    color:var(--charcoal-25);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  img,svg{display:block;max-width:100%}
+  button{font-family:inherit;cursor:pointer;border:0;background:none;color:inherit;padding:0}
+  ul{margin:0;padding:0;list-style:none}
+  p{margin:0}
+  ::selection{background:var(--aqua-700);color:var(--charcoal-50)}
+  a:focus-visible,button:focus-visible{outline:1px solid var(--aqua-300);outline-offset:3px;border-radius:2px}
+
+  .wrap{max-width:1270px;margin:0 auto;padding:0 40px;position:relative}
+  @media (max-width:900px){.wrap{padding:0 24px}}
+  @media (max-width:480px){.wrap{padding:0 20px}}
+
+  /* ========================================
+     EYEBROW — `// Section label` mono, aqua
+     with subtle typing cursor
+     ======================================== */
+  .eyebrow{
+    font-family:var(--font-mono);
+    font-size:12px;
+    font-weight:400;
+    letter-spacing:0.06em;
+    color:var(--aqua-600);
+    display:inline-block;
+    margin-bottom:24px;
+    position:relative;
+  }
+  .eyebrow.typing::after,
+  .eyebrow.typing-complete::after{
+    content:"";display:inline-block;
+    width:8px;height:1em;
+    margin-left:2px;vertical-align:-2px;
+    background:var(--aqua-400);
+    animation:blink 1s step-end infinite;
+  }
+  .eyebrow.typing-done::after{display:none}
+  @keyframes blink{50%{opacity:0}}
+
+  /* ========================================
+     BUTTONS — `>_ CTA` monospace, thin border
+     ======================================== */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:10px;
+    padding:12px 22px;
+    background:transparent;
+    border:1px solid var(--aqua-50);
+    border-radius:var(--r-sm);
+    font-family:var(--font-body);
+    font-size:14px;font-weight:500;
+    letter-spacing:-0.005em;
+    color:var(--charcoal-25);
+    text-transform:none;
+    transition:background .3s ease,transform .3s ease,border-color .3s ease,color .3s ease,box-shadow .3s ease;
+    white-space:nowrap;
+  }
+  .btn:hover{
+    background:rgba(168,247,255,.08);
+    transform:translateY(-2px);
+    color:var(--charcoal-25);
+    box-shadow:0 20px 40px -20px rgba(14,235,255,.35);
+  }
+  .btn-primary{
+    background:var(--aqua-700);
+    border-color:var(--aqua-600);
+  }
+  .btn-primary:hover{
+    background:var(--aqua-600);
+    border-color:var(--aqua-500);
+  }
+  .btn-ghost{border-color:rgba(197,199,209,.3);color:var(--charcoal-100)}
+  .btn-ghost:hover{border-color:var(--aqua-200);color:var(--aqua-100);background:transparent}
+  .arrow{width:12px;height:12px;flex:none;transition:transform .3s ease}
+  .btn:hover .arrow{transform:translateX(3px)}
+
+  /* ========================================
+     BTN GLOW — animated blurred halo behind
+     the button (outline-glow pattern).
+     Two pseudos: ::before = deep glow (z:-2);
+     ::after = solid surface between glow and
+     text (z:-1). Both fade in on hover.
+     ======================================== */
+  .btn-glow{
+    position:relative;
+    z-index:0;
+    overflow:visible;
+    background:transparent;
+  }
+  /* Deep glow layer — soft blurred gradient extending 2px past the button */
+  .btn-glow::before{
+    content:"";
+    position:absolute;
+    top:-2px;left:-2px;
+    width:calc(100% + 4px);
+    height:calc(100% + 4px);
+    background:linear-gradient(
+      45deg,
+      #57948d,
+      #314732,
+      #203f3a,
+      #154b4a,
+      #2f635d,
+      #ac9255,
+      #6d6d54,
+      #535f49
+    );
+    background-size:400%;
+    filter:blur(12px);
+    opacity:0;
+    border-radius:calc(var(--r-sm) + 2px);
+    z-index:-2;
+    transition:opacity .3s ease-in-out;
+    animation:outline-glow 20s linear infinite;
+    pointer-events:none;
+  }
+  /* Inner surface — solid dark fill above the glow, below the text */
+  .btn-glow::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(
+      to bottom,
+      rgba(0,31,38,1) 0%,
+      rgba(0,31,38,.98) 100%
+    );
+    border-radius:var(--r-sm);
+    opacity:0;
+    z-index:-1;
+    transition:opacity .3s ease-in-out;
+    pointer-events:none;
+  }
+  .btn-glow:hover::before{opacity:1}
+  .btn-glow:hover::after{opacity:1}
+  .btn-glow:active{transform:scale(.98);transition:transform .1s ease}
+  /* Always-on variant — glow is visible even without hover,
+     and the dark inner surface never fades in, so the button's
+     original background stays untouched. Runs at 40s. */
+  .btn-glow.btn-glow-live::before{opacity:1;animation-duration:40s}
+  .btn-glow.btn-glow-live::after,
+  .btn-glow.btn-glow-live:hover::after{opacity:0}
+  @keyframes outline-glow{
+    0%   {background-position:0 0}
+    50%  {background-position:400% 0}
+    100% {background-position:0 0}
+  }
+
+  /* ========================================
+     TRIANGLE MESH BACKDROP — connected equilateral
+     triangles built from three sets of
+     repeating-linear-gradient lines at 0°, 60°,
+     and -60°. Fades from a corner with a radial
+     mask (corner-anchored grid fade).
+     ======================================== */
+  .tri-mesh{
+    position:absolute;inset:0;
+    z-index:0;
+    pointer-events:none;
+    overflow:hidden;
+
+    --tri-cell:52px;
+    --tri-line:1px;
+    --tri-color:rgba(0,177,192,.22);
+
+    background-image:
+      repeating-linear-gradient(
+        0deg,
+        var(--tri-color) 0 var(--tri-line),
+        transparent var(--tri-line) var(--tri-cell)
+      ),
+      repeating-linear-gradient(
+        60deg,
+        var(--tri-color) 0 var(--tri-line),
+        transparent var(--tri-line) var(--tri-cell)
+      ),
+      repeating-linear-gradient(
+        -60deg,
+        var(--tri-color) 0 var(--tri-line),
+        transparent var(--tri-line) var(--tri-cell)
+      );
+
+    -webkit-mask-image:radial-gradient(ellipse 90% 90% at 0% 0%,#000 0%,transparent 100%);
+            mask-image:radial-gradient(ellipse 90% 90% at 0% 0%,#000 0%,transparent 100%);
+    -webkit-mask-repeat:no-repeat;
+            mask-repeat:no-repeat;
+  }
+  /* Fade origin variants — corner-anchored grid feel */
+  .tri-mesh.mesh-tr{
+    -webkit-mask-image:radial-gradient(ellipse 90% 90% at 100% 0%,#000 0%,transparent 100%);
+            mask-image:radial-gradient(ellipse 90% 90% at 100% 0%,#000 0%,transparent 100%);
+  }
+  .tri-mesh.mesh-bl{
+    -webkit-mask-image:radial-gradient(ellipse 90% 90% at 0% 100%,#000 0%,transparent 100%);
+            mask-image:radial-gradient(ellipse 90% 90% at 0% 100%,#000 0%,transparent 100%);
+  }
+  .tri-mesh.mesh-br{
+    -webkit-mask-image:radial-gradient(ellipse 90% 90% at 100% 100%,#000 0%,transparent 100%);
+            mask-image:radial-gradient(ellipse 90% 90% at 100% 100%,#000 0%,transparent 100%);
+  }
+  section > .wrap{position:relative;z-index:1}
+  @media (prefers-reduced-motion:reduce){
+    .btn-glow::before{animation:none}
+  }
+
+  /* ========================================
+     TYPOGRAPHY — Kumbh Sans thin display,
+     DM Sans body, tight tracking
+     ======================================== */
+  h1,h2,h3,h4{
+    margin:0;
+    font-family:var(--font-heading);
+    color:var(--charcoal-25);
+    font-weight:200;
+    letter-spacing:-0.005em;
+    line-height:1.13;
+    text-wrap:balance;
+  }
+  h1{
+    font-family:"Kumbh Sans",sans-serif;
+    font-weight:200;
+    text-transform:uppercase;
+    font-size:clamp(36px,6.2vh,66px);
+    line-height:1.06;
+  }
+  h1 .bold{font-weight:700}
+  h2{
+    font-weight:200;
+    font-size:clamp(32px,4vw,54px);
+    line-height:1.13;
+  }
+  h2 .bold{font-weight:700;color:var(--aqua-100)}
+  h3{font-size:22px;font-weight:300}
+  h4{font-size:17px;font-weight:400;letter-spacing:0}
+
+  .lede{
+    font-family:var(--font-body);
+    font-weight:200;
+    font-size:clamp(17px,1.6vw,21px);
+    line-height:1.55;
+    color:var(--charcoal-100);
+    max-width:684px;
+  }
+
+  /* ========================================
+     NAV — floating glass capsule
+     that also covers the logo on top-left
+     ======================================== */
+  .nav-outer{
+    position:fixed;top:0;left:0;right:0;z-index:100;
+    padding:16px 0;
+    isolation:isolate;
+    pointer-events:none;
+  }
+  .nav-outer > .wrap{pointer-events:auto}
+  .nav{
+    background:rgba(255,255,255,.05);
+    backdrop-filter:saturate(140%) blur(14px);
+    -webkit-backdrop-filter:saturate(140%) blur(14px);
+    border:1px solid rgba(255,255,255,.06);
+    border-radius:6px;
+    height:64px;
+    padding:0 20px 0 16px;
+    display:flex;align-items:center;justify-content:space-between;
+    transition:background .3s ease,border-color .3s ease,box-shadow .3s ease;
+    box-shadow:0 8px 30px -12px rgba(0,0,0,.35);
+  }
+  .nav-outer.scrolled .nav{
+    background:rgba(255,255,255,.08);
+    border-color:rgba(255,255,255,.09);
+    box-shadow:0 12px 34px -14px rgba(0,0,0,.5);
+  }
+  .nav .brand{display:inline-flex;align-items:center;gap:10px;color:var(--charcoal-25)}
+  .nav .brand .nav-mark{height:28px;width:28px;flex:none}
+  .nav .brand .nav-wordmark{
+    font-family:"Sora","Kumbh Sans",sans-serif;
+    font-weight:800;
+    font-size:22px;
+    line-height:1;
+    letter-spacing:-0.04em;
+    color:currentColor;
+    text-transform:lowercase;
+    display:inline-block;
+  }
+  .nav .primary{display:flex;align-items:center;gap:32px}
+  .nav .primary a.link{
+    font-family:var(--font-body);
+    font-size:13px;
+    font-weight:500;
+    letter-spacing:-0.005em;
+    text-transform:uppercase;
+    color:var(--charcoal-50);
+    padding:6px 0;
+    position:relative;
+    transition:color .3s ease;
+  }
+  .nav .primary a.link::after{
+    content:"";position:absolute;bottom:0;left:0;right:0;
+    height:1px;border-radius:1px;
+    background:linear-gradient(
+      45deg,
+      #57948d, #314732, #203f3a, #154b4a,
+      #2f635d, #ac9255, #6d6d54, #535f49
+    );
+    background-size:400%;
+    animation:outline-glow 20s linear infinite;
+    filter:brightness(2.2) saturate(1.55);
+    box-shadow:0 0 3px rgba(212,183,120,.35);
+    transform:scaleX(0);transform-origin:left;
+    transition:transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  .nav .primary a.link:hover{color:var(--charcoal-25)}
+  .nav .primary a.link:hover::after{transform:scaleX(1)}
+  .nav .primary .btn{padding:9px 18px;font-size:12px}
+  @media (max-width:720px){
+    .nav .primary{gap:14px}
+    .nav .primary a.link{display:none}
+  }
+
+  /* ========================================
+     ANNOUNCEMENT BAR
+     ======================================== */
+  .announce{
+    background:var(--aqua-950);
+    color:var(--charcoal-50);
+    border-bottom:1px solid rgba(0,177,192,.12);
+    font-family:var(--font-mono);
+    font-size:11px;
+    letter-spacing:.08em;
+    text-transform:uppercase;
+    position:relative;
+    z-index:99;
+  }
+  .announce.hidden{display:none}
+  .announce .row{
+    display:flex;align-items:center;justify-content:center;gap:14px;
+    padding:11px 56px 11px 40px;
+    max-width:1270px;margin:0 auto;
+    flex-wrap:wrap;
+  }
+  .announce a.link{display:inline-flex;align-items:center;gap:12px;color:inherit}
+  .announce b{color:var(--aqua-200);font-weight:500}
+  .announce .sep{width:20px;height:1px;background:rgba(197,199,209,.28)}
+  .announce a.link:hover .sep{background:var(--aqua-400)}
+  .announce .arr{opacity:.7;transition:transform .3s ease,opacity .3s ease}
+  .announce a.link:hover .arr{opacity:1;transform:translate(2px,-2px)}
+  .announce button.close{
+    position:absolute;top:50%;right:22px;transform:translateY(-50%);
+    color:rgba(197,199,209,.55);padding:6px;line-height:0;
+  }
+  .announce button.close:hover{color:var(--aqua-200)}
+  @media (max-width:640px){.announce .row{padding:10px 44px 10px 20px;font-size:10px}}
+
+  /* ========================================
+     HERO — video background + intro logo
+     ======================================== */
+  .hero-wrap{
+    position:relative;
+    min-height:100vh;
+    width:100%;
+    overflow:hidden;
+  }
+  .bg-video{
+    position:absolute;
+    top:0;left:0;right:0;
+    width:100%;
+    height:100vh;
+    z-index:1;
+    overflow:hidden;
+    pointer-events:none;
+    opacity:0;
+    animation:videoFadeIn 1.2s ease-in .4s forwards;
+  }
+  @keyframes videoFadeIn{to{opacity:1}}
+  .hero-video{
+    width:100%;height:100%;
+    object-fit:cover;object-position:center;
+    /* Dim + saturate the animation so text on top stays readable */
+    filter:brightness(.55) saturate(1.15) contrast(1.05);
+  }
+  /* Bottom fade blends into content gradient */
+  .bg-video::before{
+    content:"";position:absolute;inset:0;
+    background:linear-gradient(180deg,rgba(2,45,55,.35) 0%,rgba(2,45,55,0) 30%,rgba(2,45,55,0) 55%,var(--deep-1) 100%);
+    z-index:2;pointer-events:none;
+  }
+  /* Left-side aqua glow — signature radial highlight */
+  .bg-video::after{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(94.28% 60.31% at 0% 39.69%,rgba(1,140,153,.5) 0%,rgba(2,45,55,0) 70%);
+    z-index:3;pointer-events:none;
+  }
+  /* Centered dark spotlight — puts a soft dark halo behind the hero text */
+  .hero-overlay{
+    position:absolute;inset:0;z-index:4;pointer-events:none;
+    background:
+      radial-gradient(60% 55% at 50% 55%,rgba(2,29,36,.55) 0%,rgba(2,29,36,.25) 45%,rgba(2,29,36,0) 75%),
+      linear-gradient(180deg,rgba(2,29,36,.25) 0%,rgba(2,29,36,0) 25%,rgba(2,29,36,0) 75%,rgba(2,29,36,.4) 100%);
+  }
+  @media (max-width:768px){.hero-video{object-position:35% center}}
+
+  .hero-inner{
+    position:relative;z-index:10;
+    min-height:100vh;min-height:100svh;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:max(84px,9vh) 0 max(32px,4vh);
+    text-align:center;
+  }
+  .hero-frame{
+    display:flex;flex-direction:column;align-items:center;
+    gap:10px;width:100%;
+  }
+  /* Big Seer mark that scales in on load — preserved from the previous redesign */
+  .mark-ring{
+    position:relative;
+    width:clamp(122px,18.5vh,196px);
+    aspect-ratio:1/1;
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:4px;
+  }
+  .ring{
+    position:absolute;inset:0;
+    border-radius:50%;
+    border:1px dashed rgba(129,244,255,.28);
+    animation:seer-spin 44s linear infinite;
+  }
+  .ring::after{
+    content:"";position:absolute;top:-4px;left:50%;
+    width:8px;height:8px;background:var(--aqua-300);border-radius:50%;
+    transform:translateX(-50%);
+    box-shadow:0 0 0 3px rgba(52,238,255,.18),0 0 22px 4px rgba(14,235,255,.5);
+  }
+  @keyframes seer-spin{to{transform:rotate(360deg)}}
+  .mark{
+    position:relative;z-index:2;
+    width:66%;height:66%;
+    animation:seer-mark-in 1700ms cubic-bezier(.2,.7,.2,1) both;
+    filter:drop-shadow(0 0 22px rgba(14,235,255,.35));
+  }
+  .mark img{width:100%;height:100%;display:block}
+  @keyframes seer-mark-in{
+    0%   {opacity:0; transform:scale(.24) rotate(-360deg); filter:blur(10px) drop-shadow(0 0 0 rgba(14,235,255,0))}
+    60%  {opacity:1;                                       filter:blur(0)   drop-shadow(0 0 22px rgba(14,235,255,.35))}
+    100% {opacity:1; transform:scale(1)   rotate(0deg);    filter:blur(0)   drop-shadow(0 0 22px rgba(14,235,255,.35))}
+  }
+  .wordmark-big{
+    font-family:"Sora","Kumbh Sans",sans-serif;
+    font-weight:800;
+    font-size:clamp(46px,9vh,88px);
+    letter-spacing:-0.05em;
+    line-height:1;
+    color:var(--charcoal-25);
+    text-transform:lowercase;
+    margin-top:-10px;
+    opacity:0;transform:translateY(14px);
+    animation:seer-in 800ms cubic-bezier(.2,.7,.2,1) 1200ms forwards;
+  }
+  @keyframes seer-in{to{opacity:1;transform:none}}
+
+  .hero-tagline{
+    margin-top:14px;
+    max-width:900px;
+    opacity:0;transform:translateY(14px);
+    animation:seer-in 800ms cubic-bezier(.2,.7,.2,1) 1500ms forwards;
+  }
+  .hero-lede{
+    margin:16px auto 0;
+    max-width:640px;
+    font-size:clamp(16px,2.3vh,20px);
+    line-height:1.55;
+    color:var(--charcoal-100);
+    opacity:0;transform:translateY(14px);
+    animation:seer-in 800ms cubic-bezier(.2,.7,.2,1) 1750ms forwards;
+  }
+  .hero-ctas{
+    display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+    margin-top:22px;
+    opacity:0;transform:translateY(14px);
+    animation:seer-in 800ms cubic-bezier(.2,.7,.2,1) 2000ms forwards;
+  }
+  .hero-avail{
+    margin-top:24px;
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+    opacity:0;transform:translateY(14px);
+    animation:seer-in 800ms cubic-bezier(.2,.7,.2,1) 2250ms forwards;
+  }
+  .avail-label{
+    font-family:var(--font-mono);
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--aqua-600);
+  }
+  .chains{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .chain{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 14px 6px 8px;
+    background:rgba(2,45,55,.55);
+    border:1px solid rgba(0,177,192,.22);
+    border-radius:var(--r-pill);
+    font-size:12.5px;color:var(--charcoal-50);
+    backdrop-filter:blur(6px);
+    -webkit-backdrop-filter:blur(6px);
+  }
+  .chain .logo{
+    width:18px;height:18px;flex:none;display:block;
+    border-radius:50%;
+  }
+  .chain.gnosis .logo{border-radius:0}
+
+  @media (prefers-reduced-motion:reduce){
+    .mark,.wordmark-big,.hero-tagline,.hero-lede,.hero-ctas,.hero-avail,.bg-video,.ring{
+      animation:none !important;
+      opacity:1 !important;
+      transform:none !important;
+    }
+  }
+
+  /* ========================================
+     GRADIENT CONTAINER — dark teal continues
+     ======================================== */
+  .gradient-home{
+    position:relative;
+    background:linear-gradient(180deg,var(--deep-1) 0%,var(--deep-2) 40%,var(--deep-3) 70%,var(--deep-1) 92%);
+  }
+
+  section{padding:120px 0;position:relative}
+  @media (max-width:900px){section{padding:88px 0}}
+  @media (max-width:480px){section{padding:64px 0}}
+
+  /* Subtle divider between sections */
+  section + section::before{
+    content:"";
+    position:absolute;top:0;left:50%;transform:translateX(-50%);
+    width:min(1000px,calc(100% - 80px));
+    height:1px;
+    background:linear-gradient(90deg,transparent 0%,rgba(0,177,192,.22) 30%,rgba(0,177,192,.22) 70%,transparent 100%);
+  }
+
+  .section-head{
+    max-width:820px;margin:0 auto 64px;
+    text-align:left;
+  }
+  .section-head h2{margin-bottom:20px}
+  .section-head .lede{max-width:684px}
+
+  /* ========================================
+     ASK SEER — a single, focused example
+     ======================================== */
+  .ask .prompt{
+    max-width:960px;margin:0 auto;
+    background:rgba(1,31,38,.55);
+    border:1px solid rgba(0,177,192,.18);
+    border-radius:var(--r-lg);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    display:grid;
+    grid-template-columns:52px 1fr;
+    overflow:hidden;
+  }
+  .ask .rail{
+    background:rgba(0,65,76,.35);
+    border-right:1px solid rgba(0,177,192,.18);
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:space-between;
+    padding:22px 0;
+  }
+  .ask .rail .dot{
+    width:9px;height:9px;border-radius:50%;
+    background:var(--aqua-400);
+    box-shadow:0 0 0 4px rgba(14,235,255,.18);
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{box-shadow:0 0 0 4px rgba(14,235,255,.18)}
+    50%    {box-shadow:0 0 0 8px rgba(14,235,255,.06)}
+  }
+  .ask .rail .idx{
+    font-family:var(--font-mono);font-size:10px;color:var(--charcoal-400);
+    writing-mode:vertical-rl;transform:rotate(180deg);
+    letter-spacing:.16em;text-transform:uppercase;
+  }
+  .ask .body{padding:32px 40px}
+  .ask .body .meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+  .ask .kicker{
+    font-family:var(--font-mono);font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;
+    color:var(--aqua-600);
+  }
+  .ask .status{
+    font-family:var(--font-mono);font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;color:var(--aqua-300);
+    display:inline-flex;align-items:center;gap:8px;
+  }
+  .ask .status::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;
+    box-shadow:0 0 8px currentColor}
+  /* Market title */
+  .ask .title{
+    font-family:var(--font-heading);
+    font-size:clamp(20px,2.2vw,26px);
+    font-weight:300;
+    line-height:1.35;
+    color:var(--charcoal-25);
+    margin:0 0 26px;
+    transition:opacity .3s ease;
+    letter-spacing:-0.005em;
+  }
+  /* Outcomes list — bar chart with names and % */
+  .ask .outcomes{
+    display:flex;flex-direction:column;gap:14px;
+    margin:0 0 24px;
+    padding-top:24px;
+    border-top:1px solid rgba(0,177,192,.14);
+    transition:opacity .3s ease;
+  }
+  .ask .outcomes li{
+    display:grid;
+    grid-template-columns:minmax(72px,auto) 1fr 52px;
+    gap:16px;align-items:center;
+  }
+  .ask .outcomes .name{
+    font-family:var(--font-body);font-size:14px;font-weight:500;
+    color:var(--charcoal-50);letter-spacing:-0.005em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  }
+  .ask .outcomes .bar{
+    position:relative;height:7px;border-radius:4px;
+    background:rgba(0,65,76,.55);overflow:hidden;
+  }
+  .ask .outcomes .fill{
+    display:block;height:100%;border-radius:4px;
+    background:linear-gradient(90deg,var(--aqua-500),var(--aqua-300));
+    box-shadow:0 0 12px rgba(14,235,255,.4);
+    transition:width .55s cubic-bezier(.2,.7,.2,1);
+  }
+  .ask .outcomes li.dim .fill{
+    background:linear-gradient(90deg,rgba(0,177,192,.4),rgba(91,241,255,.45));
+    box-shadow:none;
+  }
+  .ask .outcomes .pct{
+    font-family:var(--font-mono);font-size:13px;font-weight:500;
+    color:var(--aqua-100);text-align:right;letter-spacing:-0.005em;
+  }
+  .ask .outcomes li.dim .pct{color:var(--charcoal-100)}
+  /* Foot row — stats + view button */
+  .ask .foot{
+    display:flex;align-items:center;justify-content:space-between;gap:20px;
+    flex-wrap:wrap;
+    transition:opacity .3s ease;
+  }
+  .ask .foot .stats{
+    display:flex;align-items:center;gap:14px;
+    font-family:var(--font-body);font-size:13px;
+    color:var(--charcoal-300);font-weight:300;
+  }
+  .ask .foot .stat b{color:var(--charcoal-50);font-weight:500;font-family:var(--font-mono)}
+  .ask .foot .sep{color:var(--charcoal-600);user-select:none}
+  .ask .view{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:9px 16px;
+    background:transparent;
+    border:1px solid rgba(0,177,192,.4);
+    border-radius:var(--r-sm);
+    font-family:var(--font-mono);font-size:12px;
+    color:var(--aqua-200);
+    letter-spacing:.03em;
+    transition:background .25s ease,border-color .25s ease,color .25s ease,transform .3s ease,box-shadow .3s ease,opacity .3s ease;
+  }
+  .ask .view:hover{
+    background:rgba(0,177,192,.1);
+    border-color:var(--aqua-300);
+    color:var(--aqua-100);
+    transform:translateY(-2px);
+    box-shadow:0 12px 30px -14px rgba(14,235,255,.4);
+  }
+  .ask .view .arrow{width:12px;height:12px;transition:transform .3s ease}
+  .ask .view:hover .arrow{transform:translate(3px,-3px)}
+  .ask .dots{
+    display:flex;align-items:center;justify-content:center;gap:8px;margin-top:26px;
+  }
+  .ask .dots button{
+    width:24px;height:2px;border-radius:2px;
+    background:rgba(197,199,209,.16);
+    transition:background .25s ease,width .25s ease;
+  }
+  .ask .dots button.on{background:var(--aqua-400);width:32px}
+  .ask .dots button:hover{background:var(--aqua-200)}
+  @media (max-width:640px){
+    .ask .rail{display:none}
+    .ask .prompt{grid-template-columns:1fr}
+    .ask .body{padding:26px 22px}
+  }
+
+  /* ========================================
+     BASE LAYER — protocol stack diagram
+     ======================================== */
+  .baselayer{position:relative}
+  .baselayer .stack{
+    max-width:960px;margin:0 auto;
+    background:rgba(1,31,38,.42);
+    border:1px solid rgba(0,177,192,.2);
+    border-radius:var(--r-lg);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    padding:18px;
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 30px 60px -30px rgba(0,0,0,.5);
+  }
+  .baselayer .stack::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(80% 60% at 50% 0%,rgba(0,177,192,.1) 0%,rgba(2,45,55,0) 60%);
+    pointer-events:none;
+  }
+  .baselayer .stack-row{
+    position:relative;
+    padding:24px 26px;
+    display:grid;
+    grid-template-columns:170px 1fr;
+    gap:24px;align-items:center;
+    border-radius:var(--r);
+    border:1px solid rgba(0,177,192,.16);
+  }
+  .baselayer .row-apps{
+    background:linear-gradient(180deg,rgba(0,177,192,.1),rgba(0,177,192,.02));
+    border-color:rgba(0,177,192,.28);
+  }
+  .baselayer .row-sdk{background:rgba(0,65,76,.28)}
+  .baselayer .row-base{
+    background:linear-gradient(180deg,rgba(0,31,38,.55),rgba(0,31,38,.78));
+    border-color:rgba(0,177,192,.32);
+    box-shadow:inset 0 1px 0 rgba(0,177,192,.09);
+  }
+  .baselayer .stack-arrow{
+    display:flex;justify-content:center;align-items:center;
+    color:var(--aqua-600);
+    padding:6px 0;
+  }
+  .baselayer .stack-arrow svg{width:12px;height:14px}
+  .baselayer .stack-label{
+    font-family:var(--font-mono);font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;
+    color:var(--aqua-600);
+  }
+  .baselayer .stack-text{
+    font-family:var(--font-body);font-size:14px;
+    color:var(--charcoal-100);line-height:1.6;font-weight:300;
+  }
+  .baselayer .apps-strip{display:flex;gap:8px;flex-wrap:wrap}
+  .baselayer .app-chip{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 14px;
+    background:rgba(0,177,192,.14);
+    border:1px solid rgba(0,177,192,.32);
+    border-radius:var(--r-pill);
+    font-family:var(--font-body);font-size:13px;
+    color:var(--charcoal-25);font-weight:400;
+    transition:background .25s ease,border-color .25s ease,transform .3s ease;
+  }
+  .baselayer .app-chip:hover{
+    background:rgba(0,177,192,.22);
+    border-color:var(--aqua-300);
+    transform:translateY(-2px);
+  }
+  .baselayer .app-dot{
+    width:6px;height:6px;border-radius:50%;
+    background:var(--aqua-300);
+    box-shadow:0 0 8px var(--aqua-300);
+  }
+  .baselayer .app-chip.ghost{
+    background:transparent;border-style:dashed;color:var(--aqua-600);
+  }
+  .baselayer .app-chip.ghost:hover{color:var(--aqua-200);border-color:var(--aqua-300)}
+  @media (max-width:640px){
+    .baselayer .stack-row{grid-template-columns:1fr;gap:10px;padding:20px 18px}
+  }
+
+  /* ========================================
+     TWO MOVES — make markets + trade
+     ======================================== */
+  .features .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media (max-width:900px){.features .grid{grid-template-columns:1fr}}
+  .feature{
+    padding:36px 32px;
+    background:rgba(1,31,38,.4);
+    border:1px solid rgba(0,177,192,.18);
+    border-radius:var(--r-lg);
+    display:flex;flex-direction:column;
+    transition:border-color .3s ease,transform .3s ease,background .3s ease;
+  }
+  .feature:hover{
+    border-color:rgba(0,177,192,.4);
+    background:rgba(1,31,38,.6);
+  }
+  .feature .letter{
+    font-family:var(--font-mono);
+    font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--aqua-600);margin-bottom:20px;
+  }
+  .feature h3{
+    font-family:var(--font-heading);font-weight:300;
+    font-size:26px;color:var(--charcoal-25);
+    margin-bottom:14px;letter-spacing:-0.005em;
+  }
+  .feature p{
+    color:var(--charcoal-100);font-size:15px;line-height:1.65;
+    margin-bottom:24px;max-width:52ch;font-weight:300;
+  }
+  .feature ul.notes{display:flex;flex-direction:column;gap:8px;margin-bottom:28px}
+  .feature ul.notes li{
+    display:flex;align-items:flex-start;gap:12px;
+    font-size:13.5px;color:var(--charcoal-200);font-weight:300;
+  }
+  .feature ul.notes li::before{
+    content:"";display:block;width:5px;height:5px;flex:none;margin-top:8px;
+    border-radius:1px;background:var(--aqua-500);
+    box-shadow:0 0 8px var(--aqua-500);
+  }
+  .feature .cta{margin-top:auto}
+
+  /* ========================================
+     KLEROS — resolution flow
+     ======================================== */
+  .kleros .head-row{
+    display:grid;grid-template-columns:1fr auto;gap:32px;
+    align-items:end;margin-bottom:56px;
+  }
+  .kleros .head-title{max-width:720px}
+  .kleros .badge{
+    display:inline-flex;align-items:center;gap:10px;
+    padding:8px 14px;border-radius:var(--r-pill);
+    background:rgba(123,43,255,.1);
+    border:1px solid rgba(123,43,255,.35);
+    color:#c9b0ff;
+    font-family:var(--font-mono);font-size:11px;
+    letter-spacing:.14em;text-transform:uppercase;
+    white-space:nowrap;
+  }
+  .kleros .badge .k-dot{
+    width:8px;height:8px;border-radius:2px;
+    background:linear-gradient(135deg,var(--kleros-2),var(--kleros));
+    box-shadow:0 0 10px rgba(123,43,255,.6);
+  }
+  .kleros .lede a.k-link{
+    color:var(--aqua-200);
+    border-bottom:1px solid rgba(0,177,192,.5);
+    padding-bottom:1px;transition:color .2s ease,border-color .2s ease;
+  }
+  .kleros .lede a.k-link:hover{color:var(--aqua-100);border-color:var(--aqua-200)}
+  .kleros .flow{
+    display:grid;grid-template-columns:repeat(4,1fr);gap:24px;position:relative;
+  }
+  .kleros .flow::before{
+    content:"";position:absolute;top:22px;left:30px;right:30px;height:1px;
+    background:linear-gradient(90deg,rgba(0,177,192,.1) 0%,rgba(0,177,192,.4) 50%,rgba(0,177,192,.1) 100%);
+  }
+  .kleros .step{position:relative;padding:0 6px}
+  .kleros .step .num{
+    width:44px;height:44px;border-radius:50%;
+    background:rgba(2,45,55,.9);
+    border:1px solid rgba(0,177,192,.3);
+    display:inline-flex;align-items:center;justify-content:center;
+    font-family:var(--font-mono);font-weight:400;font-size:12px;
+    color:var(--aqua-300);
+    margin-bottom:18px;position:relative;z-index:2;
+  }
+  .kleros .step.active .num{
+    background:linear-gradient(135deg,var(--kleros-2),var(--kleros));
+    border-color:transparent;color:#fff;
+    box-shadow:0 0 24px rgba(123,43,255,.5);
+  }
+  .kleros .step h4{
+    font-family:var(--font-heading);font-weight:400;color:var(--charcoal-25);
+    font-size:16px;margin-bottom:8px;
+  }
+  .kleros .step p{
+    margin:0;font-size:13.5px;color:var(--charcoal-200);
+    line-height:1.55;font-weight:300;
+  }
+  @media (max-width:900px){
+    .kleros .head-row{grid-template-columns:1fr;gap:20px;align-items:start}
+    .kleros .badge{justify-self:start}
+    .kleros .flow{grid-template-columns:1fr 1fr;gap:32px}
+    .kleros .flow::before{display:none}
+  }
+  @media (max-width:520px){.kleros .flow{grid-template-columns:1fr}}
+
+  /* ========================================
+     OPPORTUNITIES — pill chips
+     ======================================== */
+  .opps .pills{display:flex;flex-wrap:wrap;gap:10px}
+  .opps .pill{
+    display:inline-flex;align-items:center;
+    padding:10px 18px;
+    background:rgba(1,31,38,.4);
+    border:1px solid rgba(0,177,192,.2);
+    border-radius:var(--r-pill);
+    font-size:14px;font-weight:300;color:var(--charcoal-50);
+    transition:background .25s ease,border-color .25s ease,color .25s ease,transform .3s ease;
+    cursor:default;
+  }
+  .opps .pill:hover{
+    background:rgba(0,177,192,.14);
+    border-color:var(--aqua-400);
+    color:var(--aqua-100);
+    transform:translateY(-2px);
+  }
+  .opps .pill.more{
+    background:transparent;
+    color:var(--aqua-600);
+    border-style:dashed;
+  }
+  .opps .pill.more:hover{color:var(--aqua-200);border-style:solid}
+
+  /* ========================================
+     MARKET TYPES — four shapes
+     ======================================== */
+  .types .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+  @media (max-width:1000px){.types .grid{grid-template-columns:1fr 1fr}}
+  @media (max-width:560px){.types .grid{grid-template-columns:1fr}}
+  .type-card{
+    padding:24px;
+    background:rgba(1,31,38,.4);
+    border:1px solid rgba(0,177,192,.18);
+    border-radius:var(--r-lg);
+    display:flex;flex-direction:column;
+    transition:border-color .3s ease,transform .3s ease,background .3s ease;
+  }
+  .type-card:hover{
+    border-color:rgba(0,177,192,.4);
+    background:rgba(1,31,38,.6);
+  }
+  .type-card .diag{
+    height:96px;margin-bottom:22px;
+    border-radius:var(--r);
+    background:rgba(0,65,76,.4);
+    position:relative;overflow:hidden;
+    border:1px solid rgba(0,177,192,.14);
+  }
+  /* Categorical — YES (68%) and NO (32%) bars, each with its own label below */
+  .type-card.categorical .diag::before{
+    content:"";position:absolute;left:14px;top:14px;bottom:38px;right:38%;
+    background:linear-gradient(135deg,var(--aqua-500),var(--aqua-700));
+    border-radius:3px;box-shadow:0 0 20px rgba(14,235,255,.25);
+  }
+  .type-card.categorical .diag .no-bar{
+    position:absolute;left:66%;top:14px;bottom:38px;right:14px;
+    background:rgba(0,177,192,.18);
+    border:1px solid rgba(0,177,192,.32);
+    border-radius:3px;
+  }
+  .type-card.categorical .diag::after{
+    content:"YES 68%";position:absolute;left:14px;bottom:12px;
+    font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;
+    color:var(--aqua-300);text-transform:uppercase;
+  }
+  .type-card.categorical .diag .no-label{
+    position:absolute;right:14px;bottom:12px;
+    font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;
+    color:var(--aqua-600);text-transform:uppercase;
+  }
+  /* Multi-cat — three descending bars */
+  .type-card.multi-cat .diag{padding:14px;display:flex;flex-direction:column;justify-content:center;gap:7px}
+  .type-card.multi-cat .diag::before,
+  .type-card.multi-cat .diag::after,
+  .type-card.multi-cat .diag .bar{display:block;height:10px;border-radius:2px}
+  .type-card.multi-cat .diag::before{content:"";width:78%;background:linear-gradient(90deg,var(--aqua-400),var(--aqua-600));box-shadow:0 0 12px rgba(14,235,255,.2)}
+  .type-card.multi-cat .diag .bar{width:52%;background:var(--aqua-700)}
+  .type-card.multi-cat .diag::after{content:"";width:32%;background:var(--aqua-900)}
+  /* Scalar — gradient with marker */
+  .type-card.scalar .diag{
+    background:linear-gradient(90deg,rgba(0,65,76,.6) 0%,rgba(0,177,192,.5) 50%,var(--aqua-300) 100%);
+  }
+  .type-card.scalar .diag::before{
+    content:"";position:absolute;top:0;bottom:0;left:64%;width:2px;
+    background:var(--aqua-100);
+    box-shadow:0 0 12px var(--aqua-100);
+  }
+  .type-card.scalar .diag::after{
+    content:"64.2";position:absolute;top:12px;left:calc(64% + 8px);
+    font-family:var(--font-mono);font-size:11px;font-weight:500;
+    color:var(--aqua-25);
+  }
+  /* Multi-scalar */
+  .type-card.multi-scalar .diag{padding:12px;display:flex;flex-direction:column;justify-content:center;gap:12px}
+  .type-card.multi-scalar .diag::before,
+  .type-card.multi-scalar .diag::after{content:"";display:block;height:8px;border-radius:4px}
+  .type-card.multi-scalar .diag::before{background:linear-gradient(90deg,rgba(0,65,76,.5),var(--aqua-300))}
+  .type-card.multi-scalar .diag::after{width:70%;background:linear-gradient(90deg,rgba(0,65,76,.5),var(--aqua-500))}
+
+  .type-card .type-kicker{
+    font-family:var(--font-mono);font-size:10.5px;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--aqua-600);margin-bottom:8px;
+  }
+  .type-card h4{
+    font-family:var(--font-heading);font-weight:400;color:var(--charcoal-25);
+    font-size:17px;margin-bottom:8px;letter-spacing:0;
+  }
+  .type-card p{
+    font-size:13.5px;color:var(--charcoal-200);
+    line-height:1.55;margin-bottom:22px;font-weight:300;
+  }
+  .type-card .cta-link{
+    margin-top:auto;
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--font-mono);font-size:12px;
+    color:var(--aqua-300);
+    padding-bottom:2px;
+    border-bottom:1px solid rgba(52,238,255,.3);
+    align-self:flex-start;
+    transition:color .2s ease,border-color .2s ease,gap .3s ease;
+  }
+  .type-card .cta-link:hover{color:var(--aqua-100);border-color:var(--aqua-100);gap:12px}
+
+  /* ========================================
+     BIG CTA — quiet, dark, gold accent
+     ======================================== */
+  .cta-block{padding:0}
+  .cta-card{
+    background:linear-gradient(135deg,rgba(0,65,76,.55) 0%,rgba(1,31,38,.9) 100%);
+    border:1px solid rgba(0,177,192,.25);
+    border-radius:var(--r-xl);
+    padding:88px 64px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:56px;
+    align-items:center;
+    position:relative;
+    overflow:hidden;
+    min-height:340px;
+  }
+  .cta-card::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(60% 80% at 100% 50%,rgba(14,235,255,.16) 0%,rgba(2,45,55,0) 60%);
+    pointer-events:none;
+  }
+  .cta-card .mark-watermark{
+    position:absolute;
+    right:-40px;top:50%;transform:translateY(-50%);
+    width:440px;height:440px;
+    opacity:.05;
+    pointer-events:none;
+    filter:brightness(0) invert(1);
+  }
+  .cta-card .inner{position:relative;z-index:1;max-width:640px}
+  .cta-card .kicker{
+    font-family:var(--font-mono);font-size:12px;
+    letter-spacing:.06em;color:var(--aqua-600);
+    display:block;margin-bottom:22px;
+  }
+  .cta-card h2{color:var(--charcoal-25);margin-bottom:18px;max-width:22ch}
+  .cta-card p{color:var(--charcoal-100);font-size:16px;max-width:46ch;margin-bottom:36px;font-weight:300}
+  .cta-card .right{position:relative;z-index:1;display:flex;flex-direction:column;align-items:flex-start;gap:14px}
+  @media (max-width:900px){
+    .cta-card{grid-template-columns:1fr;padding:56px 32px;gap:24px}
+    .cta-card .mark-watermark{right:-80px;width:300px;height:300px;top:auto;bottom:-40px;transform:none}
+  }
+
+  /* ========================================
+     CONTACT
+     ======================================== */
+  .contact .row{
+    display:grid;grid-template-columns:1fr auto;gap:40px;align-items:end;
+    max-width:1000px;margin:0 auto;
+  }
+  .contact h2{margin-bottom:14px}
+  .contact .mail{
+    display:inline-flex;align-items:center;gap:12px;
+    padding:14px 24px;
+    background:rgba(1,31,38,.4);
+    border:1px solid rgba(0,177,192,.24);
+    border-radius:var(--r-pill);
+    font-family:var(--font-body);font-size:15px;font-weight:400;
+    letter-spacing:-0.005em;
+    color:var(--aqua-100);
+    transition:border-color .25s ease,color .25s ease,background .25s ease;
+  }
+  .contact .mail:hover{
+    border-color:var(--aqua-400);
+    color:var(--aqua-50);
+    background:rgba(0,177,192,.1);
+  }
+  @media (max-width:900px){
+    .contact .row{grid-template-columns:1fr;gap:24px;align-items:start}
+  }
+
+  /* ========================================
+     FOOTER — deepest teal
+     ======================================== */
+  footer.foot{
+    background:var(--footer-bg);
+    color:var(--charcoal-100);
+    padding:80px 0 28px;
+    border-top:1px solid rgba(0,177,192,.14);
+  }
+  footer.foot .top{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 1fr;
+    gap:56px;
+    padding-bottom:48px;
+    border-bottom:1px solid rgba(0,177,192,.1);
+  }
+  footer.foot .brand .foot-lockup{
+    display:inline-flex;align-items:center;gap:10px;color:var(--charcoal-25);margin-bottom:22px;
+  }
+  footer.foot .brand .foot-lockup .foot-mark{height:32px;width:32px;flex:none}
+  footer.foot .brand .foot-lockup .foot-wordmark{
+    font-family:"Sora","Kumbh Sans",sans-serif;
+    font-weight:800;font-size:26px;letter-spacing:-0.04em;line-height:1;
+    color:currentColor;text-transform:lowercase;
+    display:inline-block;
+  }
+  footer.foot .brand p{
+    max-width:36ch;font-size:14px;color:var(--charcoal-300);
+    line-height:1.6;margin-bottom:24px;font-weight:300;
+  }
+  footer.foot .socials{display:flex;gap:12px}
+  footer.foot .socials a{
+    display:inline-flex;align-items:center;justify-content:center;
+    width:36px;height:36px;border-radius:50%;
+    background:rgba(0,177,192,.06);
+    color:var(--charcoal-100);
+    transition:background .25s ease,color .25s ease,transform .3s ease;
+  }
+  footer.foot .socials a:hover{
+    background:var(--aqua-700);
+    color:var(--charcoal-25);
+    transform:translateY(-2px);
+  }
+  footer.foot .socials svg{width:14px;height:14px}
+  footer.foot h5{
+    font-family:var(--font-mono);font-size:11px;font-weight:400;
+    letter-spacing:.16em;text-transform:uppercase;
+    color:var(--aqua-600);margin:0 0 16px;
+  }
+  footer.foot ul{display:flex;flex-direction:column;gap:10px;align-items:flex-start}
+  footer.foot ul a{
+    position:relative;
+    display:inline-block;
+    font-size:14px;color:var(--charcoal-100);
+    font-weight:300;
+    padding-bottom:2px;
+    transition:color .3s ease;
+  }
+  footer.foot ul a::after{
+    content:"";position:absolute;bottom:0;left:0;right:0;
+    height:1px;border-radius:1px;
+    background:linear-gradient(
+      45deg,
+      #57948d, #314732, #203f3a, #154b4a,
+      #2f635d, #ac9255, #6d6d54, #535f49
+    );
+    background-size:400%;
+    animation:outline-glow 20s linear infinite;
+    filter:brightness(2.2) saturate(1.55);
+    box-shadow:0 0 3px rgba(212,183,120,.35);
+    transform:scaleX(0);transform-origin:left;
+    transition:transform .35s cubic-bezier(.2,.7,.2,1);
+  }
+  footer.foot ul a:hover{color:var(--aqua-200)}
+  footer.foot ul a:hover::after{transform:scaleX(1)}
+  footer.foot .bottom{
+    display:flex;align-items:center;justify-content:space-between;
+    padding-top:24px;gap:16px;flex-wrap:wrap;
+  }
+  footer.foot .bottom .copy{
+    font-family:var(--font-mono);font-size:11px;
+    letter-spacing:.12em;text-transform:uppercase;
+    color:var(--charcoal-500);
+  }
+  footer.foot .bottom .copy a{color:inherit;transition:color .2s ease}
+  footer.foot .bottom .copy a:hover{color:var(--aqua-200)}
+  footer.foot .bottom .kleros-strip{
+    display:inline-flex;align-items:center;gap:10px;
+    font-family:var(--font-mono);font-size:11px;
+    letter-spacing:.12em;text-transform:uppercase;
+    color:var(--charcoal-400);
+  }
+  footer.foot .bottom .kleros-strip .k-chip{
+    display:inline-flex;align-items:center;padding:3px 10px;border-radius:var(--r-pill);
+    background:linear-gradient(135deg,var(--kleros-2),var(--kleros));
+    color:#fff;font-weight:500;letter-spacing:.14em;
+  }
+  @media (max-width:900px){footer.foot .top{grid-template-columns:1fr 1fr;gap:36px}}
+  @media (max-width:520px){footer.foot .top{grid-template-columns:1fr}}
+
+  /* ========================================
+     SCROLL REVEAL
+     ======================================== */
+  .reveal{opacity:0;transform:translateY(24px);
+    transition:opacity .9s cubic-bezier(.2,.7,.2,1),transform .9s cubic-bezier(.2,.7,.2,1);
+  }
+  .reveal.in{opacity:1;transform:none}
+  @media (prefers-reduced-motion:reduce){
+    .reveal{opacity:1 !important;transform:none !important}
+  }
+  /* Seer logo */
+  .nav .brand .nav-logo{height:22px;width:auto;display:block}
+  footer.foot .brand .foot-lockup .foot-logo{height:32px;width:auto;display:block}
+  .wordmark-big svg{display:block;height:.56em;width:auto;margin:.22em auto}
+  .hero-frame .mark{width:56%;height:56%}
+</style>
+</head>
+<body>
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true"><symbol id="seer-lockup" viewBox="0 0 427 121"><path fill="currentColor" d="M60.42 0.15L83.39 0.15C86.68 0.15 89.34 2.85 89.34 6.18L89.34 30.29L60.01 30.29C59.74 30.29 59.49 30.40 59.31 30.59L34.93 55.29C34.08 56.15 33.82 57.45 34.28 58.58C34.74 59.70 35.83 60.44 37.03 60.44L57.20 60.44C57.60 60.44 57.96 60.68 58.12 61.06C58.27 61.43 58.19 61.87 57.90 62.15L29.85 90.58L6.05 90.58C2.76 90.58 0.10 87.88 0.10 84.55L0.10 61.27C0.10 60.74 0.31 60.23 0.68 59.85L59.02 0.74C59.39 0.36 59.89 0.15 60.42 0.15ZM58.77 120.73L35.80 120.73C32.51 120.73 29.85 118.03 29.85 114.70L29.85 90.58L59.19 90.58C59.45 90.58 59.70 90.48 59.89 90.29L84.27 65.58C85.12 64.72 85.37 63.43 84.91 62.30C84.45 61.17 83.37 60.44 82.16 60.44L61.99 60.44C61.59 60.44 61.23 60.19 61.07 59.82C60.92 59.44 61.01 59.01 61.29 58.72L89.34 30.29L113.14 30.29C116.43 30.29 119.09 32.99 119.09 36.32L119.09 59.61C119.09 60.14 118.88 60.65 118.51 61.03L60.18 120.14C59.80 120.51 59.30 120.73 58.77 120.73Z"/><path fill="currentColor" fill-rule="evenodd" d="M171.58 100.75 C171.33 100.72 170.21 100.62 169.08 100.55 C155.96 99.64 145.44 93.52 141.64 84.58 C140.24 81.29 139.30 75.95 139.96 75.07 C140.36 74.54 139.96 74.56 148.08 74.58 C153.93 74.59 155.50 74.62 155.71 74.70 C156.06 74.85 156.37 75.24 156.48 75.68 C156.53 75.88 156.71 76.61 156.88 77.30 C157.95 81.77 160.73 84.39 166.17 86.06 C167.04 86.33 167.75 86.47 170.21 86.90 C171.24 87.07 177.30 87.11 178.29 86.94 C182.43 86.25 184.52 85.65 186.62 84.56 C192.22 81.65 192.79 74.91 187.75 71.32 C185.81 69.94 181.66 68.46 178.21 67.92 C174.70 67.37 173.77 67.23 172.68 67.12 C172.01 67.05 171.10 66.94 170.67 66.87 C170.23 66.80 169.25 66.65 168.48 66.54 C167.71 66.43 166.79 66.26 166.43 66.18 C166.08 66.09 165.51 65.97 165.17 65.92 C160.77 65.23 154.94 63.48 151.33 61.77 C145.15 58.84 141.51 54.88 139.84 49.28 C139.05 46.61 139.06 41.53 139.87 38.25 C141.99 29.65 150.37 23.25 162.21 21.17 C162.76 21.07 163.68 20.90 164.25 20.79 C164.86 20.68 165.95 20.56 166.88 20.50 C167.75 20.45 168.89 20.37 169.42 20.33 C172.47 20.07 173.17 20.07 176.67 20.33 C177.29 20.37 178.35 20.45 179.04 20.50 C181.37 20.66 186.11 21.62 188.58 22.43 C195.12 24.58 199.26 27.27 202.89 31.71 C204.93 34.21 206.74 38.42 207.24 41.79 C207.63 44.45 207.63 45.58 207.23 46.00 C206.83 46.43 207.02 46.42 199.18 46.43 L191.87 46.45L191.45 46.25 C190.90 45.97 190.72 45.59 190.54 44.31 C189.93 39.78 186.52 36.48 180.80 34.86 C180.15 34.68 178.84 34.43 176.73 34.08 C175.05 33.80 169.66 33.85 167.88 34.17 C167.32 34.27 166.50 34.40 166.04 34.47 C164.51 34.69 162.52 35.27 161.19 35.88 C156.19 38.17 154.51 44.00 157.70 47.97 C160.17 51.04 165.94 53.02 175.08 53.92 C175.61 53.97 176.42 54.09 176.88 54.17 C177.34 54.26 178.12 54.39 178.63 54.46 C186.84 55.60 194.76 58.12 199.17 61.01 C205.98 65.47 208.51 70.88 207.91 79.69 C207.23 89.67 198.17 97.66 185.04 99.83 C184.44 99.93 183.49 100.10 182.92 100.21 C182.34 100.32 181.24 100.45 180.46 100.50 C179.68 100.55 178.63 100.63 178.12 100.67 C176.92 100.78 172.17 100.84 171.58 100.75 Z M250.12 100.75 C249.85 100.71 248.86 100.62 247.92 100.54 C244.29 100.25 241.10 99.42 236.97 97.72 C231.39 95.42 225.46 90.44 221.84 85.00 C218.36 79.80 216.50 75.07 215.16 68.08 C215.05 67.50 214.75 64.83 214.66 63.62 C214.62 63.03 214.53 62.06 214.45 61.47 C214.33 60.50 214.33 60.30 214.45 59.14 C214.53 58.44 214.60 57.65 214.63 57.38 C215.68 45.31 220.03 35.92 227.75 29.02 C233.15 24.19 240.44 21.03 247.50 20.46 C248.39 20.39 249.17 20.31 249.23 20.29 C249.56 20.18 251.81 20.09 252.67 20.16 C258.06 20.59 258.03 20.58 261.17 21.35 C271.92 23.99 280.74 32.19 284.99 43.50 C287.13 49.19 287.95 54.23 287.90 61.33 C287.87 65.34 287.88 65.26 287.21 65.62 L286.88 65.79L259.75 65.83 C239.65 65.86 232.57 65.90 232.42 65.97 C231.78 66.26 231.58 66.94 231.73 68.31 C232.55 75.63 238.23 82.49 245.54 85.00 C251.06 86.89 256.59 86.64 261.47 84.29 C265.22 82.48 268.26 79.30 270.39 74.96 C271.31 73.07 270.56 73.22 279.38 73.21 C287.20 73.21 286.96 73.19 287.38 73.69 C287.81 74.20 287.32 76.06 285.86 79.49 C281.66 89.29 272.04 97.26 261.50 99.65 C260.88 99.80 259.86 100.03 259.23 100.17 C257.30 100.61 251.67 100.97 250.12 100.75 Z M269.70 53.21 C270.89 53.02 271.08 52.14 270.50 49.61 C268.10 39.07 257.54 32.62 247.04 35.25 C239.61 37.12 233.87 42.59 232.16 49.46 C231.41 52.43 231.70 53.15 233.62 53.25 C234.90 53.31 269.30 53.28 269.70 53.21 Z M331.12 100.75C330.85 100.71 329.86 100.62 328.92 100.54C325.29 100.25 322.10 99.42 317.97 97.72C312.39 95.42 306.46 90.44 302.84 85.00C299.36 79.80 297.50 75.07 296.16 68.08C296.05 67.50 295.75 64.83 295.66 63.62C295.62 63.03 295.53 62.06 295.45 61.47C295.33 60.50 295.33 60.30 295.45 59.14C295.53 58.44 295.60 57.65 295.63 57.38C296.68 45.31 301.03 35.92 308.75 29.02C314.15 24.19 321.44 21.03 328.50 20.46C329.39 20.39 330.17 20.31 330.23 20.29C330.56 20.18 332.81 20.09 333.67 20.16C339.06 20.59 339.03 20.58 342.17 21.35C352.92 23.99 361.74 32.19 365.99 43.50C368.13 49.19 368.95 54.23 368.90 61.33C368.87 65.34 368.88 65.26 368.21 65.62L367.88 65.79L340.75 65.83C320.65 65.86 313.57 65.90 313.42 65.97C312.78 66.26 312.58 66.94 312.73 68.31C313.55 75.63 319.23 82.49 326.54 85.00C332.06 86.89 337.59 86.64 342.47 84.29C346.22 82.48 349.26 79.30 351.39 74.96C352.31 73.07 351.56 73.22 360.38 73.21C368.20 73.21 367.96 73.19 368.38 73.69C368.81 74.20 368.32 76.06 366.86 79.49C362.66 89.29 353.04 97.26 342.50 99.65C341.88 99.80 340.86 100.03 340.23 100.17C338.30 100.61 332.67 100.97 331.12 100.75ZM350.70 53.21C351.89 53.02 352.08 52.14 351.50 49.61C349.10 39.07 338.54 32.62 328.04 35.25C320.61 37.12 314.87 42.59 313.16 49.46C312.41 52.43 312.70 53.15 314.62 53.25C315.90 53.31 350.30 53.28 350.70 53.21Z M380.11 100.84 C379.47 100.76 379.09 100.54 378.88 100.12 C378.71 99.79 378.71 99.60 378.69 72.76 L378.67 45.72L378.91 43.80 C379.34 40.49 379.94 38.54 381.43 35.56 C384.55 29.32 390.30 24.67 396.96 23.01 C399.62 22.35 399.94 22.33 414.24 22.33 C427.80 22.33 426.70 22.28 427.04 22.96 C427.28 23.44 427.31 38.58 427.07 39.11 C426.75 39.80 427.46 39.76 416.65 39.71 C403.70 39.64 396.90 39.73 396.50 39.96 C395.80 40.37 395.88 36.88 395.83 70.25 C395.79 99.59 395.79 99.79 395.62 100.12 C395.41 100.55 395.14 100.73 394.59 100.83 C394.08 100.93 380.95 100.93 380.11 100.84 Z"/></symbol><symbol id="seer-wordmark" viewBox="139.25 20.13 287.99 80.78"><path fill="currentColor" fill-rule="evenodd" d="M171.58 100.75 C171.33 100.72 170.21 100.62 169.08 100.55 C155.96 99.64 145.44 93.52 141.64 84.58 C140.24 81.29 139.30 75.95 139.96 75.07 C140.36 74.54 139.96 74.56 148.08 74.58 C153.93 74.59 155.50 74.62 155.71 74.70 C156.06 74.85 156.37 75.24 156.48 75.68 C156.53 75.88 156.71 76.61 156.88 77.30 C157.95 81.77 160.73 84.39 166.17 86.06 C167.04 86.33 167.75 86.47 170.21 86.90 C171.24 87.07 177.30 87.11 178.29 86.94 C182.43 86.25 184.52 85.65 186.62 84.56 C192.22 81.65 192.79 74.91 187.75 71.32 C185.81 69.94 181.66 68.46 178.21 67.92 C174.70 67.37 173.77 67.23 172.68 67.12 C172.01 67.05 171.10 66.94 170.67 66.87 C170.23 66.80 169.25 66.65 168.48 66.54 C167.71 66.43 166.79 66.26 166.43 66.18 C166.08 66.09 165.51 65.97 165.17 65.92 C160.77 65.23 154.94 63.48 151.33 61.77 C145.15 58.84 141.51 54.88 139.84 49.28 C139.05 46.61 139.06 41.53 139.87 38.25 C141.99 29.65 150.37 23.25 162.21 21.17 C162.76 21.07 163.68 20.90 164.25 20.79 C164.86 20.68 165.95 20.56 166.88 20.50 C167.75 20.45 168.89 20.37 169.42 20.33 C172.47 20.07 173.17 20.07 176.67 20.33 C177.29 20.37 178.35 20.45 179.04 20.50 C181.37 20.66 186.11 21.62 188.58 22.43 C195.12 24.58 199.26 27.27 202.89 31.71 C204.93 34.21 206.74 38.42 207.24 41.79 C207.63 44.45 207.63 45.58 207.23 46.00 C206.83 46.43 207.02 46.42 199.18 46.43 L191.87 46.45L191.45 46.25 C190.90 45.97 190.72 45.59 190.54 44.31 C189.93 39.78 186.52 36.48 180.80 34.86 C180.15 34.68 178.84 34.43 176.73 34.08 C175.05 33.80 169.66 33.85 167.88 34.17 C167.32 34.27 166.50 34.40 166.04 34.47 C164.51 34.69 162.52 35.27 161.19 35.88 C156.19 38.17 154.51 44.00 157.70 47.97 C160.17 51.04 165.94 53.02 175.08 53.92 C175.61 53.97 176.42 54.09 176.88 54.17 C177.34 54.26 178.12 54.39 178.63 54.46 C186.84 55.60 194.76 58.12 199.17 61.01 C205.98 65.47 208.51 70.88 207.91 79.69 C207.23 89.67 198.17 97.66 185.04 99.83 C184.44 99.93 183.49 100.10 182.92 100.21 C182.34 100.32 181.24 100.45 180.46 100.50 C179.68 100.55 178.63 100.63 178.12 100.67 C176.92 100.78 172.17 100.84 171.58 100.75 Z M250.12 100.75 C249.85 100.71 248.86 100.62 247.92 100.54 C244.29 100.25 241.10 99.42 236.97 97.72 C231.39 95.42 225.46 90.44 221.84 85.00 C218.36 79.80 216.50 75.07 215.16 68.08 C215.05 67.50 214.75 64.83 214.66 63.62 C214.62 63.03 214.53 62.06 214.45 61.47 C214.33 60.50 214.33 60.30 214.45 59.14 C214.53 58.44 214.60 57.65 214.63 57.38 C215.68 45.31 220.03 35.92 227.75 29.02 C233.15 24.19 240.44 21.03 247.50 20.46 C248.39 20.39 249.17 20.31 249.23 20.29 C249.56 20.18 251.81 20.09 252.67 20.16 C258.06 20.59 258.03 20.58 261.17 21.35 C271.92 23.99 280.74 32.19 284.99 43.50 C287.13 49.19 287.95 54.23 287.90 61.33 C287.87 65.34 287.88 65.26 287.21 65.62 L286.88 65.79L259.75 65.83 C239.65 65.86 232.57 65.90 232.42 65.97 C231.78 66.26 231.58 66.94 231.73 68.31 C232.55 75.63 238.23 82.49 245.54 85.00 C251.06 86.89 256.59 86.64 261.47 84.29 C265.22 82.48 268.26 79.30 270.39 74.96 C271.31 73.07 270.56 73.22 279.38 73.21 C287.20 73.21 286.96 73.19 287.38 73.69 C287.81 74.20 287.32 76.06 285.86 79.49 C281.66 89.29 272.04 97.26 261.50 99.65 C260.88 99.80 259.86 100.03 259.23 100.17 C257.30 100.61 251.67 100.97 250.12 100.75 Z M269.70 53.21 C270.89 53.02 271.08 52.14 270.50 49.61 C268.10 39.07 257.54 32.62 247.04 35.25 C239.61 37.12 233.87 42.59 232.16 49.46 C231.41 52.43 231.70 53.15 233.62 53.25 C234.90 53.31 269.30 53.28 269.70 53.21 Z M331.12 100.75C330.85 100.71 329.86 100.62 328.92 100.54C325.29 100.25 322.10 99.42 317.97 97.72C312.39 95.42 306.46 90.44 302.84 85.00C299.36 79.80 297.50 75.07 296.16 68.08C296.05 67.50 295.75 64.83 295.66 63.62C295.62 63.03 295.53 62.06 295.45 61.47C295.33 60.50 295.33 60.30 295.45 59.14C295.53 58.44 295.60 57.65 295.63 57.38C296.68 45.31 301.03 35.92 308.75 29.02C314.15 24.19 321.44 21.03 328.50 20.46C329.39 20.39 330.17 20.31 330.23 20.29C330.56 20.18 332.81 20.09 333.67 20.16C339.06 20.59 339.03 20.58 342.17 21.35C352.92 23.99 361.74 32.19 365.99 43.50C368.13 49.19 368.95 54.23 368.90 61.33C368.87 65.34 368.88 65.26 368.21 65.62L367.88 65.79L340.75 65.83C320.65 65.86 313.57 65.90 313.42 65.97C312.78 66.26 312.58 66.94 312.73 68.31C313.55 75.63 319.23 82.49 326.54 85.00C332.06 86.89 337.59 86.64 342.47 84.29C346.22 82.48 349.26 79.30 351.39 74.96C352.31 73.07 351.56 73.22 360.38 73.21C368.20 73.21 367.96 73.19 368.38 73.69C368.81 74.20 368.32 76.06 366.86 79.49C362.66 89.29 353.04 97.26 342.50 99.65C341.88 99.80 340.86 100.03 340.23 100.17C338.30 100.61 332.67 100.97 331.12 100.75ZM350.70 53.21C351.89 53.02 352.08 52.14 351.50 49.61C349.10 39.07 338.54 32.62 328.04 35.25C320.61 37.12 314.87 42.59 313.16 49.46C312.41 52.43 312.70 53.15 314.62 53.25C315.90 53.31 350.30 53.28 350.70 53.21Z M380.11 100.84 C379.47 100.76 379.09 100.54 378.88 100.12 C378.71 99.79 378.71 99.60 378.69 72.76 L378.67 45.72L378.91 43.80 C379.34 40.49 379.94 38.54 381.43 35.56 C384.55 29.32 390.30 24.67 396.96 23.01 C399.62 22.35 399.94 22.33 414.24 22.33 C427.80 22.33 426.70 22.28 427.04 22.96 C427.28 23.44 427.31 38.58 427.07 39.11 C426.75 39.80 427.46 39.76 416.65 39.71 C403.70 39.64 396.90 39.73 396.50 39.96 C395.80 40.37 395.88 36.88 395.83 70.25 C395.79 99.59 395.79 99.79 395.62 100.12 C395.41 100.55 395.14 100.73 394.59 100.83 C394.08 100.93 380.95 100.93 380.11 100.84 Z"/></symbol></svg>
+
+<!-- ===== Nav ===== -->
+<div class="nav-outer" id="nav-outer">
+  <div class="wrap">
+    <nav class="nav" aria-label="Primary">
+      <a class="brand" href="/" aria-label="Seer home">
+        <svg class="nav-logo" viewBox="0 0 427 121" aria-hidden="true"><use href="#seer-lockup"/></svg>
+      </a>
+      <div class="primary">
+        <a class="link" href="https://seer-3.gitbook.io/seer-documentation" target="_blank" rel="noopener">Documentation</a>
+        <a class="link" href="https://seer-pm.medium.com/" target="_blank" rel="noopener">Blog</a>
+        <a class="btn btn-primary" href="https://app.seer.pm/" target="_blank" rel="noopener">
+          &gt;_ Launch app
+          <svg class="arrow" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+        </a>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<!-- ===== Hero ===== -->
+<div class="hero-wrap">
+  <div class="bg-video" aria-hidden="true">
+    <video autoplay muted loop playsinline preload="auto" class="hero-video">
+      <source src="assets/hero-video.mp4" type="video/mp4">
+    </video>
+  </div>
+  <div class="hero-overlay" aria-hidden="true"></div>
+
+  <div class="hero-inner">
+    <div class="wrap">
+      <div class="hero-frame">
+        <div class="mark-ring" aria-hidden="true">
+          <span class="ring"></span>
+          <span class="mark"><img src="assets/seer-mark.svg" alt="" /></span>
+        </div>
+        <span class="wordmark-big" aria-hidden="true"><svg viewBox="0 0 287.99 80.78"><use href="#seer-wordmark"/></svg></span>
+
+        <h1 class="hero-tagline">
+          Price the <span class="bold">future.</span>
+        </h1>
+        <p class="lede hero-lede">
+          Seer is an open prediction marketplace with a strong focus on on-chain settlement and arbitration by an open court — where questions about the future become markets priced by traders.
+        </p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="https://app.seer.pm/" target="_blank" rel="noopener">
+            &gt;_ Launch app
+            <svg class="arrow" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-glow btn-glow-live" href="https://seer-3.gitbook.io/seer-documentation" target="_blank" rel="noopener">
+            Read the docs
+          </a>
+        </div>
+
+        <div class="hero-avail">
+          <span class="avail-label">// Live on</span>
+          <div class="chains">
+            <span class="chain eth">
+              <svg class="logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="16" cy="16" r="16" fill="#627EEA"/>
+                <g fill="#fff" fill-rule="nonzero">
+                  <path fill-opacity=".6" d="M16.498 4v8.87l7.497 3.35z"/>
+                  <path d="M16.498 4L9 16.22l7.498-3.35z"/>
+                  <path fill-opacity=".6" d="M16.498 21.968v6.027L24 17.616z"/>
+                  <path d="M16.498 27.995v-6.028L9 17.616z"/>
+                  <path fill-opacity=".2" d="M16.498 20.573l7.497-4.353-7.497-3.348z"/>
+                  <path fill-opacity=".6" d="M9 16.22l7.498 4.353v-7.701z"/>
+                </g>
+              </svg>
+              Ethereum
+            </span>
+            <span class="chain base">
+              <svg class="logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="16" cy="16" r="16" fill="#0052FF"/>
+                <path fill="#fff" d="M15.97 26c5.505 0 9.97-4.478 9.97-10s-4.465-10-9.97-10c-5.223 0-9.507 4.03-9.936 9.153h14.807v1.694H6.034C6.464 21.97 10.747 26 15.97 26Z"/>
+              </svg>
+              Base
+            </span>
+            <span class="chain op">
+              <svg class="logo" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <circle cx="16" cy="16" r="16" fill="#FF0420"/>
+                <path fill="#fff" d="M11.36 19.9c-1.116 0-2.03-.263-2.744-.788-.71-.53-1.064-1.28-1.064-2.253 0-.204.023-.454.07-.75.126-.7.303-1.535.53-2.51.649-2.628 2.318-3.94 5.01-3.94.734 0 1.394.126 1.98.375.586.245 1.048.616 1.386 1.113.339.492.508 1.08.508 1.762 0 .194-.023.442-.07.744-.146.847-.32 1.68-.52 2.5-.335 1.31-.913 2.29-1.734 2.94-.82.653-1.918.98-3.29.98l-.062-.174zm.2-2.078c.53 0 .98-.157 1.354-.472.376-.315.643-.795.807-1.44a24.14 24.14 0 0 0 .506-2.336c.04-.198.058-.4.058-.605 0-.858-.45-1.286-1.347-1.286-.53 0-.982.157-1.36.472-.372.315-.638.795-.797 1.44-.174.635-.343 1.415-.512 2.336-.04.192-.06.39-.06.594 0 .867.45 1.297 1.352 1.297zm4.68 1.912a.187.187 0 0 1-.153-.06.204.204 0 0 1-.036-.164l1.976-9.302a.24.24 0 0 1 .086-.152.253.253 0 0 1 .164-.06h3.808c1.06 0 1.912.22 2.554.66.65.44.973 1.075.973 1.906 0 .24-.028.49-.084.746-.235 1.084-.71 1.883-1.425 2.398-.706.514-1.674.771-2.906.771H19.34l-.66 3.128a.24.24 0 0 1-.087.152.253.253 0 0 1-.163.06h-2.19zm4.79-5.837c.394 0 .734-.108 1.02-.323.293-.216.487-.523.58-.921.024-.117.037-.22.037-.31 0-.28-.083-.494-.25-.643-.166-.157-.45-.235-.85-.235h-1.7l-.518 2.432h1.68z"/>
+              </svg>
+              Optimism
+            </span>
+            <span class="chain gnosis">
+              <img class="logo" src="assets/gnosis.svg" alt="" aria-hidden="true" />
+              Gnosis
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== Gradient container wraps all remaining content ===== -->
+<div class="gradient-home">
+
+  <!-- ===== Base Layer ===== -->
+  <section class="baselayer">
+    <div class="tri-mesh" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">// Base layer</div>
+        <h2>A base layer for <span class="bold">prediction markets.</span></h2>
+        <p class="lede">Seer is moving toward being an open protocol you can build on — a permissionless base layer where any team ships prediction-market apps on top.</p>
+      </div>
+
+      <div class="stack reveal">
+        <div class="stack-row row-apps">
+          <div class="stack-label">// Apps</div>
+          <div class="apps-strip">
+            <span class="app-chip"><span class="app-dot"></span>Election Tracker</span>
+            <span class="app-chip"><span class="app-dot"></span>Macro Odds Terminal</span>
+            <span class="app-chip"><span class="app-dot"></span>Sports Book</span>
+            <span class="app-chip"><span class="app-dot"></span>Onchain News Desk</span>
+            <span class="app-chip ghost">+ Your app</span>
+          </div>
+        </div>
+        <div class="stack-arrow" aria-hidden="true">
+          <svg viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1 v9 M2 7 L5 10 L8 7"/></svg>
+        </div>
+        <div class="stack-row row-sdk">
+          <div class="stack-label">// SDK &amp; API</div>
+          <div class="stack-text">Query live markets, mint outcome positions, subscribe to price updates — from any client, in any language.</div>
+        </div>
+        <div class="stack-arrow" aria-hidden="true">
+          <svg viewBox="0 0 10 12" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 1 v9 M2 7 L5 10 L8 7"/></svg>
+        </div>
+        <div class="stack-row row-base">
+          <div class="stack-label">// Seer protocol</div>
+          <div class="stack-text">Conditional tokens · Automated market makers · Kleros arbitration · On-chain settlement · Permissionless authoring.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Two moves ===== -->
+  <section class="features">
+    <div class="tri-mesh mesh-tr" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">// Two moves</div>
+        <h2>Make markets. <span class="bold">Trade them.</span></h2>
+        <p class="lede">Every account is both a market-maker and a trader. Author the questions that matter to you — or trade the ones the crowd is already pricing.</p>
+      </div>
+
+      <div class="grid">
+        <article class="feature reveal">
+          <span class="letter">A · For creators</span>
+          <h3>Make a market.</h3>
+          <p>Turn any question about the future into a tradable market. Choose the outcome shape, set the reporting source, and let the crowd find the price.</p>
+          <ul class="notes">
+            <li>Four outcome shapes — categorical, multi-categorical, scalar, multi-scalar.</li>
+            <li>Custom reporting windows and resolution sources.</li>
+            <li>Rewards for the makers whose markets attract volume.</li>
+          </ul>
+          <a class="btn btn-ghost btn-glow cta" href="https://app.seer.pm/create-market" target="_blank" rel="noopener">
+            Create a market
+            <svg class="arrow" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+        </article>
+
+        <article class="feature reveal">
+          <span class="letter">B · For traders</span>
+          <h3>Trade positions.</h3>
+          <p>One familiar interface for every open market. Deep liquidity, live odds, and outcomes that settle on-chain — no waiting on a centralized book.</p>
+          <ul class="notes">
+            <li>ERC-1155 outcome tokens wrapped as ERC-20 for smooth composability.</li>
+            <li>Conditional-token framework for compound and nested markets.</li>
+            <li>Portfolio view, real-time odds, no custodial layer between you and the market.</li>
+          </ul>
+          <a class="btn btn-ghost btn-glow cta" href="https://app.seer.pm/" target="_blank" rel="noopener">
+            Open the app
+            <svg class="arrow" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Kleros ===== -->
+  <section class="kleros">
+    <div class="wrap">
+      <div class="head-row reveal">
+        <div class="head-title">
+          <div class="eyebrow">// Resolution</div>
+          <h2>Resolved by an <span class="bold">open court.</span></h2>
+          <p class="lede">Every Seer market resolves through <a class="k-link" href="https://kleros.io/" target="_blank" rel="noopener">Kleros</a> — an on-chain court of independent jurors, staked and randomly drawn to arbitrate disputes. No centralized referee.</p>
+        </div>
+        <span class="badge" aria-label="Secured by Kleros">
+          <span class="k-dot" aria-hidden="true"></span> Kleros · Onchain justice
+        </span>
+      </div>
+
+      <div class="flow reveal" role="list">
+        <div class="step" role="listitem">
+          <div class="num">01</div>
+          <h4>Answer proposed</h4>
+          <p>Anyone can bond and submit the market's outcome once the reporting window opens.</p>
+        </div>
+        <div class="step" role="listitem">
+          <div class="num">02</div>
+          <h4>Challenge window</h4>
+          <p>If the proposed answer is disputed, the case escalates to Kleros with evidence attached.</p>
+        </div>
+        <div class="step active" role="listitem">
+          <div class="num">03</div>
+          <h4>Jurors decide</h4>
+          <p>A randomly drawn panel of Kleros jurors reviews evidence and votes on the correct outcome.</p>
+        </div>
+        <div class="step" role="listitem">
+          <div class="num">04</div>
+          <h4>Market settles</h4>
+          <p>The ruling is written on-chain and outcome tokens settle at their true value.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Opportunities ===== -->
+  <section class="opps">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">// Coverage</div>
+        <h2>If it has an outcome, <span class="bold">it can be a market.</span></h2>
+        <p class="lede">Twelve directions to start. The twelfth is deliberately open — bring your own question.</p>
+      </div>
+      <div class="pills reveal">
+        <span class="pill">Elections</span>
+        <span class="pill">Sports</span>
+        <span class="pill">Political forecasting</span>
+        <span class="pill">Financial markets</span>
+        <span class="pill">Event outcomes</span>
+        <span class="pill">Crowdsourced intelligence</span>
+        <span class="pill">Disaster and risk</span>
+        <span class="pill">Insurance underwriting</span>
+        <span class="pill">Social good</span>
+        <span class="pill">Research and development</span>
+        <span class="pill">Entertainment and media</span>
+        <span class="pill more">+ Your question</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Market types ===== -->
+  <section class="types">
+    <div class="tri-mesh mesh-bl" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div class="eyebrow">// Market shapes</div>
+        <h2>Four ways to <span class="bold">shape a question.</span></h2>
+        <p class="lede">Every kind of forecast has a market shape that fits. Pick the one that matches the outcome — Seer handles the rest.</p>
+      </div>
+
+      <div class="grid">
+        <article class="type-card categorical reveal">
+          <div class="diag" aria-hidden="true">
+            <span class="no-bar"></span>
+            <span class="no-label">NO 32%</span>
+          </div>
+          <div class="type-kicker">Type 01</div>
+          <h4>Categorical</h4>
+          <p>One outcome out of several mutually-exclusive options.</p>
+          <a class="cta-link" href="https://app.seer.pm/markets/100/0x43d881f5920ed29fc5cd4917d6817496abbba6d9" target="_blank" rel="noopener">
+            View example →
+          </a>
+        </article>
+        <article class="type-card multi-cat reveal">
+          <div class="diag" aria-hidden="true"><span class="bar"></span></div>
+          <div class="type-kicker">Type 02</div>
+          <h4>Multi Categorical</h4>
+          <p>Multiple outcomes can be selected together.</p>
+          <a class="cta-link" href="https://app.seer.pm/markets/100/0x528c5535136ce58611dc347ae88e40a420fa67cc" target="_blank" rel="noopener">
+            View example →
+          </a>
+        </article>
+        <article class="type-card scalar reveal">
+          <div class="diag" aria-hidden="true"></div>
+          <div class="type-kicker">Type 03</div>
+          <h4>Scalar</h4>
+          <p>A single numeric outcome inside a defined range.</p>
+          <a class="cta-link" href="https://app.seer.pm/markets/100/0xe12f48ecdd6e64d95d1d8f1d5d7aa37e14f2888b" target="_blank" rel="noopener">
+            View example →
+          </a>
+        </article>
+        <article class="type-card multi-scalar reveal">
+          <div class="diag" aria-hidden="true"></div>
+          <div class="type-kicker">Type 04</div>
+          <h4>Multi Scalar</h4>
+          <p>Several correlated numeric outcomes in a single market.</p>
+          <a class="cta-link" href="https://app.seer.pm/markets/100/0x8df5b3a628b3d7703164620418159e83c3697ea5" target="_blank" rel="noopener">
+            View example →
+          </a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Big CTA ===== -->
+  <section class="cta-block">
+    <div class="wrap">
+      <div class="cta-card reveal">
+        <img class="mark-watermark" src="assets/seer-mark.svg" alt="" aria-hidden="true" />
+        <div class="inner">
+          <span class="kicker">// Ready when you are</span>
+          <h2>Start pricing <span class="bold">what happens next.</span></h2>
+          <p>Launch the app on Ethereum, Base, Optimism, or Gnosis. No account, no waitlist — connect a wallet and you're in.</p>
+        </div>
+        <div class="right">
+          <a class="btn btn-primary" href="https://app.seer.pm/" target="_blank" rel="noopener">
+            &gt;_ Launch app
+            <svg class="arrow" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+          </a>
+          <a class="btn btn-ghost btn-glow btn-glow-live" href="https://seer-3.gitbook.io/seer-documentation" target="_blank" rel="noopener">Read the docs</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== Contact ===== -->
+  <section class="contact">
+    <div class="wrap">
+      <div class="row reveal">
+        <div>
+          <div class="eyebrow">// Get in touch</div>
+          <h2>Reach out.</h2>
+          <p class="lede">Partnership, integration, or a question about resolution sources — the team reads every note.</p>
+        </div>
+        <a class="mail" href="mailto:info@seer.pm">
+          info@seer.pm
+          <svg class="arrow" width="11" height="11" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 9L9 3M9 3H4M9 3V8"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</div><!-- /.gradient-home -->
+
+<!-- ===== Footer ===== -->
+<footer class="foot">
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <a class="foot-lockup" href="/" aria-label="Seer home">
+          <svg class="foot-logo" viewBox="0 0 427 121" aria-hidden="true"><use href="#seer-lockup"/></svg>
+        </a>
+        <p>A prediction marketplace. Permissionless, on-chain — resolved by an open court.</p>
+        <div class="socials" aria-label="Social links">
+          <a href="https://github.com/seer-pm" target="_blank" rel="noopener" aria-label="GitHub">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2c-3.34.72-4.04-1.6-4.04-1.6-.55-1.4-1.34-1.77-1.34-1.77-1.1-.75.08-.74.08-.74 1.21.09 1.85 1.24 1.85 1.24 1.08 1.84 2.83 1.31 3.52 1 .11-.79.42-1.31.77-1.61-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.13-.3-.54-1.52.11-3.16 0 0 1.01-.32 3.3 1.23a11.4 11.4 0 0 1 6 0c2.29-1.55 3.29-1.23 3.29-1.23.66 1.64.25 2.86.12 3.16.77.84 1.24 1.91 1.24 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.81 1.1.81 2.22v3.29c0 .32.22.7.82.58A12 12 0 0 0 12 .5Z"/></svg>
+          </a>
+          <a href="https://x.com/seer_pm" target="_blank" rel="noopener" aria-label="X / Twitter">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2H21l-6.53 7.46L22 22h-6.83l-4.79-6.24L4.8 22H2l6.98-7.97L2 2h6.95l4.32 5.7L18.244 2Zm-1.2 18h1.9L7.06 4H5.08l11.964 16Z"/></svg>
+          </a>
+          <a href="https://t.me/Seerpredictionmarket" target="_blank" rel="noopener" aria-label="Telegram">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9.78 15.27 9.6 19c.4 0 .57-.17.78-.37l1.86-1.78 3.86 2.83c.7.39 1.21.18 1.4-.65l2.55-11.95c.23-1.04-.38-1.45-1.07-1.2L4.06 10.34c-1.02.4-1.01.98-.18 1.24l3.9 1.22 9.06-5.71c.43-.28.82-.13.5.16"/></svg>
+          </a>
+          <a href="https://discord.com/invite/rBEB4MYQwV" target="_blank" rel="noopener" aria-label="Discord">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.075.075 0 0 0-.079.037c-.211.375-.445.865-.608 1.249a18.27 18.27 0 0 0-5.487 0 12.55 12.55 0 0 0-.617-1.25.077.077 0 0 0-.079-.036A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.058a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.105c-.65-.246-1.27-.546-1.87-.888a.077.077 0 0 1-.008-.127c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.926 1.79 8.18 1.79 12.062 0a.074.074 0 0 1 .078.009c.12.099.246.198.373.292a.077.077 0 0 1-.006.127c-.6.35-1.22.642-1.87.888a.076.076 0 0 0-.041.105c.36.699.772 1.363 1.225 1.994a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.66a.06.06 0 0 0-.031-.027ZM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.211 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418Zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418Z"/></svg>
+          </a>
+          <a href="https://seer-pm.medium.com/" target="_blank" rel="noopener" aria-label="Medium">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13.54 12c0 3.04-2.44 5.5-5.45 5.5S2.64 15.04 2.64 12s2.44-5.5 5.45-5.5S13.54 8.96 13.54 12zm5.98 0c0 2.86-1.22 5.18-2.72 5.18-1.5 0-2.72-2.32-2.72-5.18s1.22-5.18 2.72-5.18c1.5 0 2.72 2.32 2.72 5.18zm2.84 0c0 2.56-.43 4.64-.96 4.64s-.96-2.08-.96-4.64.43-4.64.96-4.64.96 2.08.96 4.64z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="col">
+        <h5>// Seer</h5>
+        <ul>
+          <li><a href="https://app.seer.pm/" target="_blank" rel="noopener">Seer app</a></li>
+          <li><a href="https://seer-pm.medium.com/" target="_blank" rel="noopener">Blog</a></li>
+          <li><a href="https://discord.com/invite/rBEB4MYQwV" target="_blank" rel="noopener">Community</a></li>
+        </ul>
+      </div>
+      <div class="col">
+        <h5>// Docs</h5>
+        <ul>
+          <li><a href="https://seer-3.gitbook.io/seer-documentation" target="_blank" rel="noopener">Documentation</a></li>
+          <li><a href="https://drive.google.com/drive/folders/1EOGhjj_jHJ5PPt86VEDuGZ2dovJpfY-l" target="_blank" rel="noopener">Brand assets</a></li>
+        </ul>
+      </div>
+      <div class="col">
+        <h5>// Reach</h5>
+        <ul>
+          <li><a href="mailto:info@seer.pm">info@seer.pm</a></li>
+          <li><a href="https://x.com/seer_pm" target="_blank" rel="noopener">X.com</a></li>
+          <li><a href="https://t.me/Seerpredictionmarket" target="_blank" rel="noopener">Telegram</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="bottom">
+      <div class="copy">© Seer · Onchain — <a href="https://seer-3.gitbook.io/seer-documentation" target="_blank" rel="noopener">Terms of Service</a> · <a href="https://seer-3.gitbook.io/seer-documentation" target="_blank" rel="noopener">Privacy Policy</a></div>
+      <a class="kleros-strip" href="https://kleros.io/" target="_blank" rel="noopener">
+        <span class="k-chip">Kleros</span>
+        <span>Secured by an open court</span>
+      </a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* Nav — background on scroll */
+  (function(){
+    var n = document.getElementById('nav-outer');
+    if(!n) return;
+    var update = function(){ n.classList.toggle('scrolled', window.scrollY > 8); };
+    update();
+    window.addEventListener('scroll', update, { passive:true });
+  })();
+
+  /* Typing eyebrow — one-shot when visible */
+  (function(){
+    var els = document.querySelectorAll('.eyebrow');
+    if(!els.length) return;
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce){ els.forEach(function(el){ el.classList.add('typing-done'); }); return; }
+    function type(el){
+      var text = el.textContent;
+      el.textContent = '';
+      el.classList.add('typing');
+      var i = 0;
+      var t = setInterval(function(){
+        if(i < text.length){
+          el.textContent += text.charAt(i);
+          i++;
+        } else {
+          clearInterval(t);
+          el.classList.remove('typing');
+          el.classList.add('typing-complete');
+          setTimeout(function(){ el.classList.add('typing-done'); }, 900);
+        }
+      }, 38);
+    }
+    var obs = new IntersectionObserver(function(entries, o){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          setTimeout(function(){ type(e.target); }, 260);
+          o.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    els.forEach(function(el){ obs.observe(el); });
+  })();
+
+  /* Reveal on scroll */
+  (function(){
+    var els = document.querySelectorAll('.reveal');
+    if(!els.length) return;
+    var obs = new IntersectionObserver(function(entries, o){
+      entries.forEach(function(e){
+        if(e.isIntersecting){
+          e.target.classList.add('in');
+          o.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -80px 0px' });
+    els.forEach(function(el){ obs.observe(el); });
+  })();
+
+  /* Ask Seer rotator — market cards (title · outcomes · prices) linking to app.seer.pm */
+  (function(){
+    var typeEl  = document.getElementById('ask-type');
+    var title   = document.getElementById('ask-title');
+    var out     = document.getElementById('ask-outcomes');
+    var vol     = document.getElementById('ask-vol');
+    var close   = document.getElementById('ask-close');
+    var link    = document.getElementById('ask-link');
+    var dots    = document.querySelectorAll('.ask .dots button');
+    if(!typeEl||!title||!out||!link) return;
+
+    // Sample market data — swap in the exact live titles/outcomes/prices when ready.
+    var items = [
+      {
+        type: '// Categorical',
+        title: 'Will the Fed cut rates by 25 bps at the January 2026 FOMC meeting?',
+        outcomes: [
+          {name:'YES', pct:68},
+          {name:'NO',  pct:32}
+        ],
+        vol: '$24.5k',
+        close: '12 days',
+        url: 'https://app.seer.pm/markets/100/0x43d881f5920ed29fc5cd4917d6817496abbba6d9'
+      },
+      {
+        type: '// Multi-categorical',
+        title: 'Which club will lift the 2025/26 UEFA Champions League trophy?',
+        outcomes: [
+          {name:'Real Madrid', pct:27},
+          {name:'PSG',         pct:19},
+          {name:'Man City',    pct:16},
+          {name:'Bayern',      pct:12},
+          {name:'Other',       pct:26}
+        ],
+        vol: '$18.9k',
+        close: '3 months',
+        url: 'https://app.seer.pm/markets/100/0x528c5535136ce58611dc347ae88e40a420fa67cc'
+      },
+      {
+        type: '// Scalar',
+        title: 'Bitcoin closing price on December 31, 2026',
+        outcomes: [
+          {name:'Market value', pct:56, label:'$84.2k'},
+          {name:'Range',        pct:100, label:'$40k – $120k', muted:true}
+        ],
+        vol: '$52.3k',
+        close: '6 months',
+        url: 'https://app.seer.pm/markets/100/0xe12f48ecdd6e64d95d1d8f1d5d7aa37e14f2888b'
+      },
+      {
+        type: '// Multi-scalar',
+        title: 'US presidential election 2028 — national vote share by party',
+        outcomes: [
+          {name:'Democrat',   pct:46, label:'46.5%'},
+          {name:'Republican', pct:46, label:'45.8%'},
+          {name:'Other',      pct:8,  label:'7.7%'}
+        ],
+        vol: '$91.2k',
+        close: '2 years',
+        url: 'https://app.seer.pm/markets/100/0x8df5b3a628b3d7703164620418159e83c3697ea5'
+      }
+    ];
+
+    function fadeOut(el){ if(el) el.style.opacity = 0; }
+    function fadeIn(el){ if(el) el.style.opacity = 1; }
+
+    function renderOutcomes(list){
+      var html = '';
+      for(var k=0;k<list.length;k++){
+        var o = list[k];
+        var dim = (k>0) || o.muted;
+        var label = o.label != null ? o.label : (o.pct + '%');
+        html += '<li'+(dim?' class="dim"':'')+'>' +
+                  '<span class="name">'+o.name+'</span>' +
+                  '<span class="bar"><span class="fill" style="width:'+o.pct+'%"></span></span>' +
+                  '<span class="pct">'+label+'</span>' +
+                '</li>';
+      }
+      out.innerHTML = html;
+    }
+
+    var i = 0, paused = false;
+    var card = document.querySelector('.ask .prompt');
+    if(card){
+      card.addEventListener('mouseenter', function(){ paused = true; });
+      card.addEventListener('mouseleave', function(){ paused = false; });
+    }
+    function render(idx){
+      fadeOut(typeEl); fadeOut(title); fadeOut(out);
+      fadeOut(vol && vol.parentNode); fadeOut(close && close.parentNode); fadeOut(link);
+      setTimeout(function(){
+        var it = items[idx];
+        typeEl.textContent = it.type;
+        title.textContent  = it.title;
+        renderOutcomes(it.outcomes);
+        if(vol)   vol.textContent   = it.vol;
+        if(close) close.textContent = it.close;
+        link.setAttribute('href', it.url);
+        fadeIn(typeEl); fadeIn(title); fadeIn(out);
+        fadeIn(vol && vol.parentNode); fadeIn(close && close.parentNode); fadeIn(link);
+        dots.forEach(function(d,di){ d.classList.toggle('on', di===idx); });
+      }, 200);
+    }
+    dots.forEach(function(d){
+      d.addEventListener('click', function(){
+        var idx = parseInt(d.getAttribute('data-i'), 10) || 0;
+        i = idx; render(i);
+      });
+    });
+    // Initial render so first item's outcomes/type reflect the data object
+    render(0);
+    var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if(reduce) return;
+    setInterval(function(){
+      if(paused) return;
+      i = (i+1) % items.length;
+      render(i);
+    }, 5800);
+  })();
+</script>
+
+<script>
+  /* App links */
+  (function(){
+    var host = location.hostname;
+    var isLocal = host === 'localhost' || host === '127.0.0.1';
+    var PROD = 'https://app.seer.pm', LOCAL = isLocal ? 'http://localhost:3000' : 'https://seer-redesign-app.netlify.app';
+    var swap = function(a){ if (a.href.indexOf(PROD) === 0) a.href = LOCAL + a.href.slice(PROD.length); };
+    document.querySelectorAll('a[href^="' + PROD + '"]').forEach(swap);
+    document.addEventListener('click', function(e){
+      var a = e.target.closest && e.target.closest('a[href^="' + PROD + '"]');
+      if (a) swap(a);
+    }, true);
+  })();
+</script>
+
+</body>
+</html>

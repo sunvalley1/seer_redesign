@@ -1,0 +1,5 @@
+# Asset packs (images, PDFs, SVGs, etc.) live in subfolders.
+# Keep tooling scripts (*.js, *.sh) and other files at this level.
+*/
+
+*.log

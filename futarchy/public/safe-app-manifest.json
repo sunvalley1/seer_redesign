@@ -1,0 +1,12 @@
+{
+  "name": "Futarchy",
+  "description": "Decentralized prediction markets platform with futarchy governance",
+  "iconPath": "assets/seer-logo.svg",
+  "providedBy": {
+    "name": "Futarchy",
+    "url": "https://futarchy.seer.pm"
+  },
+  "chainIds": [
+    "100"
+  ]
+}

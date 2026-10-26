@@ -1,0 +1,118 @@
+import { Button, Dialog } from "@/components/ui";
+import { DownloadIcon } from "@/components/ui/icons";
+import { downloadCsv } from "@/utils/common";
+import { useEffect, useState } from "react";
+import { PredictionDropzone } from "./predictions/PredictionDropzone";
+
+export interface CSVFormatInfo {
+  /** CSV headers line, e.g. "repo,parent,weight" */
+  headers: string;
+  /** Example CSV rows displayed in the format box */
+  exampleRows: string[];
+  /** Description below the format box */
+  description: string;
+  /**
+   * The column a reader clears — or leaves out a row of — to skip an entry: "weight",
+   * "prediction", and so on. Named in the note below the format box, since every contest treats an
+   * entry with no number as "no view" and trades nothing for it.
+   */
+  valueColumn: string;
+}
+
+export interface SampleCsvConfig {
+  columns: { key: string; title: string }[];
+  /** Maps each sample item to a flat record matching the columns */
+  // biome-ignore lint/suspicious/noExplicitAny: sample rows vary per contest
+  dataMapper: (item: any) => Record<string, any>;
+  // biome-ignore lint/suspicious/noExplicitAny: sample rows vary per contest
+  sampleData: any[];
+  filename: string;
+}
+
+interface GenericCSVUploadProps<T> {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onDataParsed: (data: T[]) => void;
+  parseFn: (text: string) => T[];
+  formatInfo: CSVFormatInfo;
+  sampleConfig: SampleCsvConfig;
+  /** The tab's predictions storage key — the dropzone keeps the loaded file's name beside it. */
+  storageKey: string;
+  /** How many predictions the tab holds now. */
+  loadedCount: number;
+}
+
+export function GenericCSVUpload<T>({
+  open,
+  onOpenChange,
+  onDataParsed,
+  parseFn,
+  formatInfo,
+  sampleConfig,
+  storageKey,
+  loadedCount,
+}: GenericCSVUploadProps<T>) {
+  // Stays open after a load so the dropzone's "current file" is actually seen — closing on parse
+  // left the table to change behind the popup with nothing saying it worked.
+  const [loaded, setLoaded] = useState(false);
+  useEffect(() => {
+    if (open) setLoaded(false);
+  }, [open]);
+
+  const downloadSampleCsv = () =>
+    downloadCsv(
+      sampleConfig.columns,
+      sampleConfig.sampleData.map(sampleConfig.dataMapper),
+      sampleConfig.filename,
+    );
+
+  return (
+    <Dialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Upload predictions"
+      description={formatInfo.description}
+      size="md"
+      footer={
+        loaded && (
+          <Button variant="primary" onClick={() => onOpenChange(false)} fullWidth>
+            Done
+          </Button>
+        )
+      }
+    >
+      <div className="space-y-4">
+        <div className="rounded-lg border border-rule bg-sunken px-4 py-4">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <p className="text-label font-medium text-ink-3 uppercase">
+              Expected columns
+            </p>
+            <Button size="sm" variant="ghost" onClick={downloadSampleCsv} iconLeft={<DownloadIcon />}>
+              Sample CSV
+            </Button>
+          </div>
+          <pre className="overflow-x-auto rounded-md border border-rule bg-surface p-3 font-mono text-micro leading-relaxed text-ink-2">
+            <span className="text-ink-3">{formatInfo.headers}</span>
+            {formatInfo.exampleRows.map((row) => `\n${row}`)}
+            <span className="text-ink-4">{"\n…"}</span>
+          </pre>
+          <p className="mt-3 text-micro leading-relaxed text-ink-3">
+            You don't need to predict every outcome. Leave a row out of the file, or leave its{" "}
+            <span className="font-mono text-ink-2">{formatInfo.valueColumn}</span> blank, and that
+            entry is skipped — it gets no target and is never traded.
+          </p>
+        </div>
+
+        <PredictionDropzone
+          parseFn={parseFn}
+          storageKey={storageKey}
+          loadedCount={loadedCount}
+          onDataParsed={(rows) => {
+            onDataParsed(rows);
+            setLoaded(true);
+          }}
+        />
+      </div>
+    </Dialog>
+  );
+}

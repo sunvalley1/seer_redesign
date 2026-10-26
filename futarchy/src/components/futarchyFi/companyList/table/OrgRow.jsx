@@ -1,0 +1,98 @@
+import React from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
+
+import ChainBadge from '../components/ChainBadge';
+
+/**
+ * Single row in the Organizations table
+ * Displays: Logo | Name + Active Badge | Active | Proposals | Chain | Liquidity
+ */
+const OrgRow = ({
+    companyID,
+    title,
+    image,
+    activeProposals = 0,
+    proposalsCount = 0,
+    chainId = 100, // Default to Gnosis
+    flmPath = null,
+    hasActiveMarket = false,
+    isOwner = false,
+    onClick,
+}) => {
+    return (
+        <tr
+            onClick={onClick}
+            className="border-b border-futarchyGray4 dark:border-futarchyGray112/20 hover:bg-futarchyGray3 dark:hover:bg-futarchyGray112/10 cursor-pointer transition-colors group"
+        >
+            {/* Logo */}
+            <td className="py-4 px-4">
+                <div className="w-10 h-10 relative rounded-full overflow-hidden bg-futarchyGray3 flex-shrink-0">
+                    <Image
+                        src={image || '/assets/fallback-company.png'}
+                        alt={title}
+                        layout="fill"
+                        objectFit="cover"
+                    />
+                </div>
+            </td>
+
+            {/* Name + Badges */}
+            <td className="py-4 px-2">
+                <div className="flex items-center gap-2">
+                    <span className="text-[14px] font-semibold text-futarchyGray12 dark:text-white group-hover:text-futarchyViolet7 transition-colors">
+                        {title}
+                    </span>
+                    {hasActiveMarket && (
+                        <span className="px-2.5 py-0.5 font-mono text-[10.5px] font-semibold uppercase tracking-wider bg-futarchyTeal9/20 text-futarchyTeal9 rounded-full">
+                            Active Market
+                        </span>
+                    )}
+                    {isOwner && (
+                        <span className="px-2.5 py-0.5 font-mono text-[10.5px] font-semibold uppercase tracking-wider bg-purple-500/20 text-purple-400 rounded-full">
+                            Owner
+                        </span>
+                    )}
+                </div>
+            </td>
+
+            {/* Active Proposals Count */}
+            <td className="py-4 px-4 text-center">
+                <span className={`font-mono text-[13px] font-semibold tabular-nums ${activeProposals > 0 ? 'text-futarchyTeal9' : 'text-futarchyGray11'}`}>
+                    {activeProposals}
+                </span>
+            </td>
+
+            {/* Total Proposals Count */}
+            <td className="py-4 px-4 text-center">
+                <span className="font-mono text-[13px] font-semibold tabular-nums text-futarchyGray12 dark:text-white">
+                    {proposalsCount}
+                </span>
+            </td>
+
+            {/* Chain */}
+            <td className="py-4 px-4">
+                <ChainBadge chainId={chainId} size="sm" />
+            </td>
+
+            {/* Liquidity */}
+            <td className="py-4 px-4">
+                {flmPath ? (
+                    <Link
+                        href={flmPath}
+                        onClick={(event) => event.stopPropagation()}
+                        className="inline-flex h-8 items-center gap-1 rounded-full border border-futarchyGray62 bg-white px-3 text-[13px] font-medium text-futarchyGray12 transition-colors hover:bg-futarchyGray3 dark:border-futarchyDarkGray42 dark:bg-futarchyDarkGray3 dark:text-white dark:hover:bg-white/5"
+                    >
+                        <span>Liquidity</span>
+                        <ArrowTopRightOnSquareIcon className="h-4 w-4" />
+                    </Link>
+                ) : (
+                    <span className="text-sm text-futarchyGray11">-</span>
+                )}
+            </td>
+        </tr>
+    );
+};
+
+export default OrgRow;

@@ -1,0 +1,340 @@
+@import "tailwindcss";
+
+/* ---------------------------------------------------------------------------
+   Design tokens.
+
+   The neutral ramp and the blue/green/red accents are the ones this app has
+   always used — kept because they read at higher contrast than anything
+   subtler. Depth comes from shadow on white cards over a grey page, not from
+   hairlines. What stays retired: the blue-to-purple gradient that used to sit
+   on every button, header, footer and toast, and the competing cyan/magenta
+   accents alongside it.
+
+   Colour still carries meaning consistently:
+     blue  = the primary action
+     green = positive direction (undervalued, buy, succeeded, live)
+     red   = negative direction (overvalued, sell, failed, caution)
+--------------------------------------------------------------------------- */
+/* Seer theme palette */
+:root {
+  --sb-bg: #fbfaf7;
+  --sb-surface: #ffffff;
+  --sb-surface-2: #faf9f5;
+  --sb-bg-2: #f3f2ec;
+  --sb-bg-3: #eceae2;
+  --sb-border: #ece8dc;
+  --sb-border-strong: #d8d2c0;
+  --sb-ink: #0f1115;
+  --sb-ink-2: #1f2937;
+  --sb-ink-3: #4b5563;
+  --sb-ink-4: #6b7280;
+  --sb-ink-5: #9ca3af;
+  --sb-blue: #2d6bf7;
+  --sb-blue-hover: #1d4ed8;
+  --sb-blue-soft: #e8f0ff;
+  --sb-blue-rule: #cadafd;
+  --sb-pos: #00b955;
+  --sb-pos-hover: #15803d;
+  --sb-pos-soft: #e6f8ee;
+  --sb-pos-rule: #b3eacb;
+  --sb-neg: #e5484d;
+  --sb-neg-soft: #fdecec;
+  --sb-neg-rule: #f7c5c6;
+  --sb-shadow-sm: 0 1px 2px rgba(15, 17, 21, 0.025);
+  --sb-shadow: 0 1px 2px rgba(15, 17, 21, 0.04);
+  --sb-shadow-md: 0 10px 24px -12px rgba(15, 17, 21, 0.1);
+  --sb-cta: #2d6bf7;
+  --sb-cta-hover: #1d4ed8;
+  --sb-cta-glow: 0 6px 16px -4px rgba(45, 107, 247, 0.35);
+  --sb-halo: rgba(45, 107, 247, 0.12);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --sb-bg: #0a0612;
+  --sb-surface: #130c24;
+  --sb-surface-2: #1a1230;
+  --sb-bg-2: #20183c;
+  --sb-bg-3: #2b2150;
+  --sb-border: #261c46;
+  --sb-border-strong: #3d2f68;
+  --sb-ink: #f4f1ff;
+  --sb-ink-2: #ded7f2;
+  --sb-ink-3: #b2a8d0;
+  --sb-ink-4: #897fa8;
+  --sb-ink-5: #685e86;
+  --sb-blue: #7b2bff;
+  --sb-blue-hover: #9457ff;
+  --sb-blue-soft: rgba(123, 43, 255, 0.16);
+  --sb-blue-rule: #37176f;
+  --sb-pos: #22c55e;
+  --sb-pos-hover: #16a34a;
+  --sb-pos-soft: #15262c;
+  --sb-pos-rule: #1d4a36;
+  --sb-neg: #f43f5e;
+  --sb-neg-soft: #33132c;
+  --sb-neg-rule: #5a1a35;
+  --sb-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.45);
+  --sb-shadow: 0 1px 3px rgba(0, 0, 0, 0.55);
+  --sb-shadow-md: 0 16px 34px -16px rgba(0, 0, 0, 0.78);
+  --sb-cta: linear-gradient(135deg, #4d00b4 0%, #7b2bff 100%);
+  --sb-cta-hover: linear-gradient(135deg, #5a0bd0 0%, #8e44ff 100%);
+  --sb-cta-glow: 0 10px 26px -8px rgba(123, 43, 255, 0.7);
+  --sb-halo: rgba(123, 43, 255, 0.22);
+  color-scheme: dark;
+}
+
+@theme inline {
+  /* surfaces */
+  --color-paper: var(--sb-bg);
+  --color-surface: var(--sb-surface);
+  --color-sunken: var(--sb-surface-2);
+  --color-rule: var(--sb-border);
+  --color-rule-strong: var(--sb-border-strong);
+
+  /* Text ramp */
+  --color-ink: var(--sb-ink);
+  --color-ink-2: var(--sb-ink-2);
+  --color-ink-3: var(--sb-ink-4);
+  --color-ink-4: var(--sb-ink-5);
+  --color-sb-ink-3: var(--sb-ink-3);
+
+  /* primary action */
+  --color-primary: var(--sb-blue);
+  --color-primary-hover: var(--sb-blue-hover);
+  --color-primary-bg: var(--sb-blue-soft);
+  --color-primary-rule: var(--sb-blue-rule);
+
+  /* direction of trade */
+  --color-long: var(--sb-pos);
+  --color-long-hover: var(--sb-pos-hover);
+  --color-long-bg: var(--sb-pos-soft);
+  --color-long-rule: var(--sb-pos-rule);
+  --color-short: var(--sb-neg);
+  --color-short-bg: var(--sb-neg-soft);
+  --color-short-rule: var(--sb-neg-rule);
+
+  --color-track: var(--sb-bg-2);
+  --color-track-hover: var(--sb-bg-3);
+}
+
+@theme {
+  --font-sans: "Inter", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --font-display: "Fraunces", "Times New Roman", serif;
+  --font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+
+  /* type scale — role-named so sizes stay decisions, not guesses */
+  --text-micro: 12px;
+  --text-micro--line-height: 16px;
+  --text-label: 10px;
+  --text-label--line-height: 14px;
+  --text-label--letter-spacing: 0.06em;
+  --text-data: 13px;
+  --text-data--line-height: 18px;
+  --text-body: 14px;
+  --text-body--line-height: 21px;
+  --text-lede: 14px;
+  --text-lede--line-height: 20px;
+  --text-title: 18px;
+  --text-title--line-height: 24px;
+  --text-title--letter-spacing: -0.025em;
+  --text-display: 26px;
+  --text-display--line-height: 32px;
+  --text-display--letter-spacing: -0.025em;
+
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+}
+
+@theme inline {
+  /* Elevation */
+  --shadow-card: var(--sb-shadow);
+  --shadow-raised: var(--sb-shadow-sm);
+  --shadow-pop: var(--sb-shadow-md);
+}
+
+@layer base {
+  /*
+   * The page scrolls in an element, not in the document.
+   *
+   * Radix locks scrolling by way of react-remove-scroll, which compensates for
+   * the vanishing scrollbar with `margin-right: 15px !important` on <body>.
+   * That narrows the body box, so opening any dialog re-laid-out and repainted
+   * the whole page — the flash behind the dialog. It measures the gap as
+   * `innerWidth - documentElement.clientWidth`; with no scrollbar on the
+   * document that is zero, so it injects nothing and nothing moves.
+   *
+   * `#root` (see App.tsx) is the scroll container instead. Sticky positioning
+   * resolves against it, which the app header and table headers rely on.
+   */
+  html,
+  body,
+  #root {
+    height: 100%;
+    overflow: hidden;
+  }
+
+  body {
+    margin: 0;
+    background-color: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Every number in the product lines up in a column. */
+  code,
+  kbd,
+  samp,
+  pre,
+  .font-mono {
+    font-variant-numeric: tabular-nums;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    color: var(--color-ink);
+    font-weight: 700;
+  }
+
+  /* One focus treatment everywhere. */
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: var(--radius-sm);
+  }
+
+  /* Native number spinners fight right-aligned monospaced amounts. */
+  input[type="number"]::-webkit-outer-spin-button,
+  input[type="number"]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  input[type="number"] {
+    -moz-appearance: textfield;
+  }
+
+  ::selection {
+    background-color: var(--color-primary-bg);
+    color: var(--color-ink);
+  }
+}
+
+@layer components {
+  /* Brand CTA */
+  .sb-cta {
+    background: var(--sb-cta);
+    color: #fff;
+    border-color: transparent;
+    box-shadow: var(--sb-shadow-sm);
+    transition:
+      background 140ms ease,
+      transform 180ms ease,
+      box-shadow 200ms ease;
+  }
+  .sb-cta:hover:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--sb-cta-hover);
+    transform: translateY(-1px);
+    box-shadow: var(--sb-cta-glow);
+  }
+}
+
+/*
+ * There used to be a `content-visibility: auto` rule on table rows here.
+ * Locking body scroll (which every dialog and menu does) re-evaluates which
+ * rows are "relevant to the user", and the browser blanks and repaints the
+ * whole table in the process — the flash on every dialog open. Tables now sit
+ * in a bounded scroll box and the long ones paginate, so the rule was buying
+ * very little; correctness of paint is worth more than the skipped layout.
+ */
+
+/* Toasts: surface + hairline + a single accent bar. Tone set per-toast. */
+.Toastify__toast-container {
+  width: 380px;
+  padding: 0;
+}
+.Toastify__toast {
+  background: var(--color-surface);
+  color: var(--color-ink-2);
+  border: 1px solid var(--color-rule);
+  font-size: var(--text-body);
+  border-left: 4px solid var(--color-primary);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-pop);
+  padding: 10px 12px;
+  min-height: 0;
+  font-family: var(--font-sans);
+}
+.Toastify__toast--success {
+  border-left-color: var(--color-long);
+}
+.Toastify__toast--error {
+  border-left-color: var(--color-short);
+}
+.Toastify__toast-body {
+  padding: 0;
+  margin: 0;
+  align-items: flex-start;
+  gap: 10px;
+}
+.Toastify__toast-icon {
+  width: 18px;
+  margin: 2px 0 0;
+  flex-shrink: 0;
+}
+.Toastify__close-button {
+  color: var(--color-ink-4);
+  opacity: 1;
+  align-self: flex-start;
+}
+.Toastify__close-button:hover {
+  color: var(--color-ink);
+}
+.Toastify__progress-bar {
+  height: 3px;
+  background: var(--color-primary);
+}
+.Toastify__progress-bar--success {
+  background: var(--color-long);
+}
+.Toastify__progress-bar--error {
+  background: var(--color-short);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /*
+   * Exempt the loading indicators. Reduced motion is about suppressing
+   * decoration, not feedback — a frozen spinner on a button that is mid-run
+   * reads as a hung app. Slowed down, but still turning.
+   */
+  .animate-spin {
+    animation: var(--animate-spin, spin 1s linear infinite) !important;
+    animation-duration: 1.6s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .animate-pulse {
+    animation: var(--animate-pulse, pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite) !important;
+    animation-duration: 2.4s !important;
+    animation-iteration-count: infinite !important;
+  }
+}
+
+/* Mono labels */
+.text-label {
+  font-family: var(--font-mono);
+}

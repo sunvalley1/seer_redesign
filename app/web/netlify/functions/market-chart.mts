@@ -1,0 +1,78 @@
+import type { SupportedChain } from "@seer-pm/sdk";
+import type { Address } from "viem";
+import { fetchCachedChartData } from "./market-chart-background.mts";
+import { CORS_HEADERS } from "./utils/common";
+
+export function getMarketChartKeyValueHash(marketId: Address | "%", chainId: SupportedChain | "%") {
+  return `market_chart_hour_data_${marketId}_${chainId}`;
+}
+
+export default async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: CORS_HEADERS,
+    });
+  }
+
+  if (req.method !== "GET") {
+    return new Response(JSON.stringify({ error: "Method not allowed" }), {
+      status: 405,
+      headers: {
+        "Content-Type": "application/json",
+        Allow: "GET",
+        ...CORS_HEADERS,
+      },
+    });
+  }
+
+  const url = new URL(req.url);
+  const params = url.searchParams;
+
+  const marketId = params.get("marketId") as Address;
+  const chainId = Number(params.get("chainId")) as SupportedChain;
+
+  if (!marketId || !chainId) {
+    return new Response(JSON.stringify({ error: "Missing required parameters" }), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+        ...CORS_HEADERS,
+      },
+    });
+  }
+
+  try {
+    const fresh = params.get("fresh") === "true";
+
+    // Fetch chart data (always returns cached data, generates on first request if not cached)
+    const chartData = await fetchCachedChartData(marketId, chainId, false, fresh);
+
+    console.log(`Fetching chart data for market ${marketId} on chain ${chainId}`);
+
+    if (!fresh) {
+      // Trigger background function to update chart data if it's older than 5 minutes.
+      // This ensures fresh data for future requests while maintaining fast response times.
+      // Skipped when fresh=true: the request already regenerated and upserted the cache
+      // synchronously, so a background refresh would be redundant.
+      await fetch(`https://app.seer.pm/.netlify/functions/market-chart-background?${params.toString()}`);
+    }
+
+    return new Response(JSON.stringify(chartData), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        ...CORS_HEADERS,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+    return new Response(JSON.stringify({ error: "Failed to fetch chart data" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+        ...CORS_HEADERS,
+      },
+    });
+  }
+};

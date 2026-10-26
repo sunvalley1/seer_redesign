@@ -1,0 +1,5 @@
+/seer-api/*  https://app.seer.pm/:splat  200
+/subgraph  https://app.seer.pm/subgraph  200
+/all-markets-search  https://app.seer.pm/all-markets-search  200
+/assets/*  /assets/:splat  200
+/*  /.netlify/functions/index  200

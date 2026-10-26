@@ -1,0 +1,192 @@
+import React, { useMemo } from "react";
+
+import { CustomTimeline } from "@kleros/ui-components-library";
+import clsx from "clsx";
+import { Address } from "viem";
+
+import CheckOutline from "@/assets/svg/check-outline.svg";
+import CircleOutline from "@/assets/svg/circle-outline.svg";
+import CloseOutline from "@/assets/svg/close-circle.svg";
+
+import { formatValue, isUndefined, shortenAddress } from "@/utils";
+
+import Spinner from "../Spinner";
+
+type TimelineItem = React.ComponentProps<
+  typeof CustomTimeline
+>["items"][number];
+
+interface IPredictSteps {
+  tradeExecutor?: Address;
+  toBeAdded: bigint;
+  toBeAddedSeerCredits?: bigint;
+  isCreatingWallet: boolean;
+  isAddingCollateral: boolean;
+  isCollateralAdded: boolean;
+  isAddingSeerCredits: boolean;
+  isSeerCreditsAdded: boolean;
+  isProcessingMarkets: boolean;
+  isLoadingQuotes: boolean;
+  isMakingPrediction: boolean;
+  isPredictionSuccessful: boolean;
+  chunkProgressMessage?: string;
+  tradeNotes?: string[];
+  error?: string;
+}
+
+const PredictSteps: React.FC<IPredictSteps> = ({
+  tradeExecutor,
+  toBeAdded,
+  toBeAddedSeerCredits,
+  isCreatingWallet,
+  isAddingCollateral,
+  isCollateralAdded,
+  isAddingSeerCredits,
+  isSeerCreditsAdded,
+  isProcessingMarkets,
+  isLoadingQuotes,
+  isMakingPrediction,
+  isPredictionSuccessful,
+  chunkProgressMessage,
+  tradeNotes,
+  error,
+}) => {
+  const predictionProgressText = useMemo(() => {
+    if (isMakingPrediction) return "Making prediction...";
+    if (chunkProgressMessage) return chunkProgressMessage;
+    if (isLoadingQuotes) return "Loading quotes...";
+    if (isProcessingMarkets) return "Processing markets...";
+    if (isPredictionSuccessful) return "Prediction Successful!";
+    return "";
+  }, [
+    isMakingPrediction,
+    chunkProgressMessage,
+    isLoadingQuotes,
+    isProcessingMarkets,
+    isPredictionSuccessful,
+  ]);
+
+  // these will change based on actions
+  const items = useMemo(() => {
+    const steps: TimelineItem[] = [];
+
+    if (tradeExecutor) {
+      steps.push({
+        title: "Trade Wallet",
+        party: "",
+        subtitle: shortenAddress(tradeExecutor),
+        Icon: CheckOutline,
+        state: "disabled",
+      });
+    } else {
+      steps.push({
+        title: "Create a Trade Wallet",
+        party: isCreatingWallet ? <Spinner className="mb-1" /> : "",
+        subtitle: "",
+        state: isCreatingWallet ? "loading" : undefined,
+        Icon: CircleOutline,
+      });
+    }
+
+    if (toBeAddedSeerCredits && toBeAddedSeerCredits > 0n) {
+      steps.push({
+        title: "Add Foresight Credits to wallet",
+        party: isAddingSeerCredits ? <Spinner className="mb-1" /> : "",
+        subtitle: `Adding ${formatValue(toBeAddedSeerCredits)} Foresight Credits`,
+        Icon: isSeerCreditsAdded ? CheckOutline : CircleOutline,
+        state: isAddingSeerCredits
+          ? "loading"
+          : error || toBeAddedSeerCredits === 0n
+            ? "disabled"
+            : undefined,
+      });
+    }
+    steps.push({
+      title: "Add Collateral to wallet",
+      party: isAddingCollateral ? <Spinner className="mb-1" /> : "",
+      subtitle: `Adding ${formatValue(toBeAdded)} sDAI`,
+      Icon: isCollateralAdded ? CheckOutline : CircleOutline,
+      state: isAddingCollateral
+        ? "loading"
+        : error || toBeAdded === 0n
+          ? "disabled"
+          : undefined,
+    });
+
+    steps.push({
+      title: "Make Prediction",
+      party:
+        isMakingPrediction || isLoadingQuotes || isProcessingMarkets ? (
+          <Spinner className="mb-1" />
+        ) : (
+          ""
+        ),
+      subtitle: predictionProgressText,
+      Icon: isPredictionSuccessful ? CheckOutline : CircleOutline,
+      state:
+        isMakingPrediction || isLoadingQuotes || isProcessingMarkets
+          ? "loading"
+          : error
+            ? "disabled"
+            : undefined,
+    });
+
+    if (tradeNotes && tradeNotes.length > 0) {
+      steps.push({
+        title: "Worth knowing",
+        subtitle: (
+          <span className="break-words whitespace-pre-wrap">
+            {tradeNotes.join("\n")}
+          </span>
+        ) as unknown as string,
+        variant: "#c98a00",
+        party: "",
+        Icon: CircleOutline,
+      });
+    }
+
+    if (!isUndefined(error)) {
+      steps.push({
+        title: "Prediction failed!",
+        subtitle: (
+          <span className="break-words whitespace-pre-wrap">{error}</span>
+        ) as unknown as string,
+        variant: "#ca2314",
+        party: "",
+        Icon: CloseOutline,
+      });
+    }
+    return steps as [TimelineItem, ...TimelineItem[]];
+  }, [
+    tradeExecutor,
+    isCreatingWallet,
+    isAddingCollateral,
+    isCollateralAdded,
+    isAddingSeerCredits,
+    isSeerCreditsAdded,
+    toBeAdded,
+    toBeAddedSeerCredits,
+    isMakingPrediction,
+    isPredictionSuccessful,
+    predictionProgressText,
+    isProcessingMarkets,
+    isLoadingQuotes,
+    tradeNotes,
+    error,
+  ]);
+
+  return (
+    <div className="mt-5 flex flex-col">
+      <CustomTimeline
+        items={items}
+        className={clsx(
+          "[&_li>div:nth-child(1)]:min-h-14",
+          "[&_li>div:nth-child(2)]:ml-2 [&_li>div:nth-child(2)]:pt-0.5",
+          "[&_li>div:nth-child(1)>div]:border-l-klerosUIComponentsPrimaryBlue [&_li>div:nth-child(1)>div]:my-2",
+        )}
+      />
+    </div>
+  );
+};
+
+export default PredictSteps;

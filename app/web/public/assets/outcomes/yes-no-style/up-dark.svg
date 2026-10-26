@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="Up">
+  <defs>
+    <radialGradient id="glow" cx="24" cy="24" r="24" gradientUnits="userSpaceOnUse">
+      <stop offset="0.672" stop-color="#42B860" stop-opacity="0.995"/>
+      <stop offset="0.688" stop-color="#42B860" stop-opacity="0.967"/>
+      <stop offset="0.703" stop-color="#42B860" stop-opacity="0.901"/>
+      <stop offset="0.734" stop-color="#42B860" stop-opacity="0.746"/>
+      <stop offset="0.766" stop-color="#42B860" stop-opacity="0.603"/>
+      <stop offset="0.797" stop-color="#42B860" stop-opacity="0.466"/>
+      <stop offset="0.828" stop-color="#42B860" stop-opacity="0.355"/>
+      <stop offset="0.859" stop-color="#42B860" stop-opacity="0.254"/>
+      <stop offset="0.891" stop-color="#42B860" stop-opacity="0.154"/>
+      <stop offset="0.922" stop-color="#42B860" stop-opacity="0.075"/>
+      <stop offset="0.953" stop-color="#42B860" stop-opacity="0.024"/>
+      <stop offset="0.984" stop-color="#42B860" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <g opacity=".3">
+    <circle cx="24" cy="24" r="24" fill="#FFFFFF"/>
+    <circle cx="24" cy="24" r="24" fill="url(#glow)"/>
+  </g>
+  <circle cx="24.75" cy="23.25" r="17" fill="#42B860"/>
+  <path d="M24.75 14.72V31.72M17.98 21.46 24.75 14.72l6.71 6.74" fill="none" stroke="#FFFFFF" stroke-width="3.59" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

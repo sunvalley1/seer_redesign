@@ -1,0 +1,80 @@
+import type { SupportedChain } from "@seer-pm/sdk";
+import { createClient } from "@supabase/supabase-js";
+import { type Address, isAddress } from "viem";
+import { buildCurrentPortfolioPositions } from "./utils/buildPortfolioPositions";
+import { parseCollateralProfileQueryParam } from "./utils/resolveCollateralParam";
+import type { Database } from "./utils/supabase";
+
+const supabase = createClient<Database>(process.env.SUPABASE_PROJECT_URL!, process.env.SUPABASE_API_KEY!);
+
+export default async (req: Request) => {
+  try {
+    const url = new URL(req.url);
+    const accountParam = url.searchParams.get("account");
+    const chainId = url.searchParams.get("chainId");
+
+    if (!accountParam || !isAddress(accountParam)) {
+      return new Response(JSON.stringify({ error: "Account parameter is required" }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+    const account = accountParam as Address;
+
+    if (!chainId) {
+      return new Response(JSON.stringify({ error: "ChainId parameter is required" }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    // Convert chainId to number and validate it's a supported chain
+    const chainIdNum = Number(chainId);
+    if (!Number.isInteger(chainIdNum)) {
+      return new Response(JSON.stringify({ error: "chainId must be a valid number" }), {
+        status: 400,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+    }
+
+    const supportedChain = chainIdNum as SupportedChain;
+    const collateralResolved = parseCollateralProfileQueryParam(
+      supportedChain,
+      url.searchParams.get("collateralProfile"),
+    );
+    if ("error" in collateralResolved) {
+      return new Response(JSON.stringify({ error: collateralResolved.error }), {
+        status: collateralResolved.status,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    const positions = await buildCurrentPortfolioPositions(
+      supabase,
+      account,
+      supportedChain,
+      collateralResolved.profileName,
+    );
+
+    return new Response(JSON.stringify(positions), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    return new Response(JSON.stringify({ error: e.message || "Internal server error" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
+};

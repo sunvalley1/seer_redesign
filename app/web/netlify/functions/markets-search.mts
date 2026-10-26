@@ -1,0 +1,113 @@
+import { SUPPORTED_CHAINS, sepolia } from "@/lib/chains";
+import type { FetchMarketParams, SerializedMarket, SupportedChain } from "@seer-pm/sdk";
+import { serializeMarket } from "@seer-pm/sdk/market-types";
+import type { Address } from "viem";
+import { CORS_HEADERS } from "./utils/common";
+import { searchMarkets } from "./utils/markets";
+
+async function multiChainSearch(
+  body: FetchMarketParams,
+  id: Address | "",
+): Promise<{ markets: SerializedMarket[]; count: number; pages: number }> {
+  const {
+    chainsList = [],
+    type = "",
+    parentMarket = "",
+    marketName = "",
+    categoryList,
+    marketStatusList,
+    verificationStatusList,
+    showConditionalMarkets,
+    showMarketsWithRewards,
+    minLiquidity,
+    creator = "",
+    participant = "",
+    orderBy,
+    orderDirection,
+    marketIds,
+    tokens,
+    collateralProfile,
+    limit = 100,
+    page = 1,
+  } = body;
+
+  const chainIds =
+    process.env.VITE_TESTNET_WEBSITE === "1"
+      ? [sepolia.id]
+      : ((chainsList.length === 0 ? Object.keys(SUPPORTED_CHAINS) : chainsList.filter((chain) => chain !== "all"))
+          .filter((chain) => chain !== "31337")
+          .map((chainId) => Number(chainId)) as SupportedChain[]);
+
+  const { markets, count } = await searchMarkets({
+    chainIds,
+    type,
+    id,
+    parentMarket,
+    marketName,
+    categoryList,
+    marketStatusList,
+    verificationStatusList,
+    showConditionalMarkets,
+    showMarketsWithRewards,
+    minLiquidity,
+    creator,
+    participant,
+    marketIds,
+    tokens,
+    limit,
+    page,
+    orderBy,
+    orderDirection,
+    collateralProfile,
+  });
+
+  return {
+    markets: markets.map((market) => serializeMarket(market)),
+    count,
+    pages: Math.ceil(count / limit),
+  };
+}
+
+export default async (req: Request) => {
+  if (req.method === "OPTIONS") {
+    return new Response(null, {
+      status: 204,
+      headers: CORS_HEADERS,
+    });
+  }
+
+  const body = await req.json();
+
+  if (!body) {
+    return new Response(JSON.stringify({ error: "Missing request body" }), {
+      status: 400,
+      headers: {
+        "Content-Type": "application/json",
+        ...CORS_HEADERS,
+      },
+    });
+  }
+
+  try {
+    console.log("Request body:", body);
+
+    const result = await multiChainSearch(body as FetchMarketParams, "");
+
+    return new Response(JSON.stringify(result), {
+      status: 200,
+      headers: {
+        "Content-Type": "application/json",
+        ...CORS_HEADERS,
+      },
+    });
+  } catch (e) {
+    console.log(e);
+    return new Response(JSON.stringify({ error: "Internal server error" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+        ...CORS_HEADERS,
+      },
+    });
+  }
+};

@@ -1,0 +1,915 @@
+{
+  "generatedAt": "2026-08-04T11:59:17.417Z",
+  "markets": {
+    "seer-rebrand": {
+      "@2reb_fl-Datum": [
+        {
+          "name": "01-product-ui-multiscalar-market-1280x800 - Reb Fl.png",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/01-product-ui-multiscalar-market-1280x800 - Reb Fl.png",
+          "ipfsPath": "/ipfs/QmeUuW6maWCdbn8nzVckpA1gYnZZvpfJLWCgDm5ZjxDk8m"
+        },
+        {
+          "name": "02-website-hero-1440x600 - Reb Fl.png",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/02-website-hero-1440x600 - Reb Fl.png",
+          "ipfsPath": "/ipfs/QmYnBWTLa1WXVjqmNq8BCevAXPdVX5sS2EfhLHwynfHpt5"
+        },
+        {
+          "name": "03-social-banner-1500x500 - Reb Fl.png",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/03-social-banner-1500x500 - Reb Fl.png",
+          "ipfsPath": "/ipfs/QmWebPB9ZjUuFXLWuKc3VTM2edWSSSkDLbWmwoWxdEXjt8"
+        },
+        {
+          "name": "04-social-avatar-400x400 - Reb Fl.png",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/04-social-avatar-400x400 - Reb Fl.png",
+          "ipfsPath": "/ipfs/QmYfJbWDwp31XvwKCfMbp49g7mBPGA77tdMpdTZrd7Vidp"
+        },
+        {
+          "name": "05-documentation-header-1200x300 - Reb Fl.png",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/05-documentation-header-1200x300 - Reb Fl.png",
+          "ipfsPath": "/ipfs/QmeEgNS245Hz5TZDVq6op668fXP2UoMbnintKP6KJVy74t"
+        },
+        {
+          "name": "seer-16px-pixelfit-comparison - Reb Fl.png",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/seer-16px-pixelfit-comparison - Reb Fl.png",
+          "ipfsPath": "/ipfs/QmXNHGy2Hiksy89B84gQHEacctU6N1U6rtrCF4ZK9bbByg"
+        },
+        {
+          "name": "seer-favicon-16px-master - Reb Fl.svg",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/seer-favicon-16px-master - Reb Fl.svg",
+          "ipfsPath": "/ipfs/QmTWtU8xqZmzxv8a31ZZfiJLC58fnD4WuiL7RmYqQK969K"
+        },
+        {
+          "name": "seer-favicon-proof-1to1 - Reb Fl.png",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/seer-favicon-proof-1to1 - Reb Fl.png",
+          "ipfsPath": "/ipfs/QmbVthmPwrmWd6REr8waqPM5jESsdecg49AmzZ6fXz35Lf"
+        },
+        {
+          "name": "seer-lockup-horizontal - Reb Fl.svg",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/seer-lockup-horizontal - Reb Fl.svg",
+          "ipfsPath": "/ipfs/QmdgN8tj4A56v4YHkhdWfrLtkWA4YL76YavcsqTLbb4xfx"
+        },
+        {
+          "name": "seer-lockup-horizontal-reversed - Reb Fl.svg",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/seer-lockup-horizontal-reversed - Reb Fl.svg",
+          "ipfsPath": "/ipfs/QmPKrUu2RdcbR5WhZ7kKrH44xFxg3h13fXK7baECuZUp7B"
+        },
+        {
+          "name": "seer-lockup-stacked - Reb Fl.svg",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/seer-lockup-stacked - Reb Fl.svg",
+          "ipfsPath": "/ipfs/QmczCwkBXnXfdGM6QF7VwQnXrb7tsGsDsgy9SGc4QQr1Wq"
+        },
+        {
+          "name": "seer-mark - Reb Fl.svg",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/seer-mark - Reb Fl.svg",
+          "ipfsPath": "/ipfs/QmQ6dkv6kWu8uJdiFkDdbUDpsmA345xsA9ffEAPLK5LTKZ"
+        },
+        {
+          "name": "seer-mark-512 - Reb Fl.png",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/seer-mark-512 - Reb Fl.png",
+          "ipfsPath": "/ipfs/QmY9LqkosVrStcKP3ipJJJYsQVv76Fwm8FWmg22QJQQPjk"
+        },
+        {
+          "name": "seer-mark-reversed - Reb Fl.svg",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/seer-mark-reversed - Reb Fl.svg",
+          "ipfsPath": "/ipfs/QmPk3uBnne7x3exBh9QHxi8tz9m2k47UJp9tebiYYKEjjt"
+        },
+        {
+          "name": "seer-wordmark - Reb Fl.svg",
+          "localPath": "seer-rebrand/@2reb_fl-Datum/seer-wordmark - Reb Fl.svg",
+          "ipfsPath": "/ipfs/Qme3vccHF86DyoBgF5PJD1cELJi33pnXZzeEyE63yCcGvF"
+        }
+      ],
+      "@Ergamjee-Sleek for Seer": [
+        {
+          "name": "Billboard - Èrgamjee.jpg",
+          "localPath": "seer-rebrand/@Ergamjee-Sleek for Seer/Billboard - Èrgamjee.jpg",
+          "ipfsPath": "/ipfs/QmSB4gQSsBBkegiK1eJFBr7JD2wp2UQ5fT2KTgdBx6yFt1"
+        },
+        {
+          "name": "Seer Logo 63 - Èrgamjee.png",
+          "localPath": "seer-rebrand/@Ergamjee-Sleek for Seer/Seer Logo 63 - Èrgamjee.png",
+          "ipfsPath": "/ipfs/QmNxrG2D4N2pptn9ujwVzijfJMiaogzenjrRYiA1tBBpcG"
+        },
+        {
+          "name": "Seer Logo 79 - Èrgamjee.png",
+          "localPath": "seer-rebrand/@Ergamjee-Sleek for Seer/Seer Logo 79 - Èrgamjee.png",
+          "ipfsPath": "/ipfs/QmXT6hDWjzPunRXXzu8Uog6vikRVd9tAWPxPM8keLPPSvX"
+        },
+        {
+          "name": "Seer Logo 81 - Èrgamjee.png",
+          "localPath": "seer-rebrand/@Ergamjee-Sleek for Seer/Seer Logo 81 - Èrgamjee.png",
+          "ipfsPath": "/ipfs/QmaUaBMzgF36oH5EFTVWLkQr5FbcqiUvhjavRCNtrCSemJ"
+        },
+        {
+          "name": "To be added 1.PNG",
+          "localPath": "seer-rebrand/@Ergamjee-Sleek for Seer/To be added 1.PNG",
+          "ipfsPath": "/ipfs/QmNVhtx1h2j6GmUb4yMZXN2tHfUEKKdWp9gZSjtAwiXUNv"
+        },
+        {
+          "name": "To be added 2.PNG",
+          "localPath": "seer-rebrand/@Ergamjee-Sleek for Seer/To be added 2.PNG",
+          "ipfsPath": "/ipfs/QmZPAvQgBydrqZ2sFimR8QmWEFxf8FqpDtVJhyD8ihAduE"
+        },
+        {
+          "name": "To be added 3.PNG",
+          "localPath": "seer-rebrand/@Ergamjee-Sleek for Seer/To be added 3.PNG",
+          "ipfsPath": "/ipfs/QmRPk9ezrGepkxApTrWxgXJHbjPsCfaUPqWpawEcVMzY5a"
+        },
+        {
+          "name": "To be added 4.PNG",
+          "localPath": "seer-rebrand/@Ergamjee-Sleek for Seer/To be added 4.PNG",
+          "ipfsPath": "/ipfs/QmSTHZWP79cATnhnTGLhBf88QhkZZReLtbwQyGByX5JDYf"
+        },
+        {
+          "name": "To be added 5.PNG",
+          "localPath": "seer-rebrand/@Ergamjee-Sleek for Seer/To be added 5.PNG",
+          "ipfsPath": "/ipfs/QmWCRA2NTTQo32EfwYHuNiazR8yiAwzuRv3a36nzg6aFKJ"
+        },
+        {
+          "name": "To be added 6 .PNG",
+          "localPath": "seer-rebrand/@Ergamjee-Sleek for Seer/To be added 6 .PNG",
+          "ipfsPath": "/ipfs/QmWTjBa16fN7HAEHuebaXPwdqwYPRfzLvqH7qfcvUNGECD"
+        }
+      ],
+      "@Kaysolo58-Your only base layer for decision infrastructure": [
+        {
+          "name": "Seer 3 - Odewole Kehinde.png",
+          "localPath": "seer-rebrand/@Kaysolo58-Your only base layer for decision infrastructure/Seer 3 - Odewole Kehinde.png",
+          "ipfsPath": "/ipfs/QmaszVtLWG71begXNRmuy5K3BsMcDGkBwjEEYxUPNSaiaT"
+        },
+        {
+          "name": "Seer 4 - Odewole Kehinde.png",
+          "localPath": "seer-rebrand/@Kaysolo58-Your only base layer for decision infrastructure/Seer 4 - Odewole Kehinde.png",
+          "ipfsPath": "/ipfs/QmcbDTEAXmzsTRY7AdrVhFyjTXTCdjuzfEz8x6WHFTb2YN"
+        },
+        {
+          "name": "Seer Ban M - Odewole Kehinde.png",
+          "localPath": "seer-rebrand/@Kaysolo58-Your only base layer for decision infrastructure/Seer Ban M - Odewole Kehinde.png",
+          "ipfsPath": "/ipfs/QmZSMst7uxAvKkXGaxCB2LExZgoRYGhZcJiRVgkCBcy31B"
+        },
+        {
+          "name": "SUB 1 - Odewole Kehinde.png",
+          "localPath": "seer-rebrand/@Kaysolo58-Your only base layer for decision infrastructure/SUB 1 - Odewole Kehinde.png",
+          "ipfsPath": "/ipfs/QmW5dYWDPtBSVbTo4XoKV6JHL2krDejmjAVktHcPQDDX79"
+        },
+        {
+          "name": "Sub 3a - Odewole Kehinde.png",
+          "localPath": "seer-rebrand/@Kaysolo58-Your only base layer for decision infrastructure/Sub 3a - Odewole Kehinde.png",
+          "ipfsPath": "/ipfs/QmbG6aoSNPwfjybJPhMqUFJkAxi5SSbE1hCvBV3g5wnavr"
+        }
+      ],
+      "@abiyebee-Convergent": [
+        {
+          "name": "Artboard 2 copy 10MOCKUPS - Abi.png",
+          "localPath": "seer-rebrand/@abiyebee-Convergent/Artboard 2 copy 10MOCKUPS - Abi.png",
+          "ipfsPath": "/ipfs/QmYggxpjS1bbG9LURex4JvekJHzKkT6cQKPEeVPkWvpTgm"
+        },
+        {
+          "name": "Artboard 2 copy 11MOCKUPS - Abi.png",
+          "localPath": "seer-rebrand/@abiyebee-Convergent/Artboard 2 copy 11MOCKUPS - Abi.png",
+          "ipfsPath": "/ipfs/QmaBeJBiMC76FuzLXRkrz8DwDNn1ZdXmKPP51RK4pxUicx"
+        },
+        {
+          "name": "Artboard 2 copy 12MOCKUPS - Abi.png",
+          "localPath": "seer-rebrand/@abiyebee-Convergent/Artboard 2 copy 12MOCKUPS - Abi.png",
+          "ipfsPath": "/ipfs/QmS5pLyurTtLU59aj27meDuXMWhWMQeDd6KZ2oyHCtRyYe"
+        },
+        {
+          "name": "Artboard 2 copy 8MOCKUPS - Abi.png",
+          "localPath": "seer-rebrand/@abiyebee-Convergent/Artboard 2 copy 8MOCKUPS - Abi.png",
+          "ipfsPath": "/ipfs/QmXAnehqsKfmYPgpJsT6MwVCubitv6Y94TiVXCTESyqpRM"
+        },
+        {
+          "name": "Artboard 2 copy 9MOCKUPS - Abi.png",
+          "localPath": "seer-rebrand/@abiyebee-Convergent/Artboard 2 copy 9MOCKUPS - Abi.png",
+          "ipfsPath": "/ipfs/QmXdEYG2x9rTBG18PiJpyjnH55KhSos6n17YkApsL3Udgw"
+        },
+        {
+          "name": "Asset 1logo - Abi.png",
+          "localPath": "seer-rebrand/@abiyebee-Convergent/Asset 1logo - Abi.png",
+          "ipfsPath": "/ipfs/QmQKN49VvkPqmZRjaaQd9bNjxw5d6YH9ZNY3JobDUAXXQy"
+        },
+        {
+          "name": "Asset 2logo - Abi.svg",
+          "localPath": "seer-rebrand/@abiyebee-Convergent/Asset 2logo - Abi.svg",
+          "ipfsPath": "/ipfs/QmYqiu2AK71GS82Hi7fxsGxzCytLkKxzefvuz7pDF9HD2x"
+        },
+        {
+          "name": "seer_branding-abi - Abi.pdf",
+          "localPath": "seer-rebrand/@abiyebee-Convergent/seer_branding-abi - Abi.pdf",
+          "ipfsPath": "/ipfs/Qmdi2fr7X1B191LFQ4ZcW8Ap15HhwnPczMVcLxLN5iz9zw"
+        }
+      ],
+      "@ajitu871287-Signal Dark": [
+        {
+          "name": "aeb55db6-9b84-46cd-a4c7-2eb7f1b2a871 - Pope Ijiji.png",
+          "localPath": "seer-rebrand/@ajitu871287-Signal Dark/aeb55db6-9b84-46cd-a4c7-2eb7f1b2a871 - Pope Ijiji.png",
+          "ipfsPath": "/ipfs/QmcaFDeaHDa5h4mAXTQaYiAMKzsh49UxWkz5NvtpLa1MuB"
+        },
+        {
+          "name": "ai-panel - Pope Ijiji.jpg",
+          "localPath": "seer-rebrand/@ajitu871287-Signal Dark/ai-panel - Pope Ijiji.jpg",
+          "ipfsPath": "/ipfs/QmeUBFxroeeY7EZcyvSbmXKXW6sQpgWmVKDVNXUAoS7Dfh"
+        },
+        {
+          "name": "b85d5e64-bd0f-46ff-a6f0-0f8cbfcf1d70 - Pope Ijiji.png",
+          "localPath": "seer-rebrand/@ajitu871287-Signal Dark/b85d5e64-bd0f-46ff-a6f0-0f8cbfcf1d70 - Pope Ijiji.png",
+          "ipfsPath": "/ipfs/QmYgaDfKmpM2xnJ5PkqL8zsLUteWmtKu1UN47DAor6P8HU"
+        },
+        {
+          "name": "comments-section - Pope Ijiji.jpg",
+          "localPath": "seer-rebrand/@ajitu871287-Signal Dark/comments-section - Pope Ijiji.jpg",
+          "ipfsPath": "/ipfs/QmRBgVzHhABsBCYM3ygjRA7di2E6iAGAKwSyHTGz8hPfA7"
+        },
+        {
+          "name": "create-market - Pope Ijiji.jpg",
+          "localPath": "seer-rebrand/@ajitu871287-Signal Dark/create-market - Pope Ijiji.jpg",
+          "ipfsPath": "/ipfs/QmUDka3MyEeJ5Y22yRcCx9DwsJ62CJAd7ZE1upAhok7vv9"
+        },
+        {
+          "name": "markets-page - Pope Ijiji.jpg",
+          "localPath": "seer-rebrand/@ajitu871287-Signal Dark/markets-page - Pope Ijiji.jpg",
+          "ipfsPath": "/ipfs/QmcVMt19WaZa8MrN9zg92gk2kfSRiebH2N1VYP52NFZpxt"
+        },
+        {
+          "name": "trade-panel - Pope Ijiji (1).jpg",
+          "localPath": "seer-rebrand/@ajitu871287-Signal Dark/trade-panel - Pope Ijiji (1).jpg",
+          "ipfsPath": "/ipfs/QmaiTmgVsUTVDZNDnpLxpzgbgtS4mzob1C7sNWdzqiNNTs"
+        }
+      ],
+      "@brodaviktor-Civic Signal": [
+        {
+          "name": "0ac685ab-9e6e-4c22-8637-c5cb9aa15e4f - Nwaikuku.png",
+          "localPath": "seer-rebrand/@brodaviktor-Civic Signal/0ac685ab-9e6e-4c22-8637-c5cb9aa15e4f - Nwaikuku.png",
+          "ipfsPath": "/ipfs/Qmf3Atk1Hy2Md9wnM5yWw4rqQH5T9WsBfa1QoXNyjTFNA4"
+        },
+        {
+          "name": "1b0a323c-dc4c-44bf-b482-7015f1178e6c - Nwaikuku.png",
+          "localPath": "seer-rebrand/@brodaviktor-Civic Signal/1b0a323c-dc4c-44bf-b482-7015f1178e6c - Nwaikuku.png",
+          "ipfsPath": "/ipfs/QmWWTv42A4JW4uDZgGQi3oELjqEhWd2vie8VvCvGLRvPi9"
+        },
+        {
+          "name": "657dc981-a85e-49a1-97fa-845c71861629 - Nwaikuku.png",
+          "localPath": "seer-rebrand/@brodaviktor-Civic Signal/657dc981-a85e-49a1-97fa-845c71861629 - Nwaikuku.png",
+          "ipfsPath": "/ipfs/QmY5CU8MQJbpqQzsea5SEXUWyxkwauTiUaNGk7MvPQZYxM"
+        },
+        {
+          "name": "6c699d30-86bc-4387-9655-123cae3d0906 - Nwaikuku.png",
+          "localPath": "seer-rebrand/@brodaviktor-Civic Signal/6c699d30-86bc-4387-9655-123cae3d0906 - Nwaikuku.png",
+          "ipfsPath": "/ipfs/QmW4JTbgEgD3DJdyBiu7FepdYf9ewW8QEzxkQQwozs9idW"
+        },
+        {
+          "name": "772995dd-e610-463a-aeda-a905944c3178 - Nwaikuku.png",
+          "localPath": "seer-rebrand/@brodaviktor-Civic Signal/772995dd-e610-463a-aeda-a905944c3178 - Nwaikuku.png",
+          "ipfsPath": "/ipfs/QmX7tYyg9r1Tp3XKfpdznHZNfxm1MmXHnREP1j3nLRVGgF"
+        },
+        {
+          "name": "b32590a7-67d4-47b5-bed5-3a0ed88ff28f - Nwaikuku.png",
+          "localPath": "seer-rebrand/@brodaviktor-Civic Signal/b32590a7-67d4-47b5-bed5-3a0ed88ff28f - Nwaikuku.png",
+          "ipfsPath": "/ipfs/QmXxfSTFUiMvSg6tMLF7NckP5m2Jb5mbxXxT1cpopjnJWX"
+        }
+      ],
+      "@hypedsgn-Electric Foundation": [
+        {
+          "name": "1080x1350-1 - Dani van der Laars.png",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/1080x1350-1 - Dani van der Laars.png",
+          "ipfsPath": "/ipfs/QmZZzFSpYFVeNm2bTHnnnQGVDqhfmvBBsShSiNCiy2VeMx"
+        },
+        {
+          "name": "1080x1350-2 - Dani van der Laars.png",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/1080x1350-2 - Dani van der Laars.png",
+          "ipfsPath": "/ipfs/QmRG8NggFKnKZGvydZsaSosLHihMmiXUw5RdH6jFqxQ6oS"
+        },
+        {
+          "name": "Application - Dani van der Laars.png",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/Application - Dani van der Laars.png",
+          "ipfsPath": "/ipfs/QmNQ5tKTFgXLCtmPCsx5mGM8D785mzdnFAuehuWUZu8k7i"
+        },
+        {
+          "name": "Dark mode - Dani van der Laars.png",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/Dark mode - Dani van der Laars.png",
+          "ipfsPath": "/ipfs/QmVjwRYiBtLiLCrkv2CEPvmrX3cxsZusKJDudpiLbxt6DQ"
+        },
+        {
+          "name": "Light Mode - Dani van der Laars.png",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/Light Mode - Dani van der Laars.png",
+          "ipfsPath": "/ipfs/QmdJwFAzP9jXeXVCdN1vdVmaFb3LzqET6mv3SxJF1R6ANu"
+        },
+        {
+          "name": "Logo Mark + Type - Dani van der Laars.svg",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/Logo Mark + Type - Dani van der Laars.svg",
+          "ipfsPath": "/ipfs/QmTaYWbfhjvEbpLNoe4A2whQWvPnNNBqGPkuAbxiX9voHc"
+        },
+        {
+          "name": "Logo type - Dani van der Laars.svg",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/Logo type - Dani van der Laars.svg",
+          "ipfsPath": "/ipfs/QmNryhe8gwTJgtu7KTktzaQznHUdsPYYbUheUGzMEWnerA"
+        },
+        {
+          "name": "Logomark - Dani van der Laars.svg",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/Logomark - Dani van der Laars.svg",
+          "ipfsPath": "/ipfs/QmSAWhCHitQjQiVVbVugJWGQ6wPpcbinRFyFCFduhyyN9b"
+        },
+        {
+          "name": "To be added 2 .PNG",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/To be added 2 .PNG",
+          "ipfsPath": "/ipfs/QmTKXQ78t7Zjm5Zspb5xTxcctoyKsLjXwxX3p8sckxAP4g"
+        },
+        {
+          "name": "To be added 3.PNG",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/To be added 3.PNG",
+          "ipfsPath": "/ipfs/QmR2gQMd4EwVuh9CMPxq7eCikLPpFtLeAUH6VnCxfz5vfy"
+        },
+        {
+          "name": "To be added 4 .PNG",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/To be added 4 .PNG",
+          "ipfsPath": "/ipfs/QmPprwRWpUxN7xr3fvfesMn2ywTp9xWgq4q3A8BCJUAXSS"
+        },
+        {
+          "name": "To be added 5.PNG",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/To be added 5.PNG",
+          "ipfsPath": "/ipfs/QmVk8N5MHicDvPTzxEipTXStVxFfYLdSBJz8dHTWA8wdM1"
+        },
+        {
+          "name": "To be added 6.PNG",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/To be added 6.PNG",
+          "ipfsPath": "/ipfs/Qmc1TT3g4RyKQM4QdiM8GeLCLLhyH2AKy9BKFQLVb7uC3F"
+        },
+        {
+          "name": "To be added 7.PNG",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/To be added 7.PNG",
+          "ipfsPath": "/ipfs/QmcXRG74MDcKKGR5DwXP5aj7abQZ2e2cRFS6u6S72ZY5WU"
+        },
+        {
+          "name": "To be added 8.PNG",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/To be added 8.PNG",
+          "ipfsPath": "/ipfs/QmbDSQ9K5j9XKoof6tG2JDyk6FqG6qYxjkJEBDS6FD69wZ"
+        },
+        {
+          "name": "To be added.PNG",
+          "localPath": "seer-rebrand/@hypedsgn-Electric Foundation/To be added.PNG",
+          "ipfsPath": "/ipfs/QmbxZZAuzEGgTBgnF5z4Tea8YtdR9bTgDXubCp8uT83GxZ"
+        }
+      ],
+      "@posifer001-Geometric + Initial": [
+        {
+          "name": "7a543fec-dc03-4fa9-ba87-52720f248420 - Posifer.png",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/7a543fec-dc03-4fa9-ba87-52720f248420 - Posifer.png",
+          "ipfsPath": "/ipfs/QmRMJ62KVZhLjMbFxwsRiyUkoHDFPMtKd9aPZECbznd7Yh"
+        },
+        {
+          "name": "App Icon - Posifer.png",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/App Icon - Posifer.png",
+          "ipfsPath": "/ipfs/QmXjeFkHNpCCwVFw6vDoUBiGoTjQ5cCq4p2EcUFdKm4X1g"
+        },
+        {
+          "name": "COMPARISON - Posifer.png",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/COMPARISON - Posifer.png",
+          "ipfsPath": "/ipfs/QmZ4m2Wmk3HGjer7vMvdQMgaKgfuxmm4Gim2LemJRisSnq"
+        },
+        {
+          "name": "Hoodie seer - Posifer.png",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/Hoodie seer - Posifer.png",
+          "ipfsPath": "/ipfs/QmTHDiQcJbpkTZKVvme99ko1he7mNt6MHypNw4mYvb2yXt"
+        },
+        {
+          "name": "LOG TEST PG 1 - Posifer.png",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/LOG TEST PG 1 - Posifer.png",
+          "ipfsPath": "/ipfs/QmZxU6ZTLQGibNhLTX8LpFBSYYpVwU19qJpXMPMygqtMv2"
+        },
+        {
+          "name": "Seer Id Mock - Posifer.png",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/Seer Id Mock - Posifer.png",
+          "ipfsPath": "/ipfs/QmTMNRy2WPXxuEMtgUE1v6DTWJ3WuiFj6CvxJDs63jAZKS"
+        },
+        {
+          "name": "Seer Pc Mock - Posifer.png",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/Seer Pc Mock - Posifer.png",
+          "ipfsPath": "/ipfs/QmagTYykUxJp2abPLRQD2QCvkx65pHipbxF15ehWq5PwZL"
+        },
+        {
+          "name": "Seer PG 1 - Posifer.png",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/Seer PG 1 - Posifer.png",
+          "ipfsPath": "/ipfs/QmXyuXdQdQLY1t3FBU7XGhDvZJcRWdzNVEHAdpcXpQtf82"
+        },
+        {
+          "name": "seer watch - Posifer.png",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/seer watch - Posifer.png",
+          "ipfsPath": "/ipfs/QmNjzg98iUYLW8hHkuSg5ahurdV8j4DDH91wdNFLiDcyqz"
+        },
+        {
+          "name": "To be added 2 .PNG",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/To be added 2 .PNG",
+          "ipfsPath": "/ipfs/Qmaz1uyq4zUeXwm4Qp1e1jT9ojCahzffAXiNnRoDkwfFiJ"
+        },
+        {
+          "name": "To be added 3.PNG",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/To be added 3.PNG",
+          "ipfsPath": "/ipfs/QmZM5Z5j7ULrbTHeNXQEbJV85DBbK9svcvHRVp2SkiXSRh"
+        },
+        {
+          "name": "To be added 4.PNG",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/To be added 4.PNG",
+          "ipfsPath": "/ipfs/QmPGiPsgA9q3vQgeihuzu2rigfNi9GaomeSYBqnjKjzPwz"
+        },
+        {
+          "name": "To be added 5.PNG",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/To be added 5.PNG",
+          "ipfsPath": "/ipfs/QmQhtgKgxevZq8mXKCu2o5JCZMuwiKmK63pdyGFQMhsk35"
+        },
+        {
+          "name": "To be added 6.PNG",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/To be added 6.PNG",
+          "ipfsPath": "/ipfs/QmU6hXA9USh8e6Y5j2cDBFnaZdAbyjVBoKw7BXyadaJZxe"
+        },
+        {
+          "name": "To be added 7.PNG",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/To be added 7.PNG",
+          "ipfsPath": "/ipfs/QmXgoS1VipjZNhdu3dHK2iy2AY7tMQYRW13kswjp3cxA1B"
+        },
+        {
+          "name": "To be added 8.PNG",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/To be added 8.PNG",
+          "ipfsPath": "/ipfs/QmcyMnAtGW1iqmEXGRLxQLxqJkC1iPk5htx65VeKikqg6K"
+        },
+        {
+          "name": "To be added1 .PNG",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/To be added1 .PNG",
+          "ipfsPath": "/ipfs/QmZHgti3W4oMn1q1i3gRXePkBSY7TfVtQJYTpCDSJc3X7k"
+        },
+        {
+          "name": "Tote bag Seer - Posifer.png",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/Tote bag Seer - Posifer.png",
+          "ipfsPath": "/ipfs/QmUexooYA7tsccyk3UvUQom2S5cVqrPDSHSJKPznG1jn37"
+        },
+        {
+          "name": "trade-panel - Pope Ijiji.jpg",
+          "localPath": "seer-rebrand/@posifer001-Geometric + Initial/trade-panel - Pope Ijiji.jpg",
+          "ipfsPath": "/ipfs/QmaiTmgVsUTVDZNDnpLxpzgbgtS4mzob1C7sNWdzqiNNTs"
+        }
+      ],
+      "@sue2432-Crow Minimal": [
+        {
+          "name": "S-8 - Hsu Lae Yadanar.png",
+          "localPath": "seer-rebrand/@sue2432-Crow Minimal/S-8 - Hsu Lae Yadanar.png",
+          "ipfsPath": "/ipfs/QmTXcdEfFDZMuhnUGRgrDsLwbBjgbjNcserfGLi4j3r3y1"
+        },
+        {
+          "name": "Seer_Rebrand - Hsu Lae Yadanar.pdf",
+          "localPath": "seer-rebrand/@sue2432-Crow Minimal/Seer_Rebrand - Hsu Lae Yadanar.pdf",
+          "ipfsPath": "/ipfs/QmSKJnFmBgjDNYtLic9kRQr1AKbkF39BdBaAc2barGv42w"
+        }
+      ],
+      "@syntropicregen-Constellation Oracle": [
+        {
+          "name": "Seer Dark Background - Ahau Alux.JPG",
+          "localPath": "seer-rebrand/@syntropicregen-Constellation Oracle/Seer Dark Background - Ahau Alux.JPG",
+          "ipfsPath": "/ipfs/QmWzb33fRzwkhPkLTw4y3kDX3CLqe44Cda34mt6ZqSUBq3"
+        },
+        {
+          "name": "Seer Hero 1 - Ahau Alux.png",
+          "localPath": "seer-rebrand/@syntropicregen-Constellation Oracle/Seer Hero 1 - Ahau Alux.png",
+          "ipfsPath": "/ipfs/QmYc5SedToByo1X63gjYZiVFCCm7wfjvPSWbjcJ9Uxt2zi"
+        },
+        {
+          "name": "Seer Light Background - Ahau Alux.JPG",
+          "localPath": "seer-rebrand/@syntropicregen-Constellation Oracle/Seer Light Background - Ahau Alux.JPG",
+          "ipfsPath": "/ipfs/QmZ786dEPmiQGCqoMvg47Hcf7uDKYGxGcThgCKnhxYJsm2"
+        },
+        {
+          "name": "Seer Logo Dark - Ahau Alux.PNG",
+          "localPath": "seer-rebrand/@syntropicregen-Constellation Oracle/Seer Logo Dark - Ahau Alux.PNG",
+          "ipfsPath": "/ipfs/QmaMzip2sEVcdSwdxDmi79N8SWsrJoxk8avornYNwWS2xe"
+        },
+        {
+          "name": "Seer Logo Light - Ahau Alux.PNG",
+          "localPath": "seer-rebrand/@syntropicregen-Constellation Oracle/Seer Logo Light - Ahau Alux.PNG",
+          "ipfsPath": "/ipfs/QmfAieuTDQ4ojDyCxaU8GxAnbzMLXGaNayvAwgEcBpHqjr"
+        },
+        {
+          "name": "Seer Xpost 1 - Ahau Alux.png",
+          "localPath": "seer-rebrand/@syntropicregen-Constellation Oracle/Seer Xpost 1 - Ahau Alux.png",
+          "ipfsPath": "/ipfs/QmejmKv6MJmULnitTA5tYrWsK9C62TVvrmG3MJbSZ2Jnvc"
+        }
+      ],
+      "Elijah- Resolution Mark": [
+        {
+          "name": "seer-application-docs-header - On Base.png",
+          "localPath": "seer-rebrand/Elijah- Resolution Mark/seer-application-docs-header - On Base.png",
+          "ipfsPath": "/ipfs/QmWwJ44Hjr2zGK1nPnjiPVETjXJSx2unbF2DyqYpfDjhcH"
+        },
+        {
+          "name": "seer-application-product-ui - On Base.png",
+          "localPath": "seer-rebrand/Elijah- Resolution Mark/seer-application-product-ui - On Base.png",
+          "ipfsPath": "/ipfs/QmWUbLEgbGEDhqEUj6R7Ywr5FqRgid4kYDSGZJZfv9kirN"
+        },
+        {
+          "name": "seer-application-social-card - On Base.png",
+          "localPath": "seer-rebrand/Elijah- Resolution Mark/seer-application-social-card - On Base.png",
+          "ipfsPath": "/ipfs/QmR8zaJmptmrE5R3nkSeKTMuxr17EBnrHnpssdnH2dAhVH"
+        },
+        {
+          "name": "seer-application-website-hero - On Base.png",
+          "localPath": "seer-rebrand/Elijah- Resolution Mark/seer-application-website-hero - On Base.png",
+          "ipfsPath": "/ipfs/QmQuc3Mp3SgiYodXkvxDNGgZTYhwP8zXxyaxYoQsNQbLfF"
+        },
+        {
+          "name": "seer-icon - On Base.png",
+          "localPath": "seer-rebrand/Elijah- Resolution Mark/seer-icon - On Base.png",
+          "ipfsPath": "/ipfs/Qmcnbe2HFcY4ZqNvq5uo77V5dph9KRBYmSAUWYgb7f88Vj"
+        },
+        {
+          "name": "seer-icon - On Base.svg",
+          "localPath": "seer-rebrand/Elijah- Resolution Mark/seer-icon - On Base.svg",
+          "ipfsPath": "/ipfs/QmXxA1huiYwkJiFVFa5Zqapoov4LKgiPRCCZ1asfYi2vgD"
+        },
+        {
+          "name": "seer-logo-monochrome - On Base.png",
+          "localPath": "seer-rebrand/Elijah- Resolution Mark/seer-logo-monochrome - On Base.png",
+          "ipfsPath": "/ipfs/Qma99RnPtogAyXvCpDxww4pJDjuDQVt67i6Bbj9yjdPFqb"
+        },
+        {
+          "name": "seer-logo-primary - On Base.png",
+          "localPath": "seer-rebrand/Elijah- Resolution Mark/seer-logo-primary - On Base.png",
+          "ipfsPath": "/ipfs/Qmci4r4ZCXMt6v6Q5dDjJ1cLpBPMCi2fqAcgGWzbkURrc7"
+        },
+        {
+          "name": "seer-logo-primary-reversed - On Base.png",
+          "localPath": "seer-rebrand/Elijah- Resolution Mark/seer-logo-primary-reversed - On Base.png",
+          "ipfsPath": "/ipfs/QmT72dxC1X54PowLKevNWb6cxF1aNDJpfUPTfpMkFm16qg"
+        },
+        {
+          "name": "seer-wordmark - On Base.svg",
+          "localPath": "seer-rebrand/Elijah- Resolution Mark/seer-wordmark - On Base.svg",
+          "ipfsPath": "/ipfs/QmYWCiTJ5NruuN3a6KWksEf4yQofFxG6rLCbcDMPTFM5uh"
+        }
+      ],
+      "Melissa-The Composable Identity": [
+        {
+          "name": "1.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/1.png",
+          "ipfsPath": "/ipfs/QmdsAJpUMvQyvnyZ2hrKqnYHktKY6Zv5GNaoAoP9f7GYND"
+        },
+        {
+          "name": "10.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/10.png",
+          "ipfsPath": "/ipfs/QmWhNn7uY85JrSzppBfY1HY2skGRaGX5HTD6HVuC5FDaXF"
+        },
+        {
+          "name": "11.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/11.png",
+          "ipfsPath": "/ipfs/QmPQQJsMnaSPvKNsfNkTtoodxKHkPF5xpTiuDQtrkTXEV5"
+        },
+        {
+          "name": "2.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/2.png",
+          "ipfsPath": "/ipfs/QmQHjv8k5L3WRSbbRaF127a56wfUtEKfN55JreMUYaySK7"
+        },
+        {
+          "name": "3.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/3.png",
+          "ipfsPath": "/ipfs/QmZiEJv8sqdUBpaC9qvKp1mVLWsxvcAoWbaRCKPus3uRit"
+        },
+        {
+          "name": "4.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/4.png",
+          "ipfsPath": "/ipfs/QmUSJeZ64naGnrMyu24XCHcSjX8LdTXxLEFfDX39BoiTeL"
+        },
+        {
+          "name": "5.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/5.png",
+          "ipfsPath": "/ipfs/QmV1n5THhzXh13HLQy9j35TcWM8W3KNVJep21wssom6obB"
+        },
+        {
+          "name": "6.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/6.png",
+          "ipfsPath": "/ipfs/QmbqTaXXgfo5sWPhPz1MAK4ZkC3zeSDJkexNYXy7J5c9M9"
+        },
+        {
+          "name": "7.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/7.png",
+          "ipfsPath": "/ipfs/QmSRYAJw5tijhhvvK7vf4rDN8nDWi6pThDGawNEg6bGDnK"
+        },
+        {
+          "name": "8.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/8.png",
+          "ipfsPath": "/ipfs/Qmb5uGeDKZ9x6Pm4F351LeN19JY4HPw9vCiuaf188JHeJH"
+        },
+        {
+          "name": "9.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/9.png",
+          "ipfsPath": "/ipfs/QmXi9hQFmCtZtu7dXz4R25YZUyZEqMBu8Vb1PYtxKvYkM8"
+        },
+        {
+          "name": "Logo Dark .png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/Logo Dark .png",
+          "ipfsPath": "/ipfs/QmNT9jeZgSUJ1zogCLjDBETDMt4xEqApqrV182c2FjEEUz"
+        },
+        {
+          "name": "Logo Light.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/Logo Light.png",
+          "ipfsPath": "/ipfs/QmTFTUnNt4KJycaLr7Xde6K7ok5T7FrK67hUHrHUCbHskM"
+        },
+        {
+          "name": "Seer rebrand submission.pdf",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/Seer rebrand submission.pdf",
+          "ipfsPath": "/ipfs/QmeGsJCFLMSimSrfyPtc6n6vEsTui1d2nAUzknYC93anPP"
+        },
+        {
+          "name": "Wordmark.png",
+          "localPath": "seer-rebrand/Melissa-The Composable Identity/Wordmark.png",
+          "ipfsPath": "/ipfs/QmVZHhjymUxXd9s5pVV8vGqrqwGANtvjRY95cPLPC2JSa8"
+        }
+      ],
+      "Mohammad-Prism": [
+        {
+          "name": "conference stand 3.png",
+          "localPath": "seer-rebrand/Mohammad-Prism/conference stand 3.png",
+          "ipfsPath": "/ipfs/QmaSusR1PDi3DuavJQVEt7aGhFhTo8KKAvbPSwSSExnwJK"
+        },
+        {
+          "name": "conference stand.png",
+          "localPath": "seer-rebrand/Mohammad-Prism/conference stand.png",
+          "ipfsPath": "/ipfs/QmbuFCRDpB6MTzPC3pwxw3DcpVrRxeosoCpmPabGVT6bMY"
+        },
+        {
+          "name": "seer modern 1.png",
+          "localPath": "seer-rebrand/Mohammad-Prism/seer modern 1.png",
+          "ipfsPath": "/ipfs/QmWmj47tSCoaL2Qeo6zbiDhNK119LCSQ7gtDjmBVD3pLhb"
+        },
+        {
+          "name": "seer-lockup-circle-black.png",
+          "localPath": "seer-rebrand/Mohammad-Prism/seer-lockup-circle-black.png",
+          "ipfsPath": "/ipfs/QmVp2qYKJBKtdmsb82FSJpExkmTQhFGMeqpbXjNjQEykz5"
+        },
+        {
+          "name": "t-shirt.png",
+          "localPath": "seer-rebrand/Mohammad-Prism/t-shirt.png",
+          "ipfsPath": "/ipfs/QmYiSYhG6vaY1RBKRET6PxwvC8HPwJFH2Rp8j9bstp5zQf"
+        }
+      ],
+      "MrFroggert -Signal Convergence": [
+        {
+          "name": "brand-overview - Brock Nass.png",
+          "localPath": "seer-rebrand/MrFroggert -Signal Convergence/brand-overview - Brock Nass.png",
+          "ipfsPath": "/ipfs/QmZfoykwQjD8gxYFHqGMkQsskQZcgeD5b87PGip9BJknjV"
+        },
+        {
+          "name": "dashboard - Brock Nass.png",
+          "localPath": "seer-rebrand/MrFroggert -Signal Convergence/dashboard - Brock Nass.png",
+          "ipfsPath": "/ipfs/QmSkvjR4B8kdFEeheEETEwn2hbDDfTF4TvvReVYwDV12Xc"
+        },
+        {
+          "name": "docs - Brock Nass.png",
+          "localPath": "seer-rebrand/MrFroggert -Signal Convergence/docs - Brock Nass.png",
+          "ipfsPath": "/ipfs/QmeoyAviP61mjhDFn3Y5FZuJoN2PoeV2xb4NQHCoRDqvfk"
+        },
+        {
+          "name": "icon - Brock Nass.svg",
+          "localPath": "seer-rebrand/MrFroggert -Signal Convergence/icon - Brock Nass.svg",
+          "ipfsPath": "/ipfs/QmbThXrYRxbue8oRDyaAoFeiphtyVDvaYQyTEWLV86eaQL"
+        },
+        {
+          "name": "inverse-logo - Brock Nass.svg",
+          "localPath": "seer-rebrand/MrFroggert -Signal Convergence/inverse-logo - Brock Nass.svg",
+          "ipfsPath": "/ipfs/QmRNqBXSr6ZYnypTkdUqrvPWVTSuMD6q7dEA4qPGCHrJA4"
+        },
+        {
+          "name": "landing-page - Brock Nass.png",
+          "localPath": "seer-rebrand/MrFroggert -Signal Convergence/landing-page - Brock Nass.png",
+          "ipfsPath": "/ipfs/QmeK1Mo1CaE4icA593ARRTdp6qoqSmbRrAGLS4vbDAEiYD"
+        },
+        {
+          "name": "primary-logo - Brock Nass.svg",
+          "localPath": "seer-rebrand/MrFroggert -Signal Convergence/primary-logo - Brock Nass.svg",
+          "ipfsPath": "/ipfs/QmSry54YMq8Zpe7neAFqNPCYBN8RfTVts6P12PDBpJ3ivv"
+        },
+        {
+          "name": "twitter banner - Brock Nass.png",
+          "localPath": "seer-rebrand/MrFroggert -Signal Convergence/twitter banner - Brock Nass.png",
+          "ipfsPath": "/ipfs/QmRYbQZdmUVWxT12BR4DYN1zeKihsMwyfsR6ZDx3aeHsS6"
+        },
+        {
+          "name": "wordmark - Brock Nass.svg",
+          "localPath": "seer-rebrand/MrFroggert -Signal Convergence/wordmark - Brock Nass.svg",
+          "ipfsPath": "/ipfs/QmYX8jXdhXJBTr9uW3nrF2fRCQuo3gKArY6UaNTdXj77Qt"
+        }
+      ],
+      "Schofield-Purple Horizon": [
+        {
+          "name": "1.png",
+          "localPath": "seer-rebrand/Schofield-Purple Horizon/1.png",
+          "ipfsPath": "/ipfs/QmUGNErBgXKjvaLWwK1jCG6zF68mLFWYKGz5FKFVATr8Ed"
+        },
+        {
+          "name": "10.png",
+          "localPath": "seer-rebrand/Schofield-Purple Horizon/10.png",
+          "ipfsPath": "/ipfs/QmXGx3KGVKXGKuLND2cWq9wNLz523TWRAU9FtBQb2dEt5h"
+        },
+        {
+          "name": "2.png",
+          "localPath": "seer-rebrand/Schofield-Purple Horizon/2.png",
+          "ipfsPath": "/ipfs/QmS8DmGYo4hb8b2DQSjWQVkKVnSqvUU3TC3DXdkvLRz4CF"
+        },
+        {
+          "name": "3.png",
+          "localPath": "seer-rebrand/Schofield-Purple Horizon/3.png",
+          "ipfsPath": "/ipfs/QmXgYZVGEyH5EyaTzhEkGLqHCq7wNh8XuEYgUtxSQBACTF"
+        },
+        {
+          "name": "4.png",
+          "localPath": "seer-rebrand/Schofield-Purple Horizon/4.png",
+          "ipfsPath": "/ipfs/QmeKgNah4kMZ2wzL6Y4phpJ8QWG5HAmG5dUKGTWurxQyEd"
+        },
+        {
+          "name": "5.png",
+          "localPath": "seer-rebrand/Schofield-Purple Horizon/5.png",
+          "ipfsPath": "/ipfs/QmP21mpSntrtZ8xE1eZWYMKNpEingTmjmQYvvn98AHsytv"
+        },
+        {
+          "name": "6.png",
+          "localPath": "seer-rebrand/Schofield-Purple Horizon/6.png",
+          "ipfsPath": "/ipfs/QmToS9zx6At2bv8uYxPZanP2XeeU1ZxVqh4rkYFcfkfe7i"
+        },
+        {
+          "name": "7.png",
+          "localPath": "seer-rebrand/Schofield-Purple Horizon/7.png",
+          "ipfsPath": "/ipfs/QmZAUXrSyWgrEmWcZ6daLutwj1xAF8b1J95f4xb3WNVSUt"
+        },
+        {
+          "name": "8.png",
+          "localPath": "seer-rebrand/Schofield-Purple Horizon/8.png",
+          "ipfsPath": "/ipfs/QmR2sUccGaBf6M67r5tWPJPTyv57dFLKUNhw6KYMkA1QaQ"
+        },
+        {
+          "name": "9.png",
+          "localPath": "seer-rebrand/Schofield-Purple Horizon/9.png",
+          "ipfsPath": "/ipfs/QmX6mmwTGR7T9NfJP5KBapVosB1Jh7CKjmSRYFSm9qKoPZ"
+        }
+      ],
+      "asa_wagmi-Converge": [
+        {
+          "name": "converge_logo - Āsā Wagmi.png",
+          "localPath": "seer-rebrand/asa_wagmi-Converge/converge_logo - Āsā Wagmi.png",
+          "ipfsPath": "/ipfs/QmdJ14c25qysp8AgkSvK44MidjueMJYn4NAfgEPHys2pYq"
+        },
+        {
+          "name": "converge_white - Āsā Wagmi.png",
+          "localPath": "seer-rebrand/asa_wagmi-Converge/converge_white - Āsā Wagmi.png",
+          "ipfsPath": "/ipfs/QmaziS3nV69PxHHg3u8YZPtkq8FUj1UZ1j6Ujm4pGUE52z"
+        },
+        {
+          "name": "converge_wordmark - Āsā Wagmi.png",
+          "localPath": "seer-rebrand/asa_wagmi-Converge/converge_wordmark - Āsā Wagmi.png",
+          "ipfsPath": "/ipfs/QmPLurKrRMQtuxYx7jDdwhPceRG31wna6Pa5thfTGkv7yh"
+        },
+        {
+          "name": "converge_wordmark&logo - Āsā Wagmi.png",
+          "localPath": "seer-rebrand/asa_wagmi-Converge/converge_wordmark&logo - Āsā Wagmi.png",
+          "ipfsPath": "/ipfs/QmYzPPfe37Vx4npar4vPdUCCdgt6eXX7iBpTTMkDFpi1Lp"
+        },
+        {
+          "name": "Seer_Converge_Brand_Guide_Final - Āsā Wagmi.pdf",
+          "localPath": "seer-rebrand/asa_wagmi-Converge/Seer_Converge_Brand_Guide_Final - Āsā Wagmi.pdf",
+          "ipfsPath": "/ipfs/Qma4sKFCgaLR96wyWEX6k824GEXZpcJH7YvUqv8Hch8xLX"
+        }
+      ]
+    },
+    "seer-devcon-2026-merch": {
+      "Minimal purple-on-lavender eye graphic Seer Merch set_ tote bag +tshirt_": [
+        {
+          "name": "Minimal purple-on-lavender eye graphic Seer Merch set_ tote bag +tshirt_.png",
+          "localPath": "seer-devcon-2026-merch/Minimal purple-on-lavender eye graphic Seer Merch set_ tote bag +tshirt_/Minimal purple-on-lavender eye graphic Seer Merch set_ tote bag +tshirt_.png",
+          "ipfsPath": "/ipfs/QmSxt6mUiWf4sEVhwhWqNnGqitLx5WbRkbnQQ9acBNFXKJ"
+        }
+      ],
+      "Minimalist black Seer hoodie": [
+        {
+          "name": "Minimalist black Seer hoodie.png",
+          "localPath": "seer-devcon-2026-merch/Minimalist black Seer hoodie/Minimalist black Seer hoodie.png",
+          "ipfsPath": "/ipfs/QmaUaBMzgF36oH5EFTVWLkQr5FbcqiUvhjavRCNtrCSemJ"
+        }
+      ],
+      "Minimalist purple Seer hoodie": [
+        {
+          "name": "Minimalist purple Seer hoodie.jpg",
+          "localPath": "seer-devcon-2026-merch/Minimalist purple Seer hoodie/Minimalist purple Seer hoodie.jpg",
+          "ipfsPath": "/ipfs/Qma9mYwp15MPKeo59YEDr4wqNgeLM2K1oke89sADSsCaW9"
+        }
+      ],
+      "Minimalist Seer Mersh set_ Hoodies+ tote bag+ cap": [
+        {
+          "name": "Minimalist Seer Mersh set_ Hoodies+ tote bag+ cap.png",
+          "localPath": "seer-devcon-2026-merch/Minimalist Seer Mersh set_ Hoodies+ tote bag+ cap/Minimalist Seer Mersh set_ Hoodies+ tote bag+ cap.png",
+          "ipfsPath": "/ipfs/QmUjx2HLQGqRA77Pue8EEPhAmkrimdUWEfYFY6kje1Mhqb"
+        }
+      ],
+      "Proof of Belonging Tshirt": [
+        {
+          "name": "Proof of Belonging Tshirt.png",
+          "localPath": "seer-devcon-2026-merch/Proof of Belonging Tshirt/Proof of Belonging Tshirt.png",
+          "ipfsPath": "/ipfs/QmNuGNHD6u1gTVaEHJnCnkrVtYxMT3LaSaKfYXeMDtdM3H"
+        }
+      ],
+      "Purple Seer Apparel Set (Tshirt+hat)_": [
+        {
+          "name": "Purple Seer Apparel Set (Tshirt+hat)_.png",
+          "localPath": "seer-devcon-2026-merch/Purple Seer Apparel Set (Tshirt+hat)_/Purple Seer Apparel Set (Tshirt+hat)_.png",
+          "ipfsPath": "/ipfs/QmP8bY9r3qbYb4HeUUaQoNiqpw9C1TYL6gbsvfBd2BYBZa"
+        }
+      ],
+      "Seer Apparel Purple Set (Hoodie+hat)_": [
+        {
+          "name": "Seer Apparel Purple Set (Hoodie+hat)_.png",
+          "localPath": "seer-devcon-2026-merch/Seer Apparel Purple Set (Hoodie+hat)_/Seer Apparel Purple Set (Hoodie+hat)_.png",
+          "ipfsPath": "/ipfs/QmWSB82nJW4mNUJQkaPkZgcyRznDYy9xgqrbg4XgJ1LsZt"
+        }
+      ],
+      "See What The Market Believes T shirt": [
+        {
+          "name": "See What The Market Believes T shirt.png",
+          "localPath": "seer-devcon-2026-merch/See What The Market Believes T shirt/See What The Market Believes T shirt.png",
+          "ipfsPath": "/ipfs/QmZ2Zfm5WVP8EcHz2HKLAHbAvPtyLvkwfyrgXJKdLt7tVe"
+        }
+      ],
+      "Seer Compass Shirt": [
+        {
+          "name": "Seer Compass Shirt.png",
+          "localPath": "seer-devcon-2026-merch/Seer Compass Shirt/Seer Compass Shirt.png",
+          "ipfsPath": "/ipfs/QmPXpqhMkDPcQ2qovx51EyWBm1yZtuqdJEEASBBsERPRDN"
+        }
+      ],
+      "Seer Falcon Hoodie_": [
+        {
+          "name": "Seer Falcon Hoodie_.png",
+          "localPath": "seer-devcon-2026-merch/Seer Falcon Hoodie_/Seer Falcon Hoodie_.png",
+          "ipfsPath": "/ipfs/QmbdHQLgytXvd2ijcwm7VbQxbqUtjHEJYF9pBiegY29MLQ"
+        }
+      ],
+      "Seer Polo _  _Predict Everything. See Tomorrow._": [
+        {
+          "name": "Seer Polo _  _Predict Everything. See Tomorrow._.png",
+          "localPath": "seer-devcon-2026-merch/Seer Polo _  _Predict Everything. See Tomorrow._/Seer Polo _  _Predict Everything. See Tomorrow._.png",
+          "ipfsPath": "/ipfs/QmNbmgHHavtQat4m4EjjgGANaHD1uvoNTh4SvHAxiJWuCk"
+        }
+      ],
+      "Seer prediction Journal_": [
+        {
+          "name": "Seer Journal 1.png",
+          "localPath": "seer-devcon-2026-merch/Seer prediction Journal_/Seer Journal 1.png",
+          "ipfsPath": "/ipfs/QmamZPueKYUViCtBCfLQL4JdDhePndNXrUfkogzb3yVhGm"
+        },
+        {
+          "name": "Seer journal 2.png",
+          "localPath": "seer-devcon-2026-merch/Seer prediction Journal_/Seer journal 2.png",
+          "ipfsPath": "/ipfs/QmX3MpHrmDqzAXKjnpoLEJUEiX9fo4GW18tyuk3Zyb7Azw"
+        },
+        {
+          "name": "Seer Journal 3.png",
+          "localPath": "seer-devcon-2026-merch/Seer prediction Journal_/Seer Journal 3.png",
+          "ipfsPath": "/ipfs/QmTvJ3Fq7HSGYga2xagMo5RT5tmmEooFH64LxbWrAKTPkJ"
+        },
+        {
+          "name": "Seer prediction Journal_.pdf",
+          "localPath": "seer-devcon-2026-merch/Seer prediction Journal_/Seer prediction Journal_.pdf",
+          "ipfsPath": "/ipfs/QmfUiHgDYQEbz4yJqoCEorkGwgkTFnZ24qGdwapX2ZmSch"
+        }
+      ],
+      "Seer prediction chart Tshirt": [
+        {
+          "name": "Seer prediction chart Tshirt.jpg",
+          "localPath": "seer-devcon-2026-merch/Seer prediction chart Tshirt/Seer prediction chart Tshirt.jpg",
+          "ipfsPath": "/ipfs/QmeDD8h3QXXhkQvFUUN2a86spjtL9Ps1NpNyLW2pZ7dhox"
+        }
+      ],
+      "The Seer eye Oversized T shirt": [
+        {
+          "name": "The Seer eye Oversized T shirt.jpg",
+          "localPath": "seer-devcon-2026-merch/The Seer eye Oversized T shirt/The Seer eye Oversized T shirt.jpg",
+          "ipfsPath": "/ipfs/QmPm4oHkJcXcST9KHbJVBtKBE7rVR9dLXLhXaHrJ6r8Hka"
+        }
+      ],
+      "The Future, In Sight Seer Tshirt": [
+        {
+          "name": "The Future, In Sight Seer Tshirt.jpg",
+          "localPath": "seer-devcon-2026-merch/The Future, In Sight Seer Tshirt/The Future, In Sight Seer Tshirt.jpg",
+          "ipfsPath": "/ipfs/Qmf4CwUaRawjVJ2iHLc5w9gayGQRuQo5KN7RKxQtTwg5F9"
+        }
+      ],
+      "White and Cyan Seer mersh set_ Hoodie +tshirt": [
+        {
+          "name": "White and Cyan Seer mersh set_ Hoodie +tshirt.png",
+          "localPath": "seer-devcon-2026-merch/White and Cyan Seer mersh set_ Hoodie +tshirt/White and Cyan Seer mersh set_ Hoodie +tshirt.png",
+          "ipfsPath": "/ipfs/QmarvfdvVEZ1qsqzfXFRCrV44EPQVijfJvvj452c8nbNgB"
+        }
+      ],
+      "Seer merch full set_ Tshirt, stickers and bottles": [
+        {
+          "name": "Seer merch full set_ Tshirt, stickers and bottles.pdf",
+          "localPath": "seer-devcon-2026-merch/Seer merch full set_ Tshirt, stickers and bottles/Seer merch full set_ Tshirt, stickers and bottles.pdf",
+          "ipfsPath": "/ipfs/QmVMuib7W35vxdJKeRB1KvNsLbgVK3qC2PeeyFnnUbSTMR"
+        }
+      ]
+    }
+  }
+}

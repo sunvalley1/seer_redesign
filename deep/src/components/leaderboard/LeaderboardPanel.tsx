@@ -1,0 +1,282 @@
+import MarketsPagination from "@/components/MarketsPagination";
+import {
+  Button,
+  Card,
+  CardHeader,
+  EmptyState,
+  ErrorPanel,
+  SegmentedControl,
+  Select,
+  TableToolbar,
+  TextInput,
+  type Option,
+} from "@/components/ui";
+import { SearchIcon } from "@/components/ui/icons";
+import {
+  fetchLeaderboardRank,
+  useLeaderboard,
+  type LeaderboardPeriod,
+  type LeaderboardScope,
+  type LeaderboardSort,
+  type LeaderboardSortDir,
+} from "@/hooks/useLeaderboard";
+import { useTradeWalletStatus } from "@/hooks/useTradeWalletStatus";
+import { getContest, LEADERBOARD_CONTESTS } from "@/utils/contests";
+import { pluralize } from "@/utils/format";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { LeaderboardTable } from "./LeaderboardTable";
+
+const PAGE_SIZE = 25;
+
+const PERIODS: { id: LeaderboardPeriod; label: string }[] = [
+  { id: "1d", label: "1D" },
+  { id: "1w", label: "1W" },
+  { id: "1m", label: "1M" },
+  { id: "all", label: "All" },
+];
+
+/** Used in the card description so it never claims a ranking the table is not showing. */
+const SORT_LABELS: Record<LeaderboardSort, string> = {
+  pnl: "profit/loss",
+  volume: "volume",
+  roi: "ROI",
+  score: "submission score",
+};
+
+const SCOPE_OPTIONS: Option[] = [
+  { id: "global", text: "All deep markets" },
+  ...LEADERBOARD_CONTESTS.map(({ id, label }) => ({ id, text: label })),
+];
+
+function scopeLabel(scope: LeaderboardScope): string {
+  return scope === "global" ? "All deep markets" : (getContest(scope)?.label ?? scope);
+}
+
+function formatUpdatedAt(updatedAt: string | null | undefined): string | null {
+  if (!updatedAt) return null;
+  const parsed = new Date(updatedAt);
+  if (Number.isNaN(parsed.getTime()) || parsed.getTime() === 0) return null;
+  return parsed.toLocaleString();
+}
+
+/**
+ * Profit & loss ranking across the deep markets — the whole of the Leaderboard page.
+ *
+ * Every board, including `All deep markets`, comes from Seer's leaderboard (see
+ * `netlify/functions/utils/seerLeaderboard.ts`); the Market dropdown below scopes it to one contest.
+ * Everything is denominated in USD, which is what Seer materializes.
+ */
+export function LeaderboardPanel() {
+  const { account, tradeExecutor } = useTradeWalletStatus();
+
+  const [scope, setScope] = useState<LeaderboardScope>("global");
+  const [period, setPeriod] = useState<LeaderboardPeriod>("all");
+  const [sortBy, setSortBy] = useState<LeaderboardSort>("pnl");
+  const [sortDir, setSortDir] = useState<LeaderboardSortDir>("desc");
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
+  const [highlightAddress, setHighlightAddress] = useState<string | undefined>();
+  const [rankStatus, setRankStatus] = useState<"idle" | "loading" | "missing" | "error">("idle");
+  const highlightRef = useRef<HTMLTableRowElement | null>(null);
+
+  const query = useLeaderboard({
+    scope,
+    period,
+    sortBy,
+    sortDir,
+    search,
+    limit: PAGE_SIZE,
+    offset: (page - 1) * PAGE_SIZE,
+  });
+
+  const total = query.data?.total ?? 0;
+  const pageCount = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const ownAddresses = useMemo(
+    () => [account, tradeExecutor].filter(Boolean) as string[],
+    [account, tradeExecutor],
+  );
+
+  useEffect(() => {
+    if (!highlightAddress) return;
+    const frame = requestAnimationFrame(() => {
+      highlightRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [highlightAddress, page, query.data?.rows]);
+
+  const resetView = () => {
+    setPage(1);
+    setHighlightAddress(undefined);
+    setRankStatus("idle");
+  };
+
+  const jumpToMyRank = async () => {
+    if (!account) return;
+    setRankStatus("loading");
+    try {
+      const result = await fetchLeaderboardRank(scope, period, account, sortBy, sortDir);
+      if (result.rank === null) {
+        setRankStatus("missing");
+        setHighlightAddress(undefined);
+        return;
+      }
+      setSearch("");
+      setSearchInput("");
+      setPage(Math.floor((result.rank - 1) / PAGE_SIZE) + 1);
+      setHighlightAddress(account.toLowerCase());
+      setRankStatus("idle");
+    } catch {
+      setRankStatus("error");
+    }
+  };
+
+  const updatedAt = formatUpdatedAt(query.data?.updatedAt);
+
+  if (query.error) {
+    return <ErrorPanel title="The leaderboard could not be loaded" error={query.error} />;
+  }
+
+  return (
+    <Card flush>
+      <CardHeader
+        eyebrow="Leaderboard"
+        title={scopeLabel(scope)}
+        description={
+          scope === "global"
+            ? `Every wallet across all deep markets, ranked by ${SORT_LABELS[sortBy]}. Profit is realised and marked-to-market, in USD.`
+            : `Wallets in this contest and its child markets, ranked by ${SORT_LABELS[sortBy]}, in USD.`
+        }
+        actions={
+          <SegmentedControl
+            size="sm"
+            segments={PERIODS.map(({ id, label }) => ({ id, label }))}
+            value={period}
+            onChange={(id) => {
+              setPeriod(id as LeaderboardPeriod);
+              resetView();
+            }}
+          />
+        }
+      />
+
+      <TableToolbar>
+        <div className="flex w-full items-center gap-2 sm:w-auto">
+          <span className="text-label font-medium text-ink-4 uppercase">
+            Market
+          </span>
+          <Select
+            className="w-full sm:w-64"
+            placeholder="All deep markets"
+            options={SCOPE_OPTIONS}
+            selectedId={scope}
+            onChange={(id) => {
+              if (!id || id === scope) return;
+              setScope(id);
+              resetView();
+            }}
+          />
+        </div>
+
+        <div className="flex flex-wrap items-center gap-2">
+          {account && (
+            <Button
+              size="sm"
+              variant="secondary"
+              loading={rankStatus === "loading"}
+              onClick={() => void jumpToMyRank()}
+            >
+              Your rank
+            </Button>
+          )}
+          <form
+            className="flex items-center gap-2"
+            onSubmit={(event) => {
+              event.preventDefault();
+              setSearch(searchInput.trim());
+              resetView();
+            }}
+          >
+            <TextInput
+              type="search"
+              className="h-9 w-full !rounded-full !py-0 !px-4 sm:w-56"
+              placeholder="Search by address"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+            />
+            <Button size="sm" type="submit" variant="secondary" iconLeft={<SearchIcon />}>
+              Search
+            </Button>
+            {search && (
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={() => {
+                  setSearch("");
+                  setSearchInput("");
+                  resetView();
+                }}
+              >
+                Clear
+              </Button>
+            )}
+          </form>
+        </div>
+      </TableToolbar>
+
+      {rankStatus === "missing" && (
+        <p className="border-b border-rule px-6 py-3 text-body text-ink-3">
+          Your wallet has no ranked position here yet.
+        </p>
+      )}
+      {rankStatus === "error" && (
+        <p className="border-b border-rule px-6 py-3 text-body text-short">
+          Your rank could not be looked up. Try again.
+        </p>
+      )}
+
+      <LeaderboardTable
+        rows={query.data?.rows ?? []}
+        scope={scope}
+        isLoading={query.isLoading}
+        sortBy={sortBy}
+        sortDir={sortDir}
+        onSortChange={(nextSortBy, nextSortDir) => {
+          setSortBy(nextSortBy);
+          setSortDir(nextSortDir);
+          resetView();
+        }}
+        ownAddresses={ownAddresses}
+        highlightAddress={highlightAddress}
+        highlightRef={highlightRef}
+        emptyState={
+          <EmptyState
+            title={search ? "No wallet matches that address" : "No ranked wallets yet"}
+            description={
+              search
+                ? "Clear the search to see the full ranking."
+                : "Rankings appear once the refresh job has scored this market's traders."
+            }
+          />
+        }
+      />
+
+      <div className="flex flex-col gap-3 border-t border-rule px-6 py-4 sm:flex-row sm:items-center sm:justify-between">
+        <p className="text-body text-ink-3">
+          {pluralize(total, "wallet")}
+          {updatedAt && <> · updated {updatedAt}</>}
+        </p>
+        {pageCount > 1 && (
+          <MarketsPagination
+            page={page}
+            pageCount={pageCount}
+            handlePageClick={({ selected }) => {
+              setPage(selected + 1);
+              setHighlightAddress(undefined);
+            }}
+          />
+        )}
+      </div>
+    </Card>
+  );
+}

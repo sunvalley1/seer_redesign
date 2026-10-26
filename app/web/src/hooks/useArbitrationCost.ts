@@ -1,0 +1,66 @@
+import { ArbitratorAbi } from "@/abi/ArbitratorAbi";
+import { base, gnosis, mainnet, optimism, sepolia } from "@/lib/chains";
+import { config } from "@/wagmi";
+import type { SupportedChain } from "@seer-pm/sdk";
+import {
+  readRealitioForeignArbitrationProxyWithAppealsArbitrator,
+  readRealitioForeignArbitrationProxyWithAppealsArbitratorExtraData,
+  readRealitioForeignProxyBaseArbitrator,
+  readRealitioForeignProxyBaseArbitratorExtraData,
+  readRealitioForeignProxyOptimismArbitrator,
+  readRealitioForeignProxyOptimismArbitratorExtraData,
+  readRealitioV2_1ArbitratorWithAppealsArbitrator,
+  readRealitioV2_1ArbitratorWithAppealsArbitratorExtraData,
+} from "@seer-pm/sdk/contracts/arbitrators";
+import { useQuery } from "@tanstack/react-query";
+import { readContract } from "@wagmi/core";
+
+async function getArbitrationCost(chainId: SupportedChain): Promise<bigint> {
+  const [arbitrator, arbitratorExtraData] = await Promise.all(
+    chainId === mainnet.id
+      ? [
+          readRealitioV2_1ArbitratorWithAppealsArbitrator(config, { chainId: mainnet.id }),
+          readRealitioV2_1ArbitratorWithAppealsArbitratorExtraData(config, { chainId: mainnet.id }),
+        ]
+      : chainId === sepolia.id
+        ? [
+            readRealitioV2_1ArbitratorWithAppealsArbitrator(config, { chainId: sepolia.id }),
+            readRealitioV2_1ArbitratorWithAppealsArbitratorExtraData(config, { chainId: sepolia.id }),
+          ]
+        : chainId === gnosis.id
+          ? [
+              readRealitioForeignArbitrationProxyWithAppealsArbitrator(config, { chainId: mainnet.id }),
+              readRealitioForeignArbitrationProxyWithAppealsArbitratorExtraData(config, { chainId: mainnet.id }),
+            ]
+          : chainId === optimism.id
+            ? [
+                readRealitioForeignProxyOptimismArbitrator(config, { chainId: mainnet.id }),
+                readRealitioForeignProxyOptimismArbitratorExtraData(config, { chainId: mainnet.id }),
+              ]
+            : chainId === base.id
+              ? [
+                  readRealitioForeignProxyBaseArbitrator(config, { chainId: mainnet.id }),
+                  readRealitioForeignProxyBaseArbitratorExtraData(config, { chainId: mainnet.id }),
+                ]
+              : (() => {
+                  throw new Error(`Unsupported chain: ${chainId}.`);
+                })(),
+  );
+
+  return await readContract(config, {
+    address: arbitrator,
+    abi: ArbitratorAbi,
+    functionName: "arbitrationCost",
+    args: [arbitratorExtraData],
+    chainId: mainnet.id,
+  });
+}
+
+export const useArbitrationCost = (chainId: SupportedChain) => {
+  return useQuery<bigint, Error>({
+    queryKey: ["useArbitrationCost"],
+    queryFn: async () => {
+      return getArbitrationCost(chainId);
+    },
+  });
+};

@@ -1,0 +1,142 @@
+fragment Question on Question {
+  questionId
+  index
+  arbitrator
+  opening_ts
+  timeout
+  finalize_ts
+  is_pending_arbitration
+  best_answer
+  bond
+  min_bond
+}
+
+fragment Market on Market {
+  address
+  chainId
+  marketType
+  marketName
+  outcomes
+  wrappedTokens
+  collateralToken
+  collateralToken1
+  collateralToken2
+  parentMarket {
+    address
+    chainId
+    payoutReported
+    conditionId
+    payoutNumerators
+  }
+  parentOutcome
+  parentCollectionId
+  conditionId
+  questionId
+  templateId
+  hasAnswers
+  questionsInArbitration
+  questions {
+    question {
+      questionId
+      arbitrator
+      opening_ts
+      timeout
+      finalize_ts
+      is_pending_arbitration
+      best_answer
+      bond
+      min_bond
+      index
+    }
+    baseQuestion {
+      questionId
+    }
+  }
+  openingTs
+  finalizeTs
+  encodedQuestions
+  lowerBound
+  upperBound
+  payoutReported
+  payoutNumerators
+  factory
+  creator
+  outcomesSupply
+  blockTimestamp
+  transactionHash
+}
+
+query GetMarkets(
+  $where: Market_bool_exp
+  $offset: Int = 0
+  $limit: Int = 100
+  $orderBy: [Market_order_by!]
+) {
+  Market(where: $where, offset: $offset, limit: $limit, order_by: $orderBy) {
+    ...Market
+  }
+}
+
+query GetMarket($id: String!) {
+  market: Market_by_pk(id: $id) {
+    ...Market
+  }
+}
+
+query GetConditionalEvents(
+  $where: ConditionalEvent_bool_exp
+  $offset: Int = 0
+  $limit: Int = 100
+  $orderBy: [ConditionalEvent_order_by!]
+) {
+  ConditionalEvent(where: $where, offset: $offset, limit: $limit, order_by: $orderBy) {
+    market {
+      address
+      marketName
+    }
+    accountId
+    eventType
+    amount
+    blockNumber
+    timestamp
+    collateral
+    transactionHash
+  }
+}
+
+query GetCurateMetadata($id: String!) {
+  curateMetadata: CurateMetadata_by_pk(id: $id) {
+    registrationMetaEvidenceURI
+  }
+}
+
+query GetArbitratorMetadata($id: String!) {
+  arbitratorMetadata: ArbitratorMetadata_by_pk(id: $id) {
+    registrationMetaEvidenceURI
+  }
+}
+
+fragment Transfer on Transfer {
+  chainId
+  from
+  to
+  timestamp
+  blockNumber
+  transactionHash
+  logIndex
+  value
+  token {
+    id
+  }
+}
+
+query GetTransfers(
+  $offset: Int = 0
+  $limit: Int = 1000
+  $where: Transfer_bool_exp
+  $orderBy: [Transfer_order_by!]
+) {
+  Transfer(limit: $limit, offset: $offset, where: $where, order_by: $orderBy) {
+    ...Transfer
+  }
+}
